@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "isparta-official"
+version = "0.1.0"
+description = "IspartaOfficial için bağımsız haber ve etkinlik otomasyonu — yerel tasarım hazırlığı"
+requires-python = ">=3.11"
+dependencies = ["Pillow>=11,<13"]
+
+[project.optional-dependencies]
+test = ["pytest>=8,<10"]
+
+[tool.setuptools.packages.find]
+include = ["isparta*"]
+
+[tool.setuptools.package-data]
+isparta = ["assets/*.jpg"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
