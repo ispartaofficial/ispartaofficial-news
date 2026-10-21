@@ -46,8 +46,9 @@ eşleşen afiş veya fotoğrafadır. Kontrolsüz, alakasız görsel boşluğu do
 
 ## Kaynak okuyucuları ve araştırma
 
-`config/research-sources.json` yedi gözden geçirilmiş okuyucu tanımlar: Bomba32,
-Haber32, Kanal32, Ajans32, Valilik, SDÜ ana takvimi ve ISUBÜ yaklaşan etkinlikleri.
+`config/research-sources.json` 13 kaynak için gözden geçirilmiş okuyucu tanımlar:
+Bomba32, Haber32, Kanal32, Ajans32, Valilik, Belediye, Kültür Müdürlüğü,
+SDÜ takvimi/SKS, ISUBÜ takvimi/SKS/Toplumsal Katkı ve Bubilet Isparta.
 Yerel haberler asıl makale tarihini kullanır; güncelleme, liste sırası veya bugünkü
 site başlığı eski haberi tazelemez. İki saatte bir planlanan bulut görevi yalnız
 araştırma raporu oluşturur. Alan adı, robots, sertifika, yanıt boyutu ve sayfa
@@ -62,9 +63,28 @@ afiş reddedilir. Diğer kaynak fotoğrafları da yalnız inceleme adayıdır.
 Yalnız bu araştırma turundaki benzer haberler gruplanır. Kalıcı yayın geçmişiyle
 tekilleştirme ve gerçekten görsel/içerik doğrulayan yayın hattı sonraki aşamadır.
 `eligible_for_drafting` yayın onayı değildir. Rapor tam yazı kopyası yerine kısa
-kaynak alıntısı, kaynak adresi ve kanıt özeti tutar. Kaynak listesinde kalan altı
-aday (Belediye, Kültür Müdürlüğü, Bubilet ve üç ek üniversite listesi) henüz bu
-araştırma görevinde etkin değildir. Yeni kaynakların hepsi çalışıyor sayılmaz.
+kaynak alıntısı, kaynak adresi ve kanıt özeti tutar. Kaynak okuyucusunun çalışması,
+içeriğin güncel olduğu veya otomatik yayına onaylandığı anlamına gelmez.
+
+Belediyede arşiv kartının tarihi yalnız aynı bağlantı ve aynı başlıktaki makaleye
+bağlanır. Site başlığı veya fotoğraf dosya adı tarih sayılmaz. Kültür Müdürlüğü
+için ulusal ana sayfa şeridi yerine açık bağlantıyla keşfedilen cari yılın yerel
+duyuru arşivi kullanılır. Yıl klasörünün tarihi makale tarihi sayılmaz. Tam gün,
+yıl, saat ve mekân içeren yerel programlar seanslara ayrılır; eksik bilgiler
+bekletilir. Yeni yıl arşivi henüz yayımlanmamışsa durum açıkça raporlanır.
+
+Ek üniversite sayfalarındaki duyuru yükleme tarihi etkinlik günü değildir. Afiş
+içeriği okunmamışsa seans uydurulmaz. Başlığı tek bir resmî takvim kaydıyla tam
+eşleşen duyuru o kayda ek kanıt olur; ikinci bir etkinlik/gönderi oluşturmaz.
+Geçmiş faaliyet raporu yaklaşan etkinlik değildir.
+
+Bubilet seanslarında tam yıl/saat, gerçek mekân adresi, yaş ve bilet koşulları
+ayrılır. Sayfadaki gerçek organizatör bölümü kullanılır; platformun şemada
+organizatör olarak yazılması yeterli sayılmaz. Kaynak seans fiyatı, her koltuk
+ve katılımcıya uygulanacak fiyat garantisi değildir. İptal, tükenmiş bilet ve
+eksik/çelişkili koşullar bekletilir. Afiş yalnız görsel inceleme adayıdır.
+Bilet listesinde öndeki kartların yanında kalan kartlar dönüşümlü araştırılır;
+haber siteleri ve resmî duyurular bu yüzden kapsamdan çıkarılmaz.
 
 ## Güncel sınır
 
