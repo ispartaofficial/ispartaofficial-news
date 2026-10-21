@@ -16,6 +16,8 @@ import re
 
 from .fetch import Fetcher, error_code
 from .readers import DISTRICTS, OUTSIDE, TZ, article, isubu, news_links, norm, sdu, timestamp
+from .scope_readers import (archive_article, campus_notice, correlate_campus,
+                           culture_items, culture_year_link, listing_entries, ticket_sessions)
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -121,7 +123,7 @@ def run(config_path, *, at=None, fetcher=None):
         raise ValueError('Timezone-aware run timestamp required')
     config = json.loads(Path(config_path).read_text(encoding='utf-8'))
     sources = [s for s in config['sources'] if s.get('research_enabled')]
-    if not sources or len(sources) > 12 or len({s['id'] for s in sources}) != len(sources):
+    if not sources or len(sources) > 20 or len({s['id'] for s in sources}) != len(sources):
         raise ValueError('Reviewed unique source registry required')
     fetcher = fetcher or Fetcher(sources)
     items, health = [], []
@@ -145,6 +147,36 @@ def run(config_path, *, at=None, fetcher=None):
                         row['parsed_items'] += 1
                     except Exception as exc:
                         row['errors'].append({'stage': 'detail', 'url': url, 'code': error_code(exc)})
+            elif source['reader'] in ('archive_article','campus_notice','ticketing','culture_archive'):
+                listing_source=source
+                if source['reader']=='culture_archive':
+                    year_url=culture_year_link(body,source,at)
+                    if year_url:
+                        body,final=fetcher.get(year_url)
+                        row['read_pages']+=1
+                        listing_source=dict(source,url=final)
+                    else:
+                        row['note']='current_year_archive_not_published'
+                        body=''
+                limit=min(8 if source['reader']=='ticketing' else 4,source.get('max_details',4))
+                entries=listing_entries(body,listing_source,at,limit)
+                if not entries and 'note' not in row:
+                    raise ValueError('reviewed_source_entries_missing')
+                for entry in entries:
+                    try:
+                        page,detail_url=fetcher.get(entry['url'])
+                        row['read_pages']+=1
+                        if source['reader']=='ticketing':parsed=ticket_sessions(page,detail_url,source)
+                        elif source['reader']=='culture_archive':parsed=culture_items(page,detail_url,source,entry)
+                        else:
+                            reader=archive_article if source['reader']=='archive_article' else campus_notice
+                            parsed=[reader(page,detail_url,source,entry)]
+                        for item in parsed:
+                            item['evidence_sha256']=hashlib.sha256(page.encode()).hexdigest()
+                            items.append(assess(item,at,config['venues']))
+                        row['parsed_items']+=len(parsed)
+                    except Exception as exc:
+                        row['errors'].append({'stage':'detail','url':entry['url'],'code':error_code(exc)})
             else:
                 parsed = {'sdu': sdu, 'isubu': isubu}[source['reader']](body, source)
                 for item in parsed:
@@ -156,6 +188,10 @@ def run(config_path, *, at=None, fetcher=None):
             row['status'] = 'failed'
             row['errors'].append({'stage': 'listing_or_calendar', 'code': error_code(exc)})
         health.append(row)
+    correlate_campus(items)
+    for item in items:
+        item['holds']=sorted(set(item['holds']+item.get('parser_holds',[])))
+        item['eligible_for_drafting']=not item['holds']
     # Identical same-source cards can appear twice. Conflicting payloads under
     # one stable identity are held together rather than silently selecting one.
     unique = {}
@@ -169,6 +205,10 @@ def run(config_path, *, at=None, fetcher=None):
             unique[item['id']] = item
     items = list(unique.values())
     deduplicate(items)
+    for row in health:
+        source_items=[i for i in items if i['source_id']==row['id']]
+        row['eligible_for_drafting']=sum(i['eligible_for_drafting'] for i in source_items)
+        row['held_items']=sum(not i['eligible_for_drafting'] for i in source_items)
     for item in items:
         item['checked_at'] = at.isoformat()
     # Service/local news stays in the report even when campus events dominate.
