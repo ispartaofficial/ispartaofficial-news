@@ -46,7 +46,10 @@
   "runtime": {
     "engine_port_complete": false,
     "deployed": false,
-    "publishing_enabled": false
+    "publishing_enabled": false,
+    "research_reader_count": 7,
+    "research_workflow": ".github/workflows/research.yml",
+    "research_schedule": "07:20–23:20 Europe/Istanbul every two hours; may start late"
   },
   "local_news": {
     "included": true,

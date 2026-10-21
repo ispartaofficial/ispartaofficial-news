@@ -1,5 +1,5 @@
 {
-  "version": "isparta-source-candidates-v2",
+  "version": "isparta-source-candidates-v3",
   "all_candidates_disabled": true,
   "sources": [
     {
@@ -17,7 +17,8 @@
         "time and end/cancellation status",
         "price and student/public access",
         "poster image linkage and OCR where needed"
-      ]
+      ],
+      "research_enabled": false
     },
     {
       "id": "sdu-calendar",
@@ -26,7 +27,7 @@
       "priority": "campus_events",
       "listing_readable": true,
       "checked_at": "2026-10-21T17:45:27.479193+03:00",
-      "reader_verified": false,
+      "reader_verified": true,
       "production_enabled": false,
       "review_needed": [
         "explicit event date and year",
@@ -34,7 +35,9 @@
         "time and end/cancellation status",
         "price and student/public access",
         "poster image linkage and OCR where needed"
-      ]
+      ],
+      "research_enabled": true,
+      "reader_verification": "Reviewed HTML structure and local regression/live parsing evidence on 2026-10-21; source/date gates only, not visual or factual publication approval."
     },
     {
       "id": "isubu-events",
@@ -43,7 +46,7 @@
       "priority": "campus_events",
       "listing_readable": true,
       "checked_at": "2026-10-21T17:45:27.479193+03:00",
-      "reader_verified": false,
+      "reader_verified": true,
       "production_enabled": false,
       "review_needed": [
         "explicit event date and year",
@@ -51,7 +54,9 @@
         "time and end/cancellation status",
         "price and student/public access",
         "poster image linkage and OCR where needed"
-      ]
+      ],
+      "research_enabled": true,
+      "reader_verification": "Reviewed HTML structure and local regression/live parsing evidence on 2026-10-21; source/date gates only, not visual or factual publication approval."
     },
     {
       "id": "isubu-sks",
@@ -68,7 +73,8 @@
         "time and end/cancellation status",
         "price and student/public access",
         "poster image linkage and OCR where needed"
-      ]
+      ],
+      "research_enabled": false
     },
     {
       "id": "isubu-social",
@@ -85,7 +91,8 @@
         "time and end/cancellation status",
         "price and student/public access",
         "poster image linkage and OCR where needed"
-      ]
+      ],
+      "research_enabled": false
     },
     {
       "id": "isparta-belediye",
@@ -96,7 +103,8 @@
       "production_enabled": false,
       "review_needed": [
         "Some sampled detail pages omit publication dates; verify archive-bound dates without using the current site header."
-      ]
+      ],
+      "research_enabled": false
     },
     {
       "id": "isparta-kultur",
@@ -107,7 +115,8 @@
       "production_enabled": false,
       "review_needed": [
         "Current dated event details, not static tourism pages."
-      ]
+      ],
+      "research_enabled": false
     },
     {
       "id": "bubilet-isparta",
@@ -124,7 +133,8 @@
         "actual venue",
         "ticket price is not organizer identity",
         "image/rights and source linkage"
-      ]
+      ],
+      "research_enabled": false
     },
     {
       "id": "bomba32",
@@ -133,7 +143,7 @@
       "priority": "local_news",
       "listing_readable": true,
       "checked_at": "2026-10-21T18:16:59.292497+03:00",
-      "reader_verified": false,
+      "reader_verified": true,
       "production_enabled": false,
       "review_needed": [
         "original article publication time and update time kept separate",
@@ -142,7 +152,9 @@
         "source photo linkage and usage",
         "same-story deduplication",
         "sensitive claims held for review"
-      ]
+      ],
+      "research_enabled": true,
+      "reader_verification": "Reviewed HTML structure and local regression/live parsing evidence on 2026-10-21; source/date gates only, not visual or factual publication approval."
     },
     {
       "id": "kanal32",
@@ -151,7 +163,7 @@
       "priority": "local_news",
       "listing_readable": true,
       "checked_at": "2026-10-21T18:16:59.292497+03:00",
-      "reader_verified": false,
+      "reader_verified": true,
       "production_enabled": false,
       "review_needed": [
         "original article publication time and update time kept separate",
@@ -160,7 +172,9 @@
         "source photo linkage and usage",
         "same-story deduplication",
         "sensitive claims held for review"
-      ]
+      ],
+      "research_enabled": true,
+      "reader_verification": "Reviewed HTML structure and local regression/live parsing evidence on 2026-10-21; source/date gates only, not visual or factual publication approval."
     },
     {
       "id": "haber32",
@@ -169,7 +183,7 @@
       "priority": "local_news",
       "listing_readable": true,
       "checked_at": "2026-10-21T18:16:59.292497+03:00",
-      "reader_verified": false,
+      "reader_verified": true,
       "production_enabled": false,
       "review_needed": [
         "original article publication time and update time kept separate",
@@ -178,7 +192,9 @@
         "source photo linkage and usage",
         "same-story deduplication",
         "sensitive claims held for review"
-      ]
+      ],
+      "research_enabled": true,
+      "reader_verification": "Reviewed HTML structure and local regression/live parsing evidence on 2026-10-21; source/date gates only, not visual or factual publication approval."
     },
     {
       "id": "ajans32",
@@ -187,7 +203,7 @@
       "priority": "local_news",
       "listing_readable": true,
       "checked_at": "2026-10-21T18:16:59.292497+03:00",
-      "reader_verified": false,
+      "reader_verified": true,
       "production_enabled": false,
       "review_needed": [
         "original article publication time and update time kept separate",
@@ -196,7 +212,9 @@
         "source photo linkage and usage",
         "same-story deduplication",
         "sensitive claims held for review"
-      ]
+      ],
+      "research_enabled": true,
+      "reader_verification": "Reviewed HTML structure and local regression/live parsing evidence on 2026-10-21; source/date gates only, not visual or factual publication approval."
     },
     {
       "id": "isparta-valilik",
@@ -204,13 +222,15 @@
       "url": "https://www.isparta.gov.tr/",
       "priority": "official_local_news_and_notices",
       "listing_readable": true,
-      "reader_verified": false,
+      "reader_verified": true,
       "production_enabled": false,
       "review_needed": [
         "sampled article dated 22.04.2026 stays old despite current site-header date",
         "explicit article publication field",
         "service warning validity and end time"
-      ]
+      ],
+      "research_enabled": true,
+      "reader_verification": "Reviewed HTML structure and local regression/live parsing evidence on 2026-10-21; source/date gates only, not visual or factual publication approval."
     }
   ]
 }
