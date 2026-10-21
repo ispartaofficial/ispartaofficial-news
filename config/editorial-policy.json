@@ -1,5 +1,5 @@
 {
-  "version": "isparta-campus-first-v1",
+  "version": "isparta-campus-and-local-v2",
   "city": "Isparta",
   "scope": "Isparta merkez ve tüm ilçeleri",
   "audience_context": {
@@ -12,7 +12,7 @@
     "Doğrulanmış yaklaşan konser, festival, tiyatro ve sinema etkinlikleri",
     "SDÜ ve ISUBÜ öğrenci toplulukları ile üniversite kültür sanat programları",
     "Ücretsiz veya öğrenciye uygun etkinlikler, atölyeler ve hafta sonu seçkileri",
-    "Isparta ve ilçelerinde yerel yaşam ve önemli hizmet duyuruları"
+    "Isparta merkez ve tüm ilçelerinde yerel haberler, yerel yaşam ve önemli hizmet duyuruları"
   ],
   "selection": {
     "priority_never_overrides_verification": true,
@@ -27,7 +27,15 @@
   },
   "cards": {
     "logo": "existing_isparta_profile_logo",
-    "event_fields": ["type", "name", "date", "time", "venue", "fee", "audience_or_registration_condition"],
+    "event_fields": [
+      "type",
+      "name",
+      "date",
+      "time",
+      "venue",
+      "fee",
+      "audience_or_registration_condition"
+    ],
     "title_and_body_separate": true,
     "source_only_in_caption": true,
     "caption_note_under_first_card_body": true,
@@ -39,6 +47,15 @@
     "engine_port_complete": false,
     "deployed": false,
     "publishing_enabled": false
+  },
+  "local_news": {
+    "included": true,
+    "all_districts": true,
+    "important_verified_news_can_precede_routine_events": true,
+    "max_original_publication_age_hours": 48,
+    "rediscovery_does_not_reset_age": true,
+    "cross_source_story_deduplication_required": true,
+    "source_date_body_and_photo_link_must_be_reviewed": true,
+    "sensitive_or_unverified_allegations_withheld": true
   }
 }
-

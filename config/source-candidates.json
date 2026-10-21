@@ -1,5 +1,5 @@
 {
-  "version": "isparta-campus-candidates-v1",
+  "version": "isparta-source-candidates-v2",
   "all_candidates_disabled": true,
   "sources": [
     {
@@ -124,6 +124,92 @@
         "actual venue",
         "ticket price is not organizer identity",
         "image/rights and source linkage"
+      ]
+    },
+    {
+      "id": "bomba32",
+      "name": "Bomba32",
+      "url": "https://www.bomba32.com/sondakika-haberleri",
+      "priority": "local_news",
+      "listing_readable": true,
+      "checked_at": "2026-10-21T18:16:59.292497+03:00",
+      "reader_verified": false,
+      "production_enabled": false,
+      "review_needed": [
+        "original article publication time and update time kept separate",
+        "article body and neutral headline",
+        "Isparta and district locality",
+        "source photo linkage and usage",
+        "same-story deduplication",
+        "sensitive claims held for review"
+      ]
+    },
+    {
+      "id": "kanal32",
+      "name": "Kanal32",
+      "url": "https://www.kanal32.com.tr/gundem-haberleri",
+      "priority": "local_news",
+      "listing_readable": true,
+      "checked_at": "2026-10-21T18:16:59.292497+03:00",
+      "reader_verified": false,
+      "production_enabled": false,
+      "review_needed": [
+        "original article publication time and update time kept separate",
+        "article body and neutral headline",
+        "Isparta and district locality",
+        "source photo linkage and usage",
+        "same-story deduplication",
+        "sensitive claims held for review"
+      ]
+    },
+    {
+      "id": "haber32",
+      "name": "Haber32",
+      "url": "https://www.haber32.com.tr/",
+      "priority": "local_news",
+      "listing_readable": true,
+      "checked_at": "2026-10-21T18:16:59.292497+03:00",
+      "reader_verified": false,
+      "production_enabled": false,
+      "review_needed": [
+        "original article publication time and update time kept separate",
+        "article body and neutral headline",
+        "Isparta and district locality",
+        "source photo linkage and usage",
+        "same-story deduplication",
+        "sensitive claims held for review"
+      ]
+    },
+    {
+      "id": "ajans32",
+      "name": "Ajans32",
+      "url": "https://www.ajans32.com/isparta-haberleri.htm",
+      "priority": "local_news",
+      "listing_readable": true,
+      "checked_at": "2026-10-21T18:16:59.292497+03:00",
+      "reader_verified": false,
+      "production_enabled": false,
+      "review_needed": [
+        "original article publication time and update time kept separate",
+        "article body and neutral headline",
+        "Isparta and district locality",
+        "source photo linkage and usage",
+        "same-story deduplication",
+        "sensitive claims held for review"
+      ]
+    },
+    {
+      "id": "isparta-valilik",
+      "name": "Isparta Valiliği",
+      "url": "https://www.isparta.gov.tr/",
+      "priority": "official_local_news_and_notices",
+      "listing_readable": true,
+      "reader_verified": false,
+      "production_enabled": false,
+      "review_needed": [
+        "sampled article dated 22.04.2026 stays old despite current site-header date",
+        "explicit article publication field",
+        "service warning validity and end time"
       ]
     }
   ]
