@@ -46,9 +46,13 @@ eşleşen afiş veya fotoğrafadır. Kontrolsüz, alakasız görsel boşluğu do
 
 ## Kaynak okuyucuları ve araştırma
 
-`config/research-sources.json` 13 kaynak için gözden geçirilmiş okuyucu tanımlar:
+`config/research-sources.json` 29 içerik kaynağı için gözden geçirilmiş okuyucu tanımlar:
 Bomba32, Haber32, Kanal32, Ajans32, Valilik, Belediye, Kültür Müdürlüğü,
-SDÜ takvimi/SKS, ISUBÜ takvimi/SKS/Toplumsal Katkı ve Bubilet Isparta.
+SDÜ takvimi/SKS, ISUBÜ takvimi/SKS/Toplumsal Katkı ve duyuru arşivi, Bubilet
+Isparta, 12 ilçe kaymakamlığı, Gönen, Keçiborlu ve Senirkent belediyeleri.
+ISUBÜ topluluk dizini içerik kaynaklarından ayrı keşif kanalıdır. Topluluk adı
+bulunması, o topluluğun etkinlik veya Instagram okuyucusunun çalıştığını kanıtlamaz.
+Güncel kapsam ve kapalı adaylar `docs/source-coverage.md` içinde tutulur.
 Yerel haberler asıl makale tarihini kullanır; güncelleme, liste sırası veya bugünkü
 site başlığı eski haberi tazelemez. İki saatte bir planlanan bulut görevi yalnız
 araştırma raporu oluşturur. Alan adı, robots, sertifika, yanıt boyutu ve sayfa
