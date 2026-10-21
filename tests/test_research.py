@@ -151,6 +151,16 @@ def test_sdu_upload_day_does_not_supply_event_hour():
     assert item['location']=='İİBF A Salonu'
 
 
+def test_sdu_explicit_same_day_session_is_not_confused_with_midnight():
+    raw='''<div class="modal-body"><table><tr><th>Etkinlik Adı</th><td>Tiyatro</td></tr>
+    <tr><th>Etkinlik Tarihi</th><td>26.10.2026</td></tr><tr><th>Açıklama</th>
+    <td>Halka açık tiyatro etkinliği.\nSaat: 19.30–21.00\nYer: İİBF A Salonu</td></tr></table></div>'''
+    item=sdu(raw,SOURCES['sdu-calendar'])[0]
+    assert item['start']=='2026-10-26T19:30:00+03:00'
+    assert item['end']=='2026-10-26T21:00:00+03:00'
+    assert check(item)['eligible_for_drafting']
+
+
 def test_duplicate_news_and_separate_event_sessions():
     a,b=check(story()),check(story(id='other',source_id='haber32'))
     deduplicate([a,b]);assert b['duplicate_of']==a['id'] and not b['eligible_for_drafting']
