@@ -16,7 +16,7 @@ MONTHS = {name: i for i, name in enumerate(('ocak', 'şubat', 'mart', 'nisan', '
     'haziran', 'temmuz', 'ağustos', 'eylül', 'ekim', 'kasım', 'aralık'), 1)}
 DISTRICTS = ('eğirdir', 'gelendost', 'keçiborlu', 'senirkent', 'sütçüler',
              'şarkikaraağaç', 'uluborlu', 'yalvaç', 'yenişarbademli', 'atabey')
-OUTSIDE = r'\b(?:antalya|ankara|istanbul|izmir|bursa|balıkesir|bilecik|denizli|afyonkarahisar|burdur)\b'
+OUTSIDE = r'\b(?:antalya|ankara|istanbul|izmir|bursa|balikesir|bilecik|denizli|afyonkarahisar|burdur)\b'
 
 
 def text(node):

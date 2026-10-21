@@ -1,5 +1,5 @@
 {
-  "version": "isparta-research-sources-v2",
+  "version": "isparta-research-sources-v3",
   "publishing_enabled": false,
   "sources": [
     {
@@ -172,6 +172,480 @@
       "link_selector": "a[href]:has(h3)",
       "detail_path": "/isparta/etkinlik/[a-z0-9-]+",
       "max_details": 8
+    },
+    {
+      "id": "aksu-kaymakamlik",
+      "name": "Aksu Kaymakamlığı",
+      "url": "https://www.aksu.gov.tr/",
+      "research_enabled": true,
+      "reader": "official_portal",
+      "district": "Aksu",
+      "jurisdiction": "Isparta",
+      "identity_selector": ".valilikFooter-adres",
+      "identity_pattern": "(?=.*Aksu)(?=.*Isparta)",
+      "identity_evidence": "https://www.isparta.gov.tr/kaymakamlarimiz",
+      "detail_path": "/[a-z0-9_-]{8,}",
+      "title_selector": "h2.page-title",
+      "body_selector": ".icerik",
+      "body_text_fallback": true,
+      "date_selector": ".dateandtag .card-date",
+      "date_format": "dotted_date",
+      "max_details": 4,
+      "feeds": [
+        {
+          "kind": "news",
+          "selector": "a.news-card-withDate[href]",
+          "title_selector": ".card-text",
+          "date_selector": ".card-title"
+        },
+        {
+          "kind": "notice",
+          "selector": "a.announce-text[href]"
+        }
+      ]
+    },
+    {
+      "id": "atabey-kaymakamlik",
+      "name": "Atabey Kaymakamlığı",
+      "url": "https://www.atabey.gov.tr/",
+      "research_enabled": true,
+      "reader": "official_portal",
+      "district": "Atabey",
+      "jurisdiction": "Isparta",
+      "identity_selector": ".valilikFooter-adres",
+      "identity_pattern": "(?=.*Atabey)(?=.*Isparta)",
+      "identity_evidence": "https://www.isparta.gov.tr/kaymakamlarimiz",
+      "detail_path": "/[a-z0-9_-]{8,}",
+      "title_selector": "h2.page-title",
+      "body_selector": ".icerik",
+      "body_text_fallback": true,
+      "date_selector": ".dateandtag .card-date",
+      "date_format": "dotted_date",
+      "max_details": 4,
+      "feeds": [
+        {
+          "kind": "news",
+          "selector": "a.news-card-withDate[href]",
+          "title_selector": ".card-text",
+          "date_selector": ".card-title"
+        },
+        {
+          "kind": "notice",
+          "selector": "a.announce-text[href]"
+        }
+      ]
+    },
+    {
+      "id": "egirdir-kaymakamlik",
+      "name": "Eğirdir Kaymakamlığı",
+      "url": "https://www.egirdir.gov.tr/",
+      "research_enabled": true,
+      "reader": "official_portal",
+      "district": "Eğirdir",
+      "jurisdiction": "Isparta",
+      "identity_selector": ".valilikFooter-adres",
+      "identity_pattern": "(?=.*Eğirdir)(?=.*Isparta)",
+      "identity_evidence": "https://www.isparta.gov.tr/kaymakamlarimiz",
+      "detail_path": "/[a-z0-9_-]{8,}",
+      "title_selector": "h2.page-title",
+      "body_selector": ".icerik",
+      "body_text_fallback": true,
+      "date_selector": ".dateandtag .card-date",
+      "date_format": "dotted_date",
+      "max_details": 4,
+      "feeds": [
+        {
+          "kind": "news",
+          "selector": "a.news-card-withDate[href]",
+          "title_selector": ".card-text",
+          "date_selector": ".card-title"
+        },
+        {
+          "kind": "notice",
+          "selector": "a.announce-text[href]"
+        }
+      ]
+    },
+    {
+      "id": "gelendost-kaymakamlik",
+      "name": "Gelendost Kaymakamlığı",
+      "url": "https://www.gelendost.gov.tr/",
+      "research_enabled": true,
+      "reader": "official_portal",
+      "district": "Gelendost",
+      "jurisdiction": "Isparta",
+      "identity_selector": ".valilikFooter-adres",
+      "identity_pattern": "(?=.*Gelendost)(?=.*Isparta)",
+      "identity_evidence": "https://www.isparta.gov.tr/kaymakamlarimiz",
+      "detail_path": "/[a-z0-9_-]{8,}",
+      "title_selector": "h2.page-title",
+      "body_selector": ".icerik",
+      "body_text_fallback": true,
+      "date_selector": ".dateandtag .card-date",
+      "date_format": "dotted_date",
+      "max_details": 4,
+      "feeds": [
+        {
+          "kind": "news",
+          "selector": "a.news-card-withDate[href]",
+          "title_selector": ".card-text",
+          "date_selector": ".card-title"
+        },
+        {
+          "kind": "notice",
+          "selector": "a.announce-text[href]"
+        }
+      ]
+    },
+    {
+      "id": "ispartagonen-kaymakamlik",
+      "name": "Gönen Kaymakamlığı",
+      "url": "https://www.ispartagonen.gov.tr/",
+      "research_enabled": true,
+      "reader": "official_portal",
+      "district": "Gönen",
+      "jurisdiction": "Isparta",
+      "identity_selector": ".valilikFooter-adres",
+      "identity_pattern": "(?=.*Gönen)(?=.*Isparta)",
+      "identity_evidence": "https://www.isparta.gov.tr/kaymakamlarimiz",
+      "detail_path": "/[a-z0-9_-]{8,}",
+      "title_selector": "h2.page-title",
+      "body_selector": ".icerik",
+      "body_text_fallback": true,
+      "date_selector": ".dateandtag .card-date",
+      "date_format": "dotted_date",
+      "max_details": 4,
+      "feeds": [
+        {
+          "kind": "news",
+          "selector": "a.news-card-withDate[href]",
+          "title_selector": ".card-text",
+          "date_selector": ".card-title"
+        },
+        {
+          "kind": "notice",
+          "selector": "a.announce-text[href]"
+        }
+      ]
+    },
+    {
+      "id": "keciborlu-kaymakamlik",
+      "name": "Keçiborlu Kaymakamlığı",
+      "url": "https://www.keciborlu.gov.tr/",
+      "research_enabled": true,
+      "reader": "official_portal",
+      "district": "Keçiborlu",
+      "jurisdiction": "Isparta",
+      "identity_selector": ".valilikFooter-adres",
+      "identity_pattern": "(?=.*Keçiborlu)(?=.*Isparta)",
+      "identity_evidence": "https://www.isparta.gov.tr/kaymakamlarimiz",
+      "detail_path": "/[a-z0-9_-]{8,}",
+      "title_selector": "h2.page-title",
+      "body_selector": ".icerik",
+      "body_text_fallback": true,
+      "date_selector": ".dateandtag .card-date",
+      "date_format": "dotted_date",
+      "max_details": 4,
+      "feeds": [
+        {
+          "kind": "news",
+          "selector": "a.news-card-withDate[href]",
+          "title_selector": ".card-text",
+          "date_selector": ".card-title"
+        },
+        {
+          "kind": "notice",
+          "selector": "a.announce-text[href]"
+        }
+      ]
+    },
+    {
+      "id": "senirkent-kaymakamlik",
+      "name": "Senirkent Kaymakamlığı",
+      "url": "https://www.senirkent.gov.tr/",
+      "research_enabled": true,
+      "reader": "official_portal",
+      "district": "Senirkent",
+      "jurisdiction": "Isparta",
+      "identity_selector": ".valilikFooter-adres",
+      "identity_pattern": "(?=.*Senirkent)(?=.*Isparta)",
+      "identity_evidence": "https://www.isparta.gov.tr/kaymakamlarimiz",
+      "detail_path": "/[a-z0-9_-]{8,}",
+      "title_selector": "h2.page-title",
+      "body_selector": ".icerik",
+      "body_text_fallback": true,
+      "date_selector": ".dateandtag .card-date",
+      "date_format": "dotted_date",
+      "max_details": 4,
+      "feeds": [
+        {
+          "kind": "news",
+          "selector": "a.news-card-withDate[href]",
+          "title_selector": ".card-text",
+          "date_selector": ".card-title"
+        },
+        {
+          "kind": "notice",
+          "selector": "a.announce-text[href]"
+        }
+      ]
+    },
+    {
+      "id": "sutculer-kaymakamlik",
+      "name": "Sütçüler Kaymakamlığı",
+      "url": "https://www.sutculer.gov.tr/",
+      "research_enabled": true,
+      "reader": "official_portal",
+      "district": "Sütçüler",
+      "jurisdiction": "Isparta",
+      "identity_selector": ".valilikFooter-adres",
+      "identity_pattern": "(?=.*Sütçüler)(?=.*Isparta)",
+      "identity_evidence": "https://www.isparta.gov.tr/kaymakamlarimiz",
+      "detail_path": "/[a-z0-9_-]{8,}",
+      "title_selector": "h2.page-title",
+      "body_selector": ".icerik",
+      "body_text_fallback": true,
+      "date_selector": ".dateandtag .card-date",
+      "date_format": "dotted_date",
+      "max_details": 4,
+      "feeds": [
+        {
+          "kind": "news",
+          "selector": "a.news-card-withDate[href]",
+          "title_selector": ".card-text",
+          "date_selector": ".card-title"
+        },
+        {
+          "kind": "notice",
+          "selector": "a.announce-text[href]"
+        }
+      ]
+    },
+    {
+      "id": "sarkikaraagac-kaymakamlik",
+      "name": "Şarkikaraağaç Kaymakamlığı",
+      "url": "https://www.sarkikaraagac.gov.tr/",
+      "research_enabled": true,
+      "reader": "official_portal",
+      "district": "Şarkikaraağaç",
+      "jurisdiction": "Isparta",
+      "identity_selector": ".valilikFooter-adres",
+      "identity_pattern": "Şarkikaraağaç",
+      "identity_evidence": "https://www.isparta.gov.tr/kaymakamlarimiz",
+      "detail_path": "/[a-z0-9_-]{8,}",
+      "title_selector": "h2.page-title",
+      "body_selector": ".icerik",
+      "body_text_fallback": true,
+      "date_selector": ".dateandtag .card-date",
+      "date_format": "dotted_date",
+      "max_details": 4,
+      "feeds": [
+        {
+          "kind": "news",
+          "selector": "a.news-card-withDate[href]",
+          "title_selector": ".card-text",
+          "date_selector": ".card-title"
+        },
+        {
+          "kind": "notice",
+          "selector": "a.announce-text[href]"
+        }
+      ]
+    },
+    {
+      "id": "uluborlu-kaymakamlik",
+      "name": "Uluborlu Kaymakamlığı",
+      "url": "https://www.uluborlu.gov.tr/",
+      "research_enabled": true,
+      "reader": "official_portal",
+      "district": "Uluborlu",
+      "jurisdiction": "Isparta",
+      "identity_selector": ".valilikFooter-adres",
+      "identity_pattern": "(?=.*Uluborlu)(?=.*Isparta)",
+      "identity_evidence": "https://www.isparta.gov.tr/kaymakamlarimiz",
+      "detail_path": "/[a-z0-9_-]{8,}",
+      "title_selector": "h2.page-title",
+      "body_selector": ".icerik",
+      "body_text_fallback": true,
+      "date_selector": ".dateandtag .card-date",
+      "date_format": "dotted_date",
+      "max_details": 4,
+      "feeds": [
+        {
+          "kind": "news",
+          "selector": "a.news-card-withDate[href]",
+          "title_selector": ".card-text",
+          "date_selector": ".card-title"
+        },
+        {
+          "kind": "notice",
+          "selector": "a.announce-text[href]"
+        }
+      ]
+    },
+    {
+      "id": "yalvac-kaymakamlik",
+      "name": "Yalvaç Kaymakamlığı",
+      "url": "https://www.yalvac.gov.tr/",
+      "research_enabled": true,
+      "reader": "official_portal",
+      "district": "Yalvaç",
+      "jurisdiction": "Isparta",
+      "identity_selector": ".valilikFooter-adres",
+      "identity_pattern": "(?=.*Yalvaç)(?=.*Isparta)",
+      "identity_evidence": "https://www.isparta.gov.tr/kaymakamlarimiz",
+      "detail_path": "/[a-z0-9_-]{8,}",
+      "title_selector": "h2.page-title",
+      "body_selector": ".icerik",
+      "body_text_fallback": true,
+      "date_selector": ".dateandtag .card-date",
+      "date_format": "dotted_date",
+      "max_details": 4,
+      "feeds": [
+        {
+          "kind": "news",
+          "selector": "a.news-card-withDate[href]",
+          "title_selector": ".card-text",
+          "date_selector": ".card-title"
+        },
+        {
+          "kind": "notice",
+          "selector": "a.announce-text[href]"
+        }
+      ]
+    },
+    {
+      "id": "yenisarbademli-kaymakamlik",
+      "name": "Yenişarbademli Kaymakamlığı",
+      "url": "https://yenisarbademli.gov.tr/",
+      "research_enabled": true,
+      "reader": "official_portal",
+      "district": "Yenişarbademli",
+      "jurisdiction": "Isparta",
+      "identity_selector": ".valilikFooter-adres",
+      "identity_pattern": "(?=.*Yenişarbademli)(?=.*Isparta)",
+      "identity_evidence": "https://www.isparta.gov.tr/kaymakamlarimiz",
+      "detail_path": "/[a-z0-9_-]{8,}",
+      "title_selector": "h2.page-title",
+      "body_selector": ".icerik",
+      "body_text_fallback": true,
+      "date_selector": ".dateandtag .card-date",
+      "date_format": "dotted_date",
+      "max_details": 4,
+      "feeds": [
+        {
+          "kind": "news",
+          "selector": "a.news-card-withDate[href]",
+          "title_selector": ".card-text",
+          "date_selector": ".card-title"
+        },
+        {
+          "kind": "notice",
+          "selector": "a.announce-text[href]"
+        }
+      ]
+    },
+    {
+      "id": "gonen-belediye",
+      "name": "Isparta Gönen Belediyesi",
+      "url": "https://gonen.bel.tr/",
+      "research_enabled": true,
+      "reader": "official_portal",
+      "district": "Gönen",
+      "jurisdiction": "Isparta",
+      "identity_selector": "body",
+      "identity_pattern": "Gönen\\s*/\\s*ISPARTA",
+      "identity_evidence": "https://www.turkiye.gov.tr/isparta-gonen-belediyesi",
+      "detail_path": "/[a-z0-9_-]{8,}",
+      "title_selector": "h2.page-title",
+      "body_selector": ".icerik",
+      "body_text_fallback": true,
+      "date_selector": ".dateandtag .card-date",
+      "date_format": "dotted_date",
+      "max_details": 4,
+      "feeds": [
+        {
+          "kind": "news",
+          "selector": "a.news-card-horizontal[href]",
+          "title_selector": ".card-title",
+          "date_selector": ".cardDate"
+        },
+        {
+          "kind": "notice",
+          "selector": "a.announce-text[href]"
+        }
+      ]
+    },
+    {
+      "id": "keciborlu-belediye",
+      "name": "Keçiborlu Belediyesi",
+      "url": "https://www.keciborlu.bel.tr/",
+      "research_enabled": true,
+      "reader": "official_portal",
+      "district": "Keçiborlu",
+      "jurisdiction": "Isparta",
+      "identity_selector": "title",
+      "identity_pattern": "Keçiborlu Belediyesi",
+      "identity_evidence": "https://www.turkiye.gov.tr/keciborlu-belediyesi",
+      "detail_path": "/(?:genel|duyurular|haberler)/[a-z0-9-]+/",
+      "title_selector": "h1.page-title",
+      "body_selector": ".entry-content",
+      "body_text_fallback": true,
+      "date_selector": "time[pubdate][datetime]",
+      "date_attribute": "datetime",
+      "date_format": "iso_date",
+      "max_details": 4,
+      "feeds": [
+        {
+          "kind": "news",
+          "selector": "#haberlerdiv .haber a[href]",
+          "title_selector": "h3"
+        },
+        {
+          "kind": "notice",
+          "selector": "#duyurulardiv a[href]:has(h3)",
+          "title_selector": "h3"
+        }
+      ]
+    },
+    {
+      "id": "senirkent-belediye",
+      "name": "Senirkent Belediyesi",
+      "url": "https://www.senirkent.bel.tr/",
+      "research_enabled": true,
+      "reader": "official_portal",
+      "district": "Senirkent",
+      "jurisdiction": "Isparta",
+      "identity_selector": "footer",
+      "identity_pattern": "Senirkent\\s*/\\s*ISPARTA",
+      "detail_path": "/haber/[a-z0-9-]+",
+      "title_selector": ".detail-title",
+      "body_selector": ".article-body",
+      "body_text_fallback": true,
+      "date_selector": ".article-meta span:nth-of-type(2)",
+      "date_format": "turkish_date",
+      "max_details": 3,
+      "feeds": [
+        {
+          "kind": "news",
+          "selector": "h3 a[href]"
+        }
+      ]
+    },
+    {
+      "id": "isubu-campus-portal",
+      "name": "ISUBÜ resmî etkinlik duyuru arşivi",
+      "url": "https://www.isparta.edu.tr/etkinlik-arsivi",
+      "research_enabled": true,
+      "reader": "campus_portal",
+      "link_selector": "a[itemprop=\"url\"][href^=\"/etkinlik/\"]",
+      "detail_path": "/etkinlik/\\d+/[a-z0-9-]+",
+      "listing_title_before_break": true,
+      "title_selector": "h1",
+      "body_selector": ".content",
+      "date_selector": ".col-sm-4.bordered",
+      "date_format": "labelled",
+      "max_details": 4
     }
   ],
   "venues": [
@@ -202,6 +676,16 @@
         "sdu-calendar"
       ],
       "evidence": "https://w3.sdu.edu.tr/"
+    }
+  ],
+  "discovery_sources": [
+    {
+      "id": "isubu-club-directory",
+      "name": "ISUBÜ resmî öğrenci toplulukları dizini",
+      "url": "https://sksdb.isparta.edu.tr/tr/ogrenci-topluluklari/ogrenci-topluluklari-7924s.html",
+      "research_enabled": true,
+      "body_selector": ".content",
+      "purpose": "Organisation discovery only; not individual event readers"
     }
   ]
 }

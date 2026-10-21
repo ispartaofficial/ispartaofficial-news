@@ -4,8 +4,11 @@ Isparta merkez ve tüm ilçeleri için, üniversite yaşamı ve kültür sanat
 etkinliklerine öncelik veren bağımsız haber otomasyonu hazırlığı.
 
 **Durum:** Marka/kart hazırlığı ve bağımsız kaynak araştırması. `Research Isparta
-sources` görevi 13 kaynağı izler: dört yerel haber sitesi, Belediye, Valilik,
-Kültür Müdürlüğü, beş üniversite kaynağı ve Bubilet Isparta.
+sources` görevi 29 içerik kaynağını araştırır: dört yerel haber sitesi, Isparta ve üç ilçe
+belediyesi, Valilik, 12 ilçe kaymakamlığı, Kültür Müdürlüğü, altı üniversite
+kanalı ve Bubilet Isparta. ISUBÜ topluluk dizini ayrı keşif kanalıdır; listelenen
+topluluk sayısı çalışan etkinlik okuyucusu sayılmaz.
+[Kaynak kapsamı ve kalan engeller](docs/source-coverage.md).
 Ana dala alındıktan sonra GitHub'da iki saatte bir 07:20–23:20 arasında planlanır;
 başlangıç gecikebilir. `Run workflow` ile tek araştırma da başlatılabilir.
 Instagram/Facebook yayın hattı ve hesap bağlantıları henüz kurulmadı.

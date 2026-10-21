@@ -31,6 +31,12 @@ def listing_entries(html, source, at, limit):
             continue
         title_node = a.select_one(source['listing_title_selector']) if source.get('listing_title_selector') else a
         label = text(title_node)
+        if source.get('listing_title_before_break'):
+            parts=[]
+            for child in a.children:
+                if getattr(child,'name',None)=='br':break
+                parts.append(str(child))
+            label=html_text(''.join(parts))
         dates = []
         if source.get('listing_date_selector'):
             dates = [dotted(text(n)) for n in a.select(source['listing_date_selector'])]
@@ -60,7 +66,18 @@ def _publication(soup, source):
     nodes = soup.select(source.get('date_selector', 'meta[name=datePublished]'))
     values = []
     for node in nodes:
-        raw = text(node) if source.get('date_format') == 'labelled' else node.get('content')
+        mode = source.get('date_format')
+        raw = text(node) if mode in ('labelled', 'dotted_date', 'turkish_date') else node.get(source.get('date_attribute', 'content'))
+        if mode == 'dotted_date':
+            values.append(dotted(raw))
+            continue
+        if mode == 'turkish_date':
+            from .district_readers import turkish_day
+            values.append(turkish_day(raw))
+            continue
+        if mode == 'iso_date':
+            values.append(timestamp(raw+'T00:00:00') if raw and re.fullmatch(r'20\d{2}-\d{2}-\d{2}', raw) else None)
+            continue
         if source.get('date_format') == 'labelled':
             match = re.fullmatch(r'Yayın Tarihi:\s*(\d{1,2}[./]\d{1,2}[./]20\d{2}(?: \d{1,2}:\d{2})?)', raw)
             if match:
@@ -91,7 +108,7 @@ def archive_article(html, url, source, entry):
         item['parser_holds'].append('archive_and_article_dates_conflict')
     date = explicit or archive
     item.update(published_at=date.isoformat() if date else None,
-                published_time_known=bool(explicit and source.get('date_format') != 'date_only'),
+                published_time_known=bool(explicit and source.get('date_format') not in ('date_only','dotted_date','iso_date','turkish_date')),
                 publication_date_origin='article' if explicit else 'same_anchor_archive' if archive else 'missing',
                 publication_date_evidence=url if explicit else source['url'] if archive else None)
     image = content.select_one('img[src]')

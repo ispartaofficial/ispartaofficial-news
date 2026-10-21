@@ -47,10 +47,11 @@
     "engine_port_complete": false,
     "deployed": false,
     "publishing_enabled": false,
-    "research_reader_count": 13,
+    "research_reader_count": 29,
     "research_workflow": ".github/workflows/research.yml",
     "research_schedule": "07:20–23:20 Europe/Istanbul every two hours; may start late",
-    "source_coverage_stage": "13 reviewed readers; source research only, no social publication"
+    "source_coverage_stage": "29 reviewed content readers plus separate ISUBU club-directory discovery; source research only, cloud source availability reported per run",
+    "research_discovery_channels": 1
   },
   "local_news": {
     "included": true,
