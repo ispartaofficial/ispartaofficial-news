@@ -16,8 +16,8 @@ SOURCES={s['id']:s for s in CONFIG['sources']}
 AT=datetime(2026,10,21,21,tzinfo=TZ)
 
 
-def test_all_thirteen_sources_unique_with_local_news_and_events():
-    assert len(SOURCES)==13
+def test_reviewed_sources_unique_with_local_news_and_events():
+    assert len(SOURCES)==len(CONFIG['sources'])
     assert all(s['research_enabled'] for s in SOURCES.values())
     assert {'bomba32','haber32','kanal32','ajans32','isparta-belediye','sdu-calendar','bubilet-isparta'} <= SOURCES.keys()
 
@@ -160,12 +160,12 @@ def test_rotating_ticket_discovery_reaches_cards_beyond_first_four():
     assert first[:4]==second[:4] and first[4:]!=second[4:]
 
 
-def test_all_thirteen_allowed_and_unreachable_source_reported_failed(tmp_path):
+def test_registered_sources_allowed_and_unreachable_source_reported_failed(tmp_path):
     config=tmp_path/'config.json';config.write_text(json.dumps(CONFIG),encoding='utf8')
     class Offline:
         def get(self,url):raise ValueError('offline fixture')
     report=run(config,at=AT,fetcher=Offline())
-    assert len(report['source_health'])==13
+    assert len(report['source_health'])==len(CONFIG['sources'])
     assert all(s['status']=='failed' for s in report['source_health'])
 
 
