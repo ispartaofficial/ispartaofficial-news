@@ -1,0 +1,44 @@
+{
+  "version": "isparta-campus-first-v1",
+  "city": "Isparta",
+  "scope": "Isparta merkez ve tüm ilçeleri",
+  "audience_context": {
+    "existing_account": true,
+    "followers_approximate": 35000,
+    "age_years_approximate_user_reported": 4,
+    "audience_demographics_measured": false
+  },
+  "priorities": [
+    "Doğrulanmış yaklaşan konser, festival, tiyatro ve sinema etkinlikleri",
+    "SDÜ ve ISUBÜ öğrenci toplulukları ile üniversite kültür sanat programları",
+    "Ücretsiz veya öğrenciye uygun etkinlikler, atölyeler ve hafta sonu seçkileri",
+    "Isparta ve ilçelerinde yerel yaşam ve önemli hizmet duyuruları"
+  ],
+  "selection": {
+    "priority_never_overrides_verification": true,
+    "university_event_public_access_required": true,
+    "student_only_access_must_be_explicit": true,
+    "publication_date_is_not_event_date": true,
+    "past_or_cancelled_sessions_blocked": true,
+    "unknown_fee_is_not_free": true,
+    "unknown_time_or_year_is_not_invented": true,
+    "no_new_daily_post_quota_assumed": true,
+    "historical_profile_posts_not_automatically_republished": true
+  },
+  "cards": {
+    "logo": "existing_isparta_profile_logo",
+    "event_fields": ["type", "name", "date", "time", "venue", "fee", "audience_or_registration_condition"],
+    "title_and_body_separate": true,
+    "source_only_in_caption": true,
+    "caption_note_under_first_card_body": true,
+    "caption_note_extra_slide": false,
+    "source_poster_or_verified_relevant_photo_first": true,
+    "hashtags": "Approximately five relevant lowercase tags"
+  },
+  "runtime": {
+    "engine_port_complete": false,
+    "deployed": false,
+    "publishing_enabled": false
+  }
+}
+
