@@ -3,9 +3,17 @@
 Isparta merkez ve tüm ilçeleri için, üniversite yaşamı ve kültür sanat
 etkinliklerine öncelik veren bağımsız haber otomasyonu hazırlığı.
 
-**Durum:** Yerel marka/kaynak ön hazırlığı. Tam motor aktarımı, bulut dağıtımı
-ve Instagram yayını henüz kurulmadı. Bu dosyaların yerelde hazırlanması GitHub’a
-yüklendikleri veya sosyal medyada paylaşıldıkları anlamına gelmez.
+**Durum:** Marka/kart hazırlığı ve bağımsız kaynak araştırması. `Research Isparta
+sources` görevi dört yerel haber sitesi, Valilik, SDÜ ve ISUBÜ takvimini okur.
+Ana dala alındıktan sonra GitHub'da iki saatte bir 07:20–23:20 arasında planlanır;
+başlangıç gecikebilir. `Run workflow` ile tek araştırma da başlatılabilir.
+Instagram/Facebook yayın hattı ve hesap bağlantıları henüz kurulmadı.
+
+Kaynak durumu ve bekletme nedenleri Actions çalışmasının özetinde ve indirilebilir
+`research.json` dosyasında yer alır. Ayrıştırılan kaynak, tüm içeriklerinin güncel
+ve doğru olduğu anlamına gelmez. `eligible_for_drafting` yalnız tarih, kapsam ve
+katılım süzgecini geçen inceleme adayıdır; doğrulanmış haber, onaylı görsel veya
+paylaşılmış gönderi değildir. Yayına hazır sayısı sıfırdır.
 
 Mevcut sayfanın gül simgeli fuşya logosu korunur. Etkinlik kartında isim,
 tarih/saat, mekân, ücret ve katılım koşulu ayrı gösterilir. Kaynak yalnız
