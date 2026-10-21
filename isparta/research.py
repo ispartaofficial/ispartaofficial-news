@@ -18,6 +18,8 @@ from .fetch import Fetcher, error_code
 from .readers import DISTRICTS, OUTSIDE, TZ, article, isubu, news_links, norm, sdu, timestamp
 from .scope_readers import (archive_article, campus_notice, correlate_campus,
                            culture_items, culture_year_link, listing_entries, ticket_sessions)
+from .district_readers import (campus_portal, club_directory, official_article,
+                               official_entries, official_locality)
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -57,7 +59,7 @@ def assess(item, at, venues):
             reasons.append('future_publication_time')
         elif at - when > timedelta(hours=48):
             reasons.append('news_older_than_48h')
-        if not local_news(combined):
+        if not local_news(combined) and not official_locality(item, combined):
             reasons.append('Isparta_locality_unconfirmed')
         # A freshly uploaded old notice must not become a fresh service alert.
         # These need a separate event/service validity reader before drafting.
@@ -123,9 +125,12 @@ def run(config_path, *, at=None, fetcher=None):
         raise ValueError('Timezone-aware run timestamp required')
     config = json.loads(Path(config_path).read_text(encoding='utf-8'))
     sources = [s for s in config['sources'] if s.get('research_enabled')]
-    if not sources or len(sources) > 20 or len({s['id'] for s in sources}) != len(sources):
+    if not sources or len(sources) > 40 or len({s['id'] for s in sources}) != len(sources):
         raise ValueError('Reviewed unique source registry required')
-    fetcher = fetcher or Fetcher(sources)
+    discovery_sources=[s for s in config.get('discovery_sources',[]) if s.get('research_enabled')]
+    if len(discovery_sources)>4:
+        raise ValueError('Reviewed discovery budget exceeded')
+    fetcher = fetcher or Fetcher(sources+discovery_sources)
     items, health = [], []
     for source in sources:
         row = {'id': source['id'], 'name': source['name'], 'url': source['url'],
@@ -147,7 +152,7 @@ def run(config_path, *, at=None, fetcher=None):
                         row['parsed_items'] += 1
                     except Exception as exc:
                         row['errors'].append({'stage': 'detail', 'url': url, 'code': error_code(exc)})
-            elif source['reader'] in ('archive_article','campus_notice','ticketing','culture_archive'):
+            elif source['reader'] in ('archive_article','campus_notice','ticketing','culture_archive','official_portal','campus_portal'):
                 listing_source=source
                 if source['reader']=='culture_archive':
                     year_url=culture_year_link(body,source,at)
@@ -159,7 +164,8 @@ def run(config_path, *, at=None, fetcher=None):
                         row['note']='current_year_archive_not_published'
                         body=''
                 limit=min(8 if source['reader']=='ticketing' else 4,source.get('max_details',4))
-                entries=listing_entries(body,listing_source,at,limit)
+                entries=(official_entries(body,source,at,limit) if source['reader']=='official_portal'
+                         else listing_entries(body,listing_source,at,limit))
                 if not entries and 'note' not in row:
                     raise ValueError('reviewed_source_entries_missing')
                 for entry in entries:
@@ -169,7 +175,8 @@ def run(config_path, *, at=None, fetcher=None):
                         if source['reader']=='ticketing':parsed=ticket_sessions(page,detail_url,source)
                         elif source['reader']=='culture_archive':parsed=culture_items(page,detail_url,source,entry)
                         else:
-                            reader=archive_article if source['reader']=='archive_article' else campus_notice
+                            reader={'archive_article':archive_article, 'campus_notice':campus_notice,
+                                    'official_portal':official_article, 'campus_portal':campus_portal}[source['reader']]
                             parsed=[reader(page,detail_url,source,entry)]
                         for item in parsed:
                             item['evidence_sha256']=hashlib.sha256(page.encode()).hexdigest()
@@ -188,6 +195,18 @@ def run(config_path, *, at=None, fetcher=None):
             row['status'] = 'failed'
             row['errors'].append({'stage': 'listing_or_calendar', 'code': error_code(exc)})
         health.append(row)
+    discovery_health, discovered_clubs = [], []
+    for source in discovery_sources:
+        row={'id':source['id'],'url':source['url'],'checked_at':at.isoformat(),'status':'failed'}
+        try:
+            body,final=fetcher.get(source['url'])
+            clubs=club_directory(body,source)
+            discovered_clubs.extend(clubs)
+            row.update(status='directory_read',organisations=len(clubs),event_records=0,
+                       evidence_sha256=hashlib.sha256(body.encode()).hexdigest())
+        except Exception as exc:
+            row['error']=error_code(exc)
+        discovery_health.append(row)
     correlate_campus(items)
     for item in items:
         item['holds']=sorted(set(item['holds']+item.get('parser_holds',[])))
@@ -226,6 +245,7 @@ def run(config_path, *, at=None, fetcher=None):
             item['audience']['evidence_is_complete'] = len(evidence) <= 600
     return {'schema': 'isparta-research-v1', 'checked_at': at.isoformat(),
             'publishing_enabled': False, 'source_health': health, 'items': items,
+            'discovery_health':discovery_health,'discovered_clubs':discovered_clubs,
             'summary': {'sources': len(sources), 'parsed_items': len(items),
                         'eligible_for_drafting': sum(i['eligible_for_drafting'] for i in items),
                         'publication_ready': 0,
@@ -249,6 +269,9 @@ def main():
         rows += [f"| {s['name']} | {s['status']} | {s['parsed_items']} |" for s in report['source_health']]
         rows += ['', f"Toplam {len(report['items'])} kayıt; {report['summary']['eligible_for_drafting']} kayıt taslak incelemesine uygun. Yayına hazır kayıt: 0.",
                  '', 'Tüm gerekçeler ve kaynak adresleri research.json dosyasında.']
+        if report['discovery_health']:
+            rows += ['', 'Topluluk dizini ayrı keşiftir; listelenen topluluklar çalışan etkinlik okuyucusu sayılmaz.']
+            rows += [f"- {d['id']}: {d['status']}; {d.get('organisations',0)} topluluk, 0 etkinlik kaydı." for d in report['discovery_health']]
         with open(summary_file, 'a', encoding='utf-8') as handle:
             handle.write('\n'.join(rows)+'\n')
     if all(s['status'] == 'failed' for s in report['source_health']):
