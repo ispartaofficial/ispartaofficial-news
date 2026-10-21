@@ -1,6 +1,7 @@
 """Bounded, anonymous public reads. Adapted from the established source fetcher.
 
-No authentication, missing-robots exception, TLS override or transient retry.
+No authentication, missing-robots exception or TLS override. Explicitly reviewed
+hosts may use one timeout retry per run, never an HTTP/robots/TLS bypass.
 Each redirect is checked against both the host allowlist and that host's robots.
 """
 from __future__ import annotations
@@ -59,6 +60,12 @@ class Fetcher:
             self.session.trust_env = False
         self.robots = {}
         self.last = {}
+        self.timeouts={urlsplit(s['url']).hostname:(
+            min(15,max(8,s.get('connect_timeout_seconds',8))),
+            min(45,max(20,s.get('read_timeout_seconds',20))))
+            for s in sources if s.get('research_enabled')}
+        self.timeout_retries={urlsplit(s['url']).hostname:min(1,max(0,s.get('timeout_retries',0)))
+                              for s in sources if s.get('research_enabled')}
 
     def _request(self, url, delay=1):
         url = safe_url(url, self.hosts)
@@ -67,7 +74,7 @@ class Fetcher:
         if pause:
             time.sleep(pause)
         self.last[host] = time.monotonic()
-        response = self.session.get(url, timeout=(8, 20), stream=True,
+        response = self.session.get(url, timeout=self.timeouts[host], stream=True,
                                     allow_redirects=False, headers={'User-Agent': AGENT})
         try:
             if response.is_redirect:
@@ -102,6 +109,16 @@ class Fetcher:
         return self.robots[host]
 
     def get(self, url):
+        try:
+            return self._get_once(url)
+        except requests.Timeout:
+            host=urlsplit(url).hostname
+            if self.timeout_retries.get(host,0)<=0:raise
+            self.timeout_retries[host]-=1
+            time.sleep(2)
+            return self._get_once(url)
+
+    def _get_once(self, url):
         for _ in range(5):
             url = safe_url(url, self.hosts)
             rules = self._rules(urlsplit(url).hostname)
