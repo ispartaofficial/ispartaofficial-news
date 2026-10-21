@@ -179,3 +179,40 @@ def test_recurring_campus_title_requires_recent_prior_announcement(publication,l
               'start':'2026-10-26T13:00:00+03:00'}
     correlate_campus([notice,calendar])
     assert ('corroborating_sources' in calendar) is linked
+
+
+def test_reviewed_timeout_retry_only_once_per_host_run(monkeypatch):
+    import requests
+    from isparta.fetch import Fetcher
+    f=Fetcher([dict(SOURCES['sdu-sks'],timeout_retries=1,read_timeout_seconds=35)])
+    calls=[]
+    def read(url):
+        calls.append(url)
+        if len(calls) in (1,3):raise requests.Timeout()
+        return 'ok',url
+    monkeypatch.setattr(f,'_get_once',read)
+    monkeypatch.setattr('isparta.fetch.time.sleep',lambda delay:None)
+    url=SOURCES['sdu-sks']['url']
+    assert f.get(url)==('ok',url)
+    with pytest.raises(requests.Timeout):f.get(url)
+    assert len(calls)==3
+
+
+@pytest.mark.parametrize('error', ['http','tls','robots'])
+def test_timeout_allowance_never_retries_access_denials(monkeypatch,error):
+    import requests
+    from isparta.fetch import Fetcher,FetchError
+    f=Fetcher([dict(SOURCES['sdu-sks'],timeout_retries=1)])
+    calls=[]
+    exc={'http':requests.HTTPError(),'tls':requests.exceptions.SSLError(),'robots':FetchError('robots_disallowed')}[error]
+    def read(url):calls.append(url);raise exc
+    monkeypatch.setattr(f,'_get_once',read)
+    with pytest.raises(type(exc)):f.get(SOURCES['sdu-sks']['url'])
+    assert len(calls)==1 and f.timeout_retries['sksdb.sdu.edu.tr']==1
+
+
+def test_timeout_limits_are_bounded():
+    from isparta.fetch import Fetcher
+    f=Fetcher([dict(SOURCES['sdu-sks'],timeout_retries=500,connect_timeout_seconds=500,read_timeout_seconds=500)])
+    assert f.timeouts['sksdb.sdu.edu.tr']==(15,45)
+    assert f.timeout_retries['sksdb.sdu.edu.tr']==1
