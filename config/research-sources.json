@@ -111,7 +111,10 @@
       "body_selector": ".main__body",
       "date_selector": ".main__icerik-bilgi .col-sm-4",
       "date_format": "labelled",
-      "max_details": 4
+      "max_details": 4,
+      "connect_timeout_seconds": 12,
+      "read_timeout_seconds": 35,
+      "timeout_retries": 1
     },
     {
       "id": "isubu-sks",
@@ -155,7 +158,10 @@
       "date_selector": "meta[name=datePublished]",
       "discovery_order": "id_descending",
       "max_details": 4,
-      "jurisdiction": "Isparta"
+      "jurisdiction": "Isparta",
+      "connect_timeout_seconds": 12,
+      "read_timeout_seconds": 35,
+      "timeout_retries": 1
     },
     {
       "id": "bubilet-isparta",
