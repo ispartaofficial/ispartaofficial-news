@@ -12,6 +12,20 @@ sinema, atölye ve üniversite topluluk etkinlikleri önceliklidir. Yerel haberl
 ve önemli hizmet duyuruları kapsamda kalır. Sabit bir etkinlik oranı veya yeni
 günlük yayın sayısı belirlenmedi; kaliteyi geçmeyen içerik boşluğu doldurmaz.
 
+Kullanıcı yerel haberlerin de unutulmamasını ayrıca istedi. Isparta merkez ve
+bütün ilçelerindeki önemli yerel gelişmeler düzenli içerik başlığıdır. Üniversite
+ve kültür sanat önceliği, haber takibini kapatmaz. Doğrulanmış önemli bir kamu
+duyurusu rutin etkinliğin önüne geçebilir; aynı haberin farklı sitelerdeki kopyaları
+ayrı gönderiler sayılmaz. Haber yaşı asıl yayımlanma zamanına göre en fazla 48
+saattir; yeniden keşfetmek veya sayfanın güncellenmesi haberi tazelemez.
+
+Bomba32, Kanal32, Haber32 ve Ajans32 haber kaynağı adaylarıdır. 21 Ekim'de
+dördünün liste sayfası normal robots/TLS kurallarıyla okunabildi. Bu sonuç,
+makale tarihi/gövdesi/fotoğraf bağının doğrulandığı veya üretimde çalıştıkları
+anlamına gelmez. Belediye, Valilik ve diğer resmî kurumlar özellikle hizmet ve
+zamanlı uyarılar için birincil kaynak olarak değerlendirilir. İddia veya hassas
+kişi/olay bilgisi tek bir yerel haber sayfası görüldü diye otomatik yayımlanmaz.
+
 SDÜ ve ISUBÜ resmî takvimleri, SKS duyuruları ve öğrenci toplulukları ilk
 araştırma grubudur. Belediye/kültür merkezleri ve resmî organizatörlerin ilanları
 tamamlayıcıdır. Bilet sitesi tek başına organizatör sayılmaz. Üniversitede yapılan
