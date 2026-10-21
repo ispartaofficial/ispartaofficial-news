@@ -1,0 +1,130 @@
+{
+  "version": "isparta-campus-candidates-v1",
+  "all_candidates_disabled": true,
+  "sources": [
+    {
+      "id": "sdu-sks",
+      "name": "SDÜ Sağlık Kültür ve Spor",
+      "url": "https://sksdb.sdu.edu.tr/tr/duyurular",
+      "priority": "campus_events",
+      "listing_readable": true,
+      "checked_at": "2026-10-21T17:45:27.479193+03:00",
+      "reader_verified": false,
+      "production_enabled": false,
+      "review_needed": [
+        "explicit event date and year",
+        "event city and actual venue",
+        "time and end/cancellation status",
+        "price and student/public access",
+        "poster image linkage and OCR where needed"
+      ]
+    },
+    {
+      "id": "sdu-calendar",
+      "name": "SDÜ ana etkinlik takvimi",
+      "url": "https://w3.sdu.edu.tr/",
+      "priority": "campus_events",
+      "listing_readable": true,
+      "checked_at": "2026-10-21T17:45:27.479193+03:00",
+      "reader_verified": false,
+      "production_enabled": false,
+      "review_needed": [
+        "explicit event date and year",
+        "event city and actual venue",
+        "time and end/cancellation status",
+        "price and student/public access",
+        "poster image linkage and OCR where needed"
+      ]
+    },
+    {
+      "id": "isubu-events",
+      "name": "ISUBÜ Proje ve Etkinlik Takip",
+      "url": "https://etkinlik.isparta.edu.tr/",
+      "priority": "campus_events",
+      "listing_readable": true,
+      "checked_at": "2026-10-21T17:45:27.479193+03:00",
+      "reader_verified": false,
+      "production_enabled": false,
+      "review_needed": [
+        "explicit event date and year",
+        "event city and actual venue",
+        "time and end/cancellation status",
+        "price and student/public access",
+        "poster image linkage and OCR where needed"
+      ]
+    },
+    {
+      "id": "isubu-sks",
+      "name": "ISUBÜ Sağlık Kültür Spor",
+      "url": "https://sksdb.isparta.edu.tr/tr/etkinlikler",
+      "priority": "campus_events",
+      "listing_readable": true,
+      "checked_at": "2026-10-21T17:45:27.479193+03:00",
+      "reader_verified": false,
+      "production_enabled": false,
+      "review_needed": [
+        "explicit event date and year",
+        "event city and actual venue",
+        "time and end/cancellation status",
+        "price and student/public access",
+        "poster image linkage and OCR where needed"
+      ]
+    },
+    {
+      "id": "isubu-social",
+      "name": "ISUBÜ Toplumsal Katkı",
+      "url": "https://toplumsalkatki.isparta.edu.tr/tr/etkinlikler",
+      "priority": "campus_events",
+      "listing_readable": true,
+      "checked_at": "2026-10-21T17:45:27.479193+03:00",
+      "reader_verified": false,
+      "production_enabled": false,
+      "review_needed": [
+        "explicit event date and year",
+        "event city and actual venue",
+        "time and end/cancellation status",
+        "price and student/public access",
+        "poster image linkage and OCR where needed"
+      ]
+    },
+    {
+      "id": "isparta-belediye",
+      "name": "Isparta Belediyesi",
+      "url": "https://www.isparta.bel.tr/haberler",
+      "priority": "city_events_and_news",
+      "reader_verified": false,
+      "production_enabled": false,
+      "review_needed": [
+        "Some sampled detail pages omit publication dates; verify archive-bound dates without using the current site header."
+      ]
+    },
+    {
+      "id": "isparta-kultur",
+      "name": "Isparta İl Kültür ve Turizm Müdürlüğü",
+      "url": "https://isparta.ktb.gov.tr/",
+      "priority": "culture_events",
+      "reader_verified": false,
+      "production_enabled": false,
+      "review_needed": [
+        "Current dated event details, not static tourism pages."
+      ]
+    },
+    {
+      "id": "bubilet-isparta",
+      "name": "Bubilet Isparta",
+      "url": "https://www.bubilet.com.tr/isparta",
+      "priority": "ticketed_events",
+      "reader_verified": false,
+      "production_enabled": false,
+      "listing_readable": null,
+      "discovery": "Official publisher search result only; direct robots/TLS and detail parsing pending.",
+      "review_needed": [
+        "permitted access",
+        "explicit current session/year",
+        "actual venue",
+        "ticket price is not organizer identity",
+        "image/rights and source linkage"
+      ]
+    }
+  ]
+}

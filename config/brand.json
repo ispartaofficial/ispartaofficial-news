@@ -1,0 +1,20 @@
+{
+  "version": "isparta-rose-v1",
+  "display_name": "Isparta Official",
+  "handle": "@ispartaofficial",
+  "logo": "isparta/assets/logo-profile.jpg",
+  "logo_reference": "https://www.instagram.com/ispartaofficial/",
+  "logo_use_authorized_by_user": true,
+  "logo_replaced": false,
+  "palette": {
+    "primary": "#68103f",
+    "accent": "#a52e73",
+    "background": "#fcf8fa",
+    "text": "#281e27",
+    "muted": "#6d5867",
+    "divider": "#ead9e2"
+  },
+  "card_version": "isparta-editorial-v1",
+  "status": "local_preview_not_deployed"
+}
+
