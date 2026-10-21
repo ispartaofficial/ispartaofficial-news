@@ -219,11 +219,13 @@ def sdu(html, source):
         title, description = fields['Etkinlik Adı'], fields.get('Açıklama', '')
         day = dotted(fields.get('Etkinlik Tarihi', ''))
         # A calendar day isn't a known performance time.
-        hour = re.search(r'\bsaat\s*[:*]*\s*(\d{1,2})[.:](\d{2})', norm(description))
-        start = day
+        hour = re.search(r'\bsaat(?:leri)?\s*[:*]*\s*(\d{1,2})[.:](\d{2})(?:\s*[–—-]\s*(\d{1,2})[.:](\d{2}))?', norm(description))
+        start, end = day, None
         if hour and day:
             try:
                 start = day.replace(hour=int(hour[1]), minute=int(hour[2]))
+                if hour[3]:
+                    end = day.replace(hour=int(hour[3]), minute=int(hour[4]))
             except ValueError:
                 start = None
         venue = None
@@ -234,10 +236,10 @@ def sdu(html, source):
             venue = re.search(r'(?:yer|mek[âa]n)\s*[:*]+\s*([^\n\r]+)', raw, re.I)
         location = text(venue[1]).strip(' *') if venue else None
         item = base_item(source, title, description, kind='event', key=title+'|'+str(day))
-        item.update(start=start.isoformat() if start else None, end=None,
+        item.update(start=start.isoformat() if start else None, end=end.isoformat() if end else None,
                     time_known=bool(hour and start), location=location,
                     organizer=fields.get('Düzenleyen'), audience=_audience(description),
-                    fee=_fee(description), date_conflict=date_conflict(description, day))
+                    fee=_fee(description), date_conflict=date_conflict(description, start, end))
         modal = table.find_parent(class_='modal-body')
         image = modal.select_one('img') if modal else None
         item['image_candidate'] = public_link(image.get('src'), source['url']) if image else None
