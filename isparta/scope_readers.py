@@ -6,6 +6,7 @@ JSON/text only; JavaScript is never executed and no private API is used.
 """
 from __future__ import annotations
 
+from datetime import timedelta
 import json
 import re
 from urllib.parse import urlsplit
@@ -139,6 +140,10 @@ def correlate_campus(items):
         if len(candidates) != 1:
             continue
         calendar = candidates[0]
+        announced,start=timestamp(item.get('published_at')),timestamp(calendar.get('start'))
+        if not announced or not start or not timedelta(0)<=start-announced<=timedelta(days=30):
+            # Recurring generic titles must not link an old poster to a new year.
+            continue
         item['corroborating_calendar_id'] = calendar['id']
         # The notice is evidence, never a second announcement of the same event.
         item['parser_holds'].append('corroborated_notice_use_calendar_record')
