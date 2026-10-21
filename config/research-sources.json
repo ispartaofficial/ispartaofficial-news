@@ -1,0 +1,19 @@
+{
+  "version": "isparta-research-sources-v1",
+  "publishing_enabled": false,
+  "sources": [
+    {"id":"bomba32","name":"Bomba32","url":"https://www.bomba32.com/sondakika-haberleri","research_enabled":true,"reader":"article","link_selector":".last-minutes-box a[href]","detail_path":"/[a-z0-9-]{20,}","title_selector":"h1[itemprop=headline]","body_selector":".article-text","date_selector":"meta[name=datePublished]","max_details":4},
+    {"id":"haber32","name":"Haber32","url":"https://www.haber32.com.tr/","research_enabled":true,"reader":"article","link_selector":"a[href]:has(h2)","detail_path":"/[a-z0-9-]{20,}","title_selector":"h1[itemprop=headline]","body_selector":".article-text","date_selector":"meta[name=datePublished]","max_details":4},
+    {"id":"kanal32","name":"Kanal32","url":"https://www.kanal32.com.tr/gundem-haberleri","research_enabled":true,"reader":"article","link_selector":"a[href]:has(img)","detail_path":"/haber-[a-z0-9-]+-\\d+\\.html","title_selector":"h1","body_selector":".detay","date_selector":"meta[property='article:published_time']","max_details":4},
+    {"id":"ajans32","name":"Ajans32","url":"https://www.ajans32.com/isparta-haberleri.htm","research_enabled":true,"reader":"article","link_selector":"a[href]","detail_path":"/[a-z0-9-]+-\\d+h\\.htm","title_selector":"h1.content-title","body_selector":".text-content","date_selector":"meta[name=datePublished]","max_details":4},
+    {"id":"isparta-valilik","name":"Isparta Valiliği","url":"https://www.isparta.gov.tr/","research_enabled":true,"reader":"article","link_selector":"a.news-card-withDate[href]","detail_path":"/\\d+","title_selector":"h2.page-title","body_selector":".icerik","date_selector":".dateandtag .card-date","date_format":"dotted_date","max_details":4},
+    {"id":"sdu-calendar","name":"SDÜ resmî etkinlik takvimi","url":"https://w3.sdu.edu.tr/","research_enabled":true,"reader":"sdu"},
+    {"id":"isubu-events","name":"ISUBÜ Proje ve Etkinlik Takip","url":"https://etkinlik.isparta.edu.tr/","research_enabled":true,"reader":"isubu"}
+  ],
+  "venues": [
+    {"label":"Kampüs Konukevi Yemek Salonu (Doğu Yerleşkesi)","sources":["isubu-events"],"evidence":"https://isparta.edu.tr/etkinlik-salonlari"},
+    {"label":"Doğu Kampüsü 19 Mayıs Amfisi","sources":["isubu-events"],"evidence":"https://isparta.edu.tr/etkinlik-salonlari"},
+    {"label":"İİBF A Salonu","sources":["sdu-calendar"],"evidence":"https://w3.sdu.edu.tr/"},
+    {"label":"İİBF B Salonu","sources":["sdu-calendar"],"evidence":"https://w3.sdu.edu.tr/"}
+  ]
+}

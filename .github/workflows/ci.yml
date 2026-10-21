@@ -1,4 +1,4 @@
-name: Validate Isparta card preparation
+name: Validate Isparta readers and cards
 on:
   pull_request:
   push:

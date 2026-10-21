@@ -5,9 +5,9 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "isparta-official"
 version = "0.1.0"
-description = "IspartaOfficial için bağımsız haber ve etkinlik otomasyonu — yerel tasarım hazırlığı"
+description = "IspartaOfficial bağımsız kaynak araştırması ve içerik kartı hazırlığı"
 requires-python = ">=3.11"
-dependencies = ["Pillow>=11,<13"]
+dependencies = ["Pillow>=11,<13", "requests>=2.32,<3", "beautifulsoup4>=4.12,<5", "tzdata>=2025.1"]
 
 [project.optional-dependencies]
 test = ["pytest>=8,<10"]

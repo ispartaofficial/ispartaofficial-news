@@ -44,11 +44,35 @@ Kaynak yalnız açıklamada; yaklaşık beş ilgili küçük harfli hashtag kull
 “Detaylar açıklamada.” ilk kartın metni altındadır. Görsel önceliği, kaynakla
 eşleşen afiş veya fotoğrafadır. Kontrolsüz, alakasız görsel boşluğu doldurmaz.
 
+## Kaynak okuyucuları ve araştırma
+
+`config/research-sources.json` yedi gözden geçirilmiş okuyucu tanımlar: Bomba32,
+Haber32, Kanal32, Ajans32, Valilik, SDÜ ana takvimi ve ISUBÜ yaklaşan etkinlikleri.
+Yerel haberler asıl makale tarihini kullanır; güncelleme, liste sırası veya bugünkü
+site başlığı eski haberi tazelemez. İki saatte bir planlanan bulut görevi yalnız
+araştırma raporu oluşturur. Alan adı, robots, sertifika, yanıt boyutu ve sayfa
+sayısı sınırlandırılır. Bir kaynak kısmen okunursa rapor `partial` gösterir.
+
+Üniversite takviminde şehir dışı mekân, geçmiş başlangıç, eksik saat, tarih/saat
+çelişkisi veya bilinmeyen katılım koşulu taslak uygunluğunu engeller. Sınırlı
+öğrenci/üye etkinliği herkese açık diye sunulmaz; ücret bilinmiyorsa ücretsiz
+denmez. Aynı afişin ilgisiz birden fazla ISUBÜ etkinliğinde görünmesi durumunda
+afiş reddedilir. Diğer kaynak fotoğrafları da yalnız inceleme adayıdır.
+
+Yalnız bu araştırma turundaki benzer haberler gruplanır. Kalıcı yayın geçmişiyle
+tekilleştirme ve gerçekten görsel/içerik doğrulayan yayın hattı sonraki aşamadır.
+`eligible_for_drafting` yayın onayı değildir. Rapor tam yazı kopyası yerine kısa
+kaynak alıntısı, kaynak adresi ve kanıt özeti tutar. Kaynak listesinde kalan altı
+aday (Belediye, Kültür Müdürlüğü, Bubilet ve üç ek üniversite listesi) henüz bu
+araştırma görevinde etkin değildir. Yeni kaynakların hepsi çalışıyor sayılmaz.
+
 ## Güncel sınır
 
-Bu yerel hazırlık tam motor aktarımı değildir. GitHub deposu oluşturuldu ancak
-21 Ekim kontrolde bağlayıcı `pull=true`, `push=false` verdi. Meta/yeni hesap
-bağlantıları ve bulut dağıtımı yok. Logo ve kart önizlemesi sosyal medya hesabında
-herhangi bir değişiklik yapmaz. Kaynak listesi `config/source-candidates.json`
-içinde erişim ve ayrıştırma durumu ayrılarak tutulur; etkin üretim sayılmaz.
+Bu aşama tam motor aktarımı değildir. GitHub bağlayıcısında yazma erişimi
+yokken, kullanıcıya ait Isparta tarayıcı oturumuyla kod ve PR işlemleri yapılabilir.
+Meta/yeni hesap bağlantıları ve sosyal yayın dağıtımı yoktur. Logo ve kart
+önizlemesi sosyal medya hesabında herhangi bir değişiklik yapmaz. Kaynak adayları
+`config/source-candidates.json` içinde, araştırma için etkin okuyucular ayrı
+`config/research-sources.json` içinde tutulur. Bulut görevinin dosyası, başarılı
+canlı araştırma ve gerçek yayın ayrı kanıtlardır.
 
