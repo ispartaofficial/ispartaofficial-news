@@ -1,6 +1,5 @@
 {
-  "version": "isparta-source-candidates-v3",
-  "all_candidates_disabled": true,
+  "version": "isparta-source-candidates-v4",
   "sources": [
     {
       "id": "sdu-sks",
@@ -9,16 +8,18 @@
       "priority": "campus_events",
       "listing_readable": true,
       "checked_at": "2026-10-21T17:45:27.479193+03:00",
-      "reader_verified": false,
+      "reader_verified": true,
       "production_enabled": false,
-      "review_needed": [
+      "research_enabled": true,
+      "reader_kind": "campus_notice",
+      "reader_verification": "Reviewed source structure, regression cases and bounded 13-source live research on 2026-10-21. Publication approval and visual validation remain separate.",
+      "publication_gates": [
         "explicit event date and year",
         "event city and actual venue",
         "time and end/cancellation status",
         "price and student/public access",
         "poster image linkage and OCR where needed"
-      ],
-      "research_enabled": false
+      ]
     },
     {
       "id": "sdu-calendar",
@@ -29,15 +30,16 @@
       "checked_at": "2026-10-21T17:45:27.479193+03:00",
       "reader_verified": true,
       "production_enabled": false,
-      "review_needed": [
+      "research_enabled": true,
+      "reader_verification": "Reviewed source structure, regression cases and bounded 13-source live research on 2026-10-21. Publication approval and visual validation remain separate.",
+      "reader_kind": "sdu",
+      "publication_gates": [
         "explicit event date and year",
         "event city and actual venue",
         "time and end/cancellation status",
         "price and student/public access",
         "poster image linkage and OCR where needed"
-      ],
-      "research_enabled": true,
-      "reader_verification": "Reviewed HTML structure and local regression/live parsing evidence on 2026-10-21; source/date gates only, not visual or factual publication approval."
+      ]
     },
     {
       "id": "isubu-events",
@@ -48,15 +50,16 @@
       "checked_at": "2026-10-21T17:45:27.479193+03:00",
       "reader_verified": true,
       "production_enabled": false,
-      "review_needed": [
+      "research_enabled": true,
+      "reader_verification": "Reviewed source structure, regression cases and bounded 13-source live research on 2026-10-21. Publication approval and visual validation remain separate.",
+      "reader_kind": "isubu",
+      "publication_gates": [
         "explicit event date and year",
         "event city and actual venue",
         "time and end/cancellation status",
         "price and student/public access",
         "poster image linkage and OCR where needed"
-      ],
-      "research_enabled": true,
-      "reader_verification": "Reviewed HTML structure and local regression/live parsing evidence on 2026-10-21; source/date gates only, not visual or factual publication approval."
+      ]
     },
     {
       "id": "isubu-sks",
@@ -65,16 +68,18 @@
       "priority": "campus_events",
       "listing_readable": true,
       "checked_at": "2026-10-21T17:45:27.479193+03:00",
-      "reader_verified": false,
+      "reader_verified": true,
       "production_enabled": false,
-      "review_needed": [
+      "research_enabled": true,
+      "reader_kind": "campus_notice",
+      "reader_verification": "Reviewed source structure, regression cases and bounded 13-source live research on 2026-10-21. Publication approval and visual validation remain separate.",
+      "publication_gates": [
         "explicit event date and year",
         "event city and actual venue",
         "time and end/cancellation status",
         "price and student/public access",
         "poster image linkage and OCR where needed"
-      ],
-      "research_enabled": false
+      ]
     },
     {
       "id": "isubu-social",
@@ -83,58 +88,67 @@
       "priority": "campus_events",
       "listing_readable": true,
       "checked_at": "2026-10-21T17:45:27.479193+03:00",
-      "reader_verified": false,
+      "reader_verified": true,
       "production_enabled": false,
-      "review_needed": [
+      "research_enabled": true,
+      "reader_kind": "campus_notice",
+      "reader_verification": "Reviewed source structure, regression cases and bounded 13-source live research on 2026-10-21. Publication approval and visual validation remain separate.",
+      "publication_gates": [
         "explicit event date and year",
         "event city and actual venue",
         "time and end/cancellation status",
         "price and student/public access",
         "poster image linkage and OCR where needed"
-      ],
-      "research_enabled": false
+      ]
     },
     {
       "id": "isparta-belediye",
       "name": "Isparta Belediyesi",
       "url": "https://www.isparta.bel.tr/haberler",
       "priority": "city_events_and_news",
-      "reader_verified": false,
+      "reader_verified": true,
       "production_enabled": false,
-      "review_needed": [
+      "research_enabled": true,
+      "reader_kind": "archive_article",
+      "reader_verification": "Reviewed source structure, regression cases and bounded 13-source live research on 2026-10-21. Publication approval and visual validation remain separate.",
+      "publication_gates": [
         "Some sampled detail pages omit publication dates; verify archive-bound dates without using the current site header."
-      ],
-      "research_enabled": false
+      ]
     },
     {
       "id": "isparta-kultur",
       "name": "Isparta İl Kültür ve Turizm Müdürlüğü",
-      "url": "https://isparta.ktb.gov.tr/",
+      "url": "https://isparta.ktb.gov.tr/TR-165287/duyurular.html",
       "priority": "culture_events",
-      "reader_verified": false,
+      "reader_verified": true,
       "production_enabled": false,
-      "review_needed": [
+      "research_enabled": true,
+      "reader_kind": "culture_archive",
+      "reader_verification": "Reviewed source structure, regression cases and bounded 13-source live research on 2026-10-21. Publication approval and visual validation remain separate.",
+      "discovery": "Official local announcements/year archive; national homepage ticker is excluded.",
+      "publication_gates": [
         "Current dated event details, not static tourism pages."
-      ],
-      "research_enabled": false
+      ]
     },
     {
       "id": "bubilet-isparta",
       "name": "Bubilet Isparta",
       "url": "https://www.bubilet.com.tr/isparta",
       "priority": "ticketed_events",
-      "reader_verified": false,
+      "reader_verified": true,
       "production_enabled": false,
       "listing_readable": null,
       "discovery": "Official publisher search result only; direct robots/TLS and detail parsing pending.",
-      "review_needed": [
+      "research_enabled": true,
+      "reader_kind": "ticketing",
+      "reader_verification": "Reviewed source structure, regression cases and bounded 13-source live research on 2026-10-21. Publication approval and visual validation remain separate.",
+      "publication_gates": [
         "permitted access",
         "explicit current session/year",
         "actual venue",
         "ticket price is not organizer identity",
         "image/rights and source linkage"
-      ],
-      "research_enabled": false
+      ]
     },
     {
       "id": "bomba32",
@@ -145,16 +159,17 @@
       "checked_at": "2026-10-21T18:16:59.292497+03:00",
       "reader_verified": true,
       "production_enabled": false,
-      "review_needed": [
+      "research_enabled": true,
+      "reader_verification": "Reviewed source structure, regression cases and bounded 13-source live research on 2026-10-21. Publication approval and visual validation remain separate.",
+      "reader_kind": "article",
+      "publication_gates": [
         "original article publication time and update time kept separate",
         "article body and neutral headline",
         "Isparta and district locality",
         "source photo linkage and usage",
         "same-story deduplication",
         "sensitive claims held for review"
-      ],
-      "research_enabled": true,
-      "reader_verification": "Reviewed HTML structure and local regression/live parsing evidence on 2026-10-21; source/date gates only, not visual or factual publication approval."
+      ]
     },
     {
       "id": "kanal32",
@@ -165,16 +180,17 @@
       "checked_at": "2026-10-21T18:16:59.292497+03:00",
       "reader_verified": true,
       "production_enabled": false,
-      "review_needed": [
+      "research_enabled": true,
+      "reader_verification": "Reviewed source structure, regression cases and bounded 13-source live research on 2026-10-21. Publication approval and visual validation remain separate.",
+      "reader_kind": "article",
+      "publication_gates": [
         "original article publication time and update time kept separate",
         "article body and neutral headline",
         "Isparta and district locality",
         "source photo linkage and usage",
         "same-story deduplication",
         "sensitive claims held for review"
-      ],
-      "research_enabled": true,
-      "reader_verification": "Reviewed HTML structure and local regression/live parsing evidence on 2026-10-21; source/date gates only, not visual or factual publication approval."
+      ]
     },
     {
       "id": "haber32",
@@ -185,16 +201,17 @@
       "checked_at": "2026-10-21T18:16:59.292497+03:00",
       "reader_verified": true,
       "production_enabled": false,
-      "review_needed": [
+      "research_enabled": true,
+      "reader_verification": "Reviewed source structure, regression cases and bounded 13-source live research on 2026-10-21. Publication approval and visual validation remain separate.",
+      "reader_kind": "article",
+      "publication_gates": [
         "original article publication time and update time kept separate",
         "article body and neutral headline",
         "Isparta and district locality",
         "source photo linkage and usage",
         "same-story deduplication",
         "sensitive claims held for review"
-      ],
-      "research_enabled": true,
-      "reader_verification": "Reviewed HTML structure and local regression/live parsing evidence on 2026-10-21; source/date gates only, not visual or factual publication approval."
+      ]
     },
     {
       "id": "ajans32",
@@ -205,16 +222,17 @@
       "checked_at": "2026-10-21T18:16:59.292497+03:00",
       "reader_verified": true,
       "production_enabled": false,
-      "review_needed": [
+      "research_enabled": true,
+      "reader_verification": "Reviewed source structure, regression cases and bounded 13-source live research on 2026-10-21. Publication approval and visual validation remain separate.",
+      "reader_kind": "article",
+      "publication_gates": [
         "original article publication time and update time kept separate",
         "article body and neutral headline",
         "Isparta and district locality",
         "source photo linkage and usage",
         "same-story deduplication",
         "sensitive claims held for review"
-      ],
-      "research_enabled": true,
-      "reader_verification": "Reviewed HTML structure and local regression/live parsing evidence on 2026-10-21; source/date gates only, not visual or factual publication approval."
+      ]
     },
     {
       "id": "isparta-valilik",
@@ -224,13 +242,15 @@
       "listing_readable": true,
       "reader_verified": true,
       "production_enabled": false,
-      "review_needed": [
+      "research_enabled": true,
+      "reader_verification": "Reviewed source structure, regression cases and bounded 13-source live research on 2026-10-21. Publication approval and visual validation remain separate.",
+      "reader_kind": "article",
+      "publication_gates": [
         "sampled article dated 22.04.2026 stays old despite current site-header date",
         "explicit article publication field",
         "service warning validity and end time"
-      ],
-      "research_enabled": true,
-      "reader_verification": "Reviewed HTML structure and local regression/live parsing evidence on 2026-10-21; source/date gates only, not visual or factual publication approval."
+      ]
     }
-  ]
+  ],
+  "all_social_publishing_disabled": true
 }
