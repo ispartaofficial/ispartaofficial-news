@@ -7,7 +7,7 @@
       "url": "https://sksdb.sdu.edu.tr/tr/duyurular",
       "priority": "campus_events",
       "listing_readable": true,
-      "checked_at": "2026-10-21T17:45:27.479193+03:00",
+      "checked_at": "2026-10-21T20:55:03.676569+03:00",
       "reader_verified": true,
       "production_enabled": false,
       "research_enabled": true,
@@ -27,7 +27,7 @@
       "url": "https://w3.sdu.edu.tr/",
       "priority": "campus_events",
       "listing_readable": true,
-      "checked_at": "2026-10-21T17:45:27.479193+03:00",
+      "checked_at": "2026-10-21T20:55:03.676569+03:00",
       "reader_verified": true,
       "production_enabled": false,
       "research_enabled": true,
@@ -47,7 +47,7 @@
       "url": "https://etkinlik.isparta.edu.tr/",
       "priority": "campus_events",
       "listing_readable": true,
-      "checked_at": "2026-10-21T17:45:27.479193+03:00",
+      "checked_at": "2026-10-21T20:55:03.676569+03:00",
       "reader_verified": true,
       "production_enabled": false,
       "research_enabled": true,
@@ -67,7 +67,7 @@
       "url": "https://sksdb.isparta.edu.tr/tr/etkinlikler",
       "priority": "campus_events",
       "listing_readable": true,
-      "checked_at": "2026-10-21T17:45:27.479193+03:00",
+      "checked_at": "2026-10-21T20:55:03.676569+03:00",
       "reader_verified": true,
       "production_enabled": false,
       "research_enabled": true,
@@ -87,7 +87,7 @@
       "url": "https://toplumsalkatki.isparta.edu.tr/tr/etkinlikler",
       "priority": "campus_events",
       "listing_readable": true,
-      "checked_at": "2026-10-21T17:45:27.479193+03:00",
+      "checked_at": "2026-10-21T20:55:03.676569+03:00",
       "reader_verified": true,
       "production_enabled": false,
       "research_enabled": true,
@@ -113,7 +113,9 @@
       "reader_verification": "Reviewed source structure, regression cases and bounded 13-source live research on 2026-10-21. Publication approval and visual validation remain separate.",
       "publication_gates": [
         "Some sampled detail pages omit publication dates; verify archive-bound dates without using the current site header."
-      ]
+      ],
+      "listing_readable": true,
+      "checked_at": "2026-10-21T20:55:03.676569+03:00"
     },
     {
       "id": "isparta-kultur",
@@ -128,7 +130,9 @@
       "discovery": "Official local announcements/year archive; national homepage ticker is excluded.",
       "publication_gates": [
         "Current dated event details, not static tourism pages."
-      ]
+      ],
+      "listing_readable": true,
+      "checked_at": "2026-10-21T20:55:03.676569+03:00"
     },
     {
       "id": "bubilet-isparta",
@@ -137,8 +141,8 @@
       "priority": "ticketed_events",
       "reader_verified": true,
       "production_enabled": false,
-      "listing_readable": null,
-      "discovery": "Official publisher search result only; direct robots/TLS and detail parsing pending.",
+      "listing_readable": true,
+      "discovery": "Permitted listing and per-session details read; restrictions absent at the publisher remain held.",
       "research_enabled": true,
       "reader_kind": "ticketing",
       "reader_verification": "Reviewed source structure, regression cases and bounded 13-source live research on 2026-10-21. Publication approval and visual validation remain separate.",
@@ -148,7 +152,8 @@
         "actual venue",
         "ticket price is not organizer identity",
         "image/rights and source linkage"
-      ]
+      ],
+      "checked_at": "2026-10-21T20:55:03.676569+03:00"
     },
     {
       "id": "bomba32",
@@ -156,7 +161,7 @@
       "url": "https://www.bomba32.com/sondakika-haberleri",
       "priority": "local_news",
       "listing_readable": true,
-      "checked_at": "2026-10-21T18:16:59.292497+03:00",
+      "checked_at": "2026-10-21T20:55:03.676569+03:00",
       "reader_verified": true,
       "production_enabled": false,
       "research_enabled": true,
@@ -177,7 +182,7 @@
       "url": "https://www.kanal32.com.tr/gundem-haberleri",
       "priority": "local_news",
       "listing_readable": true,
-      "checked_at": "2026-10-21T18:16:59.292497+03:00",
+      "checked_at": "2026-10-21T20:55:03.676569+03:00",
       "reader_verified": true,
       "production_enabled": false,
       "research_enabled": true,
@@ -198,7 +203,7 @@
       "url": "https://www.haber32.com.tr/",
       "priority": "local_news",
       "listing_readable": true,
-      "checked_at": "2026-10-21T18:16:59.292497+03:00",
+      "checked_at": "2026-10-21T20:55:03.676569+03:00",
       "reader_verified": true,
       "production_enabled": false,
       "research_enabled": true,
@@ -219,7 +224,7 @@
       "url": "https://www.ajans32.com/isparta-haberleri.htm",
       "priority": "local_news",
       "listing_readable": true,
-      "checked_at": "2026-10-21T18:16:59.292497+03:00",
+      "checked_at": "2026-10-21T20:55:03.676569+03:00",
       "reader_verified": true,
       "production_enabled": false,
       "research_enabled": true,
@@ -249,7 +254,8 @@
         "sampled article dated 22.04.2026 stays old despite current site-header date",
         "explicit article publication field",
         "service warning validity and end time"
-      ]
+      ],
+      "checked_at": "2026-10-21T20:55:03.676569+03:00"
     }
   ],
   "all_social_publishing_disabled": true
