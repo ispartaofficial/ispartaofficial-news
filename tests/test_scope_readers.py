@@ -8,7 +8,7 @@ import pytest
 
 from isparta.readers import TZ
 from isparta.research import assess, run
-from isparta.scope_readers import (archive_article, campus_notice, culture_items,
+from isparta.scope_readers import (archive_article, campus_notice, correlate_campus, culture_items,
     culture_year_link, listing_entries, public_transport, ticket_sessions)
 
 CONFIG=json.loads((Path(__file__).parents[1]/'config/research-sources.json').read_text(encoding='utf8'))
@@ -167,3 +167,15 @@ def test_all_thirteen_allowed_and_unreachable_source_reported_failed(tmp_path):
     report=run(config,at=AT,fetcher=Offline())
     assert len(report['source_health'])==13
     assert all(s['status']=='failed' for s in report['source_health'])
+
+
+@pytest.mark.parametrize('publication,linked', [('2026-10-20T00:00:00+03:00',True),
+    ('2025-10-20T00:00:00+03:00',False),('2026-10-28T00:00:00+03:00',False),(None,False)])
+def test_recurring_campus_title_requires_recent_prior_announcement(publication,linked):
+    notice={'id':'notice','source_id':'sdu-sks','title':'Temel Eğitim Programı',
+            'published_at':publication,'url':'https://sksdb.sdu.edu.tr/tr/haber/notice.html',
+            'parser_holds':['campus_session_details_require_corroboration']}
+    calendar={'id':'calendar','source_id':'sdu-calendar','title':'Temel Eğitim Programı',
+              'start':'2026-10-26T13:00:00+03:00'}
+    correlate_campus([notice,calendar])
+    assert ('corroborating_sources' in calendar) is linked
