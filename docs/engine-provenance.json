@@ -1,0 +1,339 @@
+{
+  "upstream_repository": "https://github.com/ntekintr/seferihisarofficial-news",
+  "upstream_commit": "7a862a9b98bf4c63120d550b30406ba961397d7d",
+  "strategy": "Reuse production Python core; isolate city readers, brand, state and account gates.",
+  "credentials_copied": false,
+  "state_copied": false,
+  "brand_assets_copied": false,
+  "excluded_city_services": [
+    "backup_history.py",
+    "cli.py",
+    "ops_watch.py",
+    "pipeline.py",
+    "source_readers.py",
+    "weather.py",
+    "weather_copy.py",
+    "weather_data.py",
+    "weather_render.py"
+  ],
+  "modules": [
+    {
+      "upstream": "seferihisar/__init__.py",
+      "target": "news_engine/__init__.py",
+      "upstream_sha256": "0657a27d8632a090023043382764ea32b4e8032c6cb5d17c5c06a6d23561b780",
+      "adapted": true,
+      "target_sha256": "328245590f1384e5f2d5e52478e3b14fdbf9fadb651370646614c7f62c613e5b"
+    },
+    {
+      "upstream": "seferihisar/brand.py",
+      "target": "news_engine/brand.py",
+      "upstream_sha256": "0a5f5b21ee5fd6eb3bb1b843b43b558961daa0b0e64912ca08333390e413dad7",
+      "adapted": true,
+      "target_sha256": "057a3c2d07fb6dee875b242402c8445ee3600ffe5537699b756f5c40143fa1f4"
+    },
+    {
+      "upstream": "seferihisar/card_layout.py",
+      "target": "news_engine/card_layout.py",
+      "upstream_sha256": "603b676135522e05c96a9668782458ec664136458d76156901c4500b2916bf8c",
+      "adapted": true,
+      "target_sha256": "09645be30962f780b513153ce37b7d0036c8ef94e54137e02944cc9395f02869"
+    },
+    {
+      "upstream": "seferihisar/collect.py",
+      "target": "news_engine/collect.py",
+      "upstream_sha256": "3d8089faf4c98a395d5c0b8057e6116ed61c909284125c61f73a1b734be2deca",
+      "adapted": true,
+      "target_sha256": "3fb5282e892bb544d3bdebafd791d8edf9352d02d6c14ae1b794aadbc39a4cfc"
+    },
+    {
+      "upstream": "seferihisar/connection_health.py",
+      "target": "news_engine/connection_health.py",
+      "upstream_sha256": "0b70c3bd0082543d36373d083aaba2d38073465acd6bb12778722e834fb43b6d",
+      "adapted": true,
+      "target_sha256": "bdc08fe1957bbd03fdb5672ceba5a737b1169e91f510af5c25db4b38602c7ac8"
+    },
+    {
+      "upstream": "seferihisar/delivery_audit.py",
+      "target": "news_engine/delivery_audit.py",
+      "upstream_sha256": "22f52dcf81b04cdd591f5e1ef8f81486c8a615126ad97247067a417241d1a2fc",
+      "adapted": true,
+      "target_sha256": "77a896f63f3ce126fd915a62373c6b0c34e13991cb73fef1dedef3f016cdd932"
+    },
+    {
+      "upstream": "seferihisar/domain.py",
+      "target": "news_engine/domain.py",
+      "upstream_sha256": "19eda918e4259e1655e9f290b73bc2ccf0d8d13eea95e75c6c7054b61ae156e4",
+      "adapted": true,
+      "target_sha256": "b552d08dc74b973ce95d709d811c9f367326878058405cd4bb115c2253d97f7d"
+    },
+    {
+      "upstream": "seferihisar/editor.py",
+      "target": "news_engine/editor.py",
+      "upstream_sha256": "7df17644f9fa19e2a3ae0364485298feb1b2e461f916c8889e03cb672a7e8be5",
+      "adapted": true,
+      "target_sha256": "90c91a1620d0107228ea0749064ee2b1a8cf09268caa8e58e2f418d7cccdf416"
+    },
+    {
+      "upstream": "seferihisar/editorial_render.py",
+      "target": "news_engine/editorial_render.py",
+      "upstream_sha256": "85087829d0b51a0bdf4b16fdd5cd14f2d0f4011a1653e71cef13fa33d321b1fc",
+      "adapted": true,
+      "target_sha256": "4bbe071cf7cf6d7023a35073608ef435b3384c05bcc16578a1cf57837e67fe27"
+    },
+    {
+      "upstream": "seferihisar/editorial_voice.py",
+      "target": "news_engine/editorial_voice.py",
+      "upstream_sha256": "f3a8745fdb64dca66ad694ef24fb10f33d51407b8b9e1d23e267f8d159465337",
+      "adapted": true,
+      "target_sha256": "9b38238c823e89b2625b2d1fc504eef69d91e966d4c248ae7d82444d21e972b1"
+    },
+    {
+      "upstream": "seferihisar/event_image_text.py",
+      "target": "news_engine/event_image_text.py",
+      "upstream_sha256": "40942572abf9db8a9943be19806ce393d85a6cb69d628c5066f393fcf07c55f7",
+      "adapted": false,
+      "target_sha256": "0e017061645f727ba4d311776af579c1968c9615eda04b931e2e0ba2fec6fd97"
+    },
+    {
+      "upstream": "seferihisar/event_metadata.py",
+      "target": "news_engine/event_metadata.py",
+      "upstream_sha256": "b77f4940bcced96a548232b192dd0e4eec332b71d15c4b4e7c27c51e73600315",
+      "adapted": false,
+      "target_sha256": "2fc5f0ec6e7c1cc2c46aae69a6821d5bc9af36b1c9acaf6e3e73abc1053c4354"
+    },
+    {
+      "upstream": "seferihisar/facebook.py",
+      "target": "news_engine/facebook.py",
+      "upstream_sha256": "3e6ee377494b9d8d4d6419feefc824b94bb2098e54ec2a8b43486be2570d529d",
+      "adapted": false,
+      "target_sha256": "eda6653eadcf7cffc0c8565fca55dfd81390117b3776fe9f862734df4c89b8bc"
+    },
+    {
+      "upstream": "seferihisar/factory.py",
+      "target": "news_engine/factory.py",
+      "upstream_sha256": "cc80d7a20a15f4063c95db153a4ff0eea2d897648a3271a6f560e9ed004c37ba",
+      "adapted": false,
+      "target_sha256": "8c4ed4e2ebc419e35bf099b31de962b6e2b58ee31a9393389f93b18f3170cf29"
+    },
+    {
+      "upstream": "seferihisar/illustration_review.py",
+      "target": "news_engine/illustration_review.py",
+      "upstream_sha256": "8b2624df4e4159c5a6b49c6949fac0f084f0eeeb0ab74beda781efbca2f020f3",
+      "adapted": false,
+      "target_sha256": "6c88c464a34e5d02fb941f41e555f70c8e842b1ec24deb09a1a80bdb9b4ce90f"
+    },
+    {
+      "upstream": "seferihisar/illustrations.py",
+      "target": "news_engine/illustrations.py",
+      "upstream_sha256": "72b7d8d6c09e788851ba2d83e4ddadf6aa8f9bb2f55b088f9cf3bee87ffc61a1",
+      "adapted": false,
+      "target_sha256": "65f77feee675240326fdf675159ef55046d405e6a91f489769810e6d8ff7473f"
+    },
+    {
+      "upstream": "seferihisar/image_safety.py",
+      "target": "news_engine/image_safety.py",
+      "upstream_sha256": "21ddaf15e39e6cf872978d27191609032f0170b66d131017f35b32640942b59c",
+      "adapted": false,
+      "target_sha256": "b2d72a323f3e91d96d33df1517337392e712d97efc55f2bd8f545ed3aa8eef40"
+    },
+    {
+      "upstream": "seferihisar/instagram.py",
+      "target": "news_engine/instagram.py",
+      "upstream_sha256": "ef994d34d9a853f86a08810b6ad6d4bf4e57cca83543d3b03400d5293a2c8a07",
+      "adapted": false,
+      "target_sha256": "7d5581a8988528e7865f409ad6d839bef8548a9bf670a0d4fe9aa6f038d87c0b"
+    },
+    {
+      "upstream": "seferihisar/instagram_source_photos.py",
+      "target": "news_engine/instagram_source_photos.py",
+      "upstream_sha256": "89c069e09680f41ca729f282df27e811e1fa9d11a2534bb753bfb292144dda49",
+      "adapted": false,
+      "target_sha256": "6673f504ee92e31bebb7f4c75953d2deac25a44182bbb0e7a4f0670d8f53b31e"
+    },
+    {
+      "upstream": "seferihisar/instagram_sources.py",
+      "target": "news_engine/instagram_sources.py",
+      "upstream_sha256": "607631516eee16356696cefc438a236c39a8eae10e7bd172bacb7a8dbd70e299",
+      "adapted": true,
+      "target_sha256": "a3836f478462b0a2a62ee8ffb7c513ae559a58032ae7d7fea11f6f177f2e1538"
+    },
+    {
+      "upstream": "seferihisar/learning.py",
+      "target": "news_engine/learning.py",
+      "upstream_sha256": "d04a567b747dfca091e799b4b8e9b3a77c119abd5094dd72502a09e30bf0203f",
+      "adapted": true,
+      "target_sha256": "a45d5c9a464e247992bcbb631e1a74b48fc019d3d4cc8c40a4f9ca89a14a8e11"
+    },
+    {
+      "upstream": "seferihisar/learning_cohorts.py",
+      "target": "news_engine/learning_cohorts.py",
+      "upstream_sha256": "10138ee814641df5780bd92122114449622b2bdc3867a7b69661b05d00eccadd",
+      "adapted": false,
+      "target_sha256": "ef6e564d510c562831cad303bd97bdd8ea02d934870b16ad94d795883e4a0051"
+    },
+    {
+      "upstream": "seferihisar/local_series.py",
+      "target": "news_engine/local_series.py",
+      "upstream_sha256": "ce61aa0a0457210e76d2fd0f95da36bd17a9ca3aa0a8ca87e5b33a7dd5aae6d1",
+      "adapted": true,
+      "target_sha256": "0acdacfac399cea1dd474b599181ede8ba867de95cdc4df5dad6daf5e7c4a86f"
+    },
+    {
+      "upstream": "seferihisar/media_caption.py",
+      "target": "news_engine/media_caption.py",
+      "upstream_sha256": "f8fe4e52601c33a5f169513a44b1aee98ba15c6ef8265aed19df2c17414c62fb",
+      "adapted": false,
+      "target_sha256": "179e043312aff2e913a5c08531ee5666e841238b7a2ab55907ee778e3c826c87"
+    },
+    {
+      "upstream": "seferihisar/operations.py",
+      "target": "news_engine/operations.py",
+      "upstream_sha256": "1c948629a4f68b33fc91d7a1ebb3b1d78c5e2ff911f62b875dd1479164368130",
+      "adapted": false,
+      "target_sha256": "850df907b9dd555bac4b8615ef840d2056c7a631410f9831af12441af2aca72c"
+    },
+    {
+      "upstream": "seferihisar/quality.py",
+      "target": "news_engine/quality.py",
+      "upstream_sha256": "c135a6544dfc26cd57e4c5b07f5836bad86222a6b22f719a211ceeb88c4a4706",
+      "adapted": false,
+      "target_sha256": "57b0af9250905cbb48ce27a07c45eec79282bcbf70b04416633bfcd8c81b1435"
+    },
+    {
+      "upstream": "seferihisar/render.py",
+      "target": "news_engine/render.py",
+      "upstream_sha256": "2aaaa085e699412cce639b703cc72973680bb9e0de0074f9b1e7bcb253a19b39",
+      "adapted": true,
+      "target_sha256": "3edda2a8a93ece69e5d9cebf945691b75491d5360bb77a88d642eec184b26b52"
+    },
+    {
+      "upstream": "seferihisar/schedule.py",
+      "target": "news_engine/schedule.py",
+      "upstream_sha256": "4594549139d3a51b7af864d13c3924a14a4a51dfd0164a83a1dc58dc5ddf7940",
+      "adapted": true,
+      "target_sha256": "c428812eee0a5509134b674235dd2754586e6c3ab83820bd43d784e85dae2605"
+    },
+    {
+      "upstream": "seferihisar/security.py",
+      "target": "news_engine/security.py",
+      "upstream_sha256": "516abe3c745bddc3ea93d89b9bceac4c6fdba573d7952ea2ab100ed27fb1c7ae",
+      "adapted": true,
+      "target_sha256": "d12ab813d79d1a37e1a7c0ca80baeb6ac4e37d866fc6bef8ea134f92adb4d8b3"
+    },
+    {
+      "upstream": "seferihisar/selection.py",
+      "target": "news_engine/selection.py",
+      "upstream_sha256": "50a636451543e3686a32b584f60be3c1c7d45e5073c216a5d5461be5cf902ce0",
+      "adapted": false,
+      "target_sha256": "b55a404d685e85cfe6bfeb17520e783c79c5d10bad4014e7313f0500e963afd0"
+    },
+    {
+      "upstream": "seferihisar/source_catalog.py",
+      "target": "news_engine/source_catalog.py",
+      "upstream_sha256": "f74285422fb539de2ea999a735ab4a3a7ef2628d6183c1989f63d145d82ecd5b",
+      "adapted": false,
+      "target_sha256": "f74fe6c2c82b327749ef84f734d95acaea4c0377234429ec1200256f12d4c3c1"
+    },
+    {
+      "upstream": "seferihisar/source_discovery.py",
+      "target": "news_engine/source_discovery.py",
+      "upstream_sha256": "6c45b2b5cedd4a8d2cf1ce7aa0a3d40441ede5d65ced6b105d34ca44b1481cfa",
+      "adapted": true,
+      "target_sha256": "5cd170511591d1c2a362175b2450151e1c7b353bf64dd9587c10682356ea33c5"
+    },
+    {
+      "upstream": "seferihisar/source_photo_data.py",
+      "target": "news_engine/source_photo_data.py",
+      "upstream_sha256": "80c781a8c9bc5fb4baa10d44bc9ab1191e5055fe8c6e1f45d5f9323572fd552e",
+      "adapted": false,
+      "target_sha256": "6dc479933549bc6ce081807aebb9d5431c308f6a43720f58c6b7b846afd01770"
+    },
+    {
+      "upstream": "seferihisar/source_photos.py",
+      "target": "news_engine/source_photos.py",
+      "upstream_sha256": "9797ebbab9076adffa665f921d312117920c806bd0538aa7e8f87508c1ecaaeb",
+      "adapted": false,
+      "target_sha256": "d8269f1459a6d89fe897636da2b3ffe8f6f10484b9b8080717ef160711ed372f"
+    },
+    {
+      "upstream": "seferihisar/state_backup.py",
+      "target": "news_engine/state_backup.py",
+      "upstream_sha256": "279731e9327e472319beeec280ff6cc22db3ddf033107175b93731c4b7746231",
+      "adapted": false,
+      "target_sha256": "a8bc9647229804e774e8394b0f6b4d141b0fe122740412b01cca8013fd7ef7ac"
+    },
+    {
+      "upstream": "seferihisar/state_git.py",
+      "target": "news_engine/state_git.py",
+      "upstream_sha256": "b29e66b6a44b00e430666b46ccd87abee91d52a21e3c51084d367118d6ac73a7",
+      "adapted": false,
+      "target_sha256": "f7d68a4cc79e694aa2710565d0c1e390da78eccf948daa5c16b9b943f65e767c"
+    },
+    {
+      "upstream": "seferihisar/store.py",
+      "target": "news_engine/store.py",
+      "upstream_sha256": "3ef5b4e6867af8d8a4cce5a42283daac718c7d6d4a92e26940479a1893b412f0",
+      "adapted": false,
+      "target_sha256": "c6f06245d79df63ad2536aefc814029f42b6fd36345236f593c26a49a602ff32"
+    },
+    {
+      "upstream": "seferihisar/story_identity.py",
+      "target": "news_engine/story_identity.py",
+      "upstream_sha256": "9c67716cf1bb67cee97f4db577105e10975d32e0decb81dc301f2082d6f397bd",
+      "adapted": true,
+      "target_sha256": "8a390bda2426908945c2d2e92262faa6abce52c17746896a71e143d541233a94"
+    },
+    {
+      "upstream": "seferihisar/text_quality.py",
+      "target": "news_engine/text_quality.py",
+      "upstream_sha256": "9da886d766d780f4329d77adf0d7a6a2d277b08596df908e0ed008762390fd04",
+      "adapted": true,
+      "target_sha256": "9bad7b813cc4e5f6395579807e0f7b8db9fa7dd77384ecf3c59241a138ad5c07"
+    },
+    {
+      "upstream": "seferihisar/timeliness.py",
+      "target": "news_engine/timeliness.py",
+      "upstream_sha256": "ee356bd98094a581867d22c15fff2d726a4237d31d24cf509c3a2aa9af982277",
+      "adapted": true,
+      "target_sha256": "d4d0ffcc7e7b659332c1fa03dafed2e1d445ed83c4c6f7bdef75992029095849"
+    },
+    {
+      "upstream": "seferihisar/visual_gate.py",
+      "target": "news_engine/visual_gate.py",
+      "upstream_sha256": "53b6e862439b6a9e83592e523117737c2a0f5df19402c77f0b84ed4744ae2640",
+      "adapted": false,
+      "target_sha256": "a9c3faed01f501dcda290af2e8d3d83c73a48f0efee91b78c7ea3d83de455615"
+    },
+    {
+      "upstream": "seferihisar/visual_match.py",
+      "target": "news_engine/visual_match.py",
+      "upstream_sha256": "3302cbe4d921059094ccebe5a9d321cab240173c9afce090602920de829559eb",
+      "adapted": true,
+      "target_sha256": "3ab14159abc6c43db58005d258eac236ab5a8ef6176f4d03dbf94ad4d5fe5ecb"
+    },
+    {
+      "upstream": "seferihisar/visual_policy.py",
+      "target": "news_engine/visual_policy.py",
+      "upstream_sha256": "e020bb7d83f3201385860a9e4031291443d81aef374c0d0bb8ec19689ae24698",
+      "adapted": false,
+      "target_sha256": "d1dcc9fa58576275fd46fcf06c6768d1d777b3b38d89668bfc3071566d87d7a2"
+    },
+    {
+      "upstream": "seferihisar/visual_subject.py",
+      "target": "news_engine/visual_subject.py",
+      "upstream_sha256": "203f5444d06aa80a5a6b467fd03d566306ad09121fd1fef3cac6ba8bf0a1cd4f",
+      "adapted": false,
+      "target_sha256": "f31f1abf871ec170bffa698a16f4decc9464b1a7a95a5f2e7e848b0c5bfc3401"
+    },
+    {
+      "upstream": "seferihisar/pipeline.py",
+      "target": "news_engine/pipeline.py",
+      "upstream_sha256": "7011ff506d5279eed8e9659b590e7db1764ccf7f959f6aff8cf93a3c643f21cf",
+      "adapted": true,
+      "target_sha256": "58a94392c1f28a43f9d09a349785524aa9a2a2b3461668f4f34dcccb58b03eab"
+    }
+  ],
+  "regression_test_files": 15,
+  "local_test_result": "378 passed",
+  "Isparta_integration_tests": 11
+}

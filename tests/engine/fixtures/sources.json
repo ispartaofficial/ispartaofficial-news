@@ -1,0 +1,16 @@
+[
+  {
+    "id": "isparta-belediye",
+    "name": "Isparta Belediyesi",
+    "url": "https://isparta.bel.tr/haberler",
+    "kind": "html",
+    "enabled": true,
+    "trusted": true,
+    "access": "robots",
+    "max_pages": 12,
+    "allow_missing_robots": true,
+    "link_selector": ".news a[href]",
+    "article_selector": ".col-md-9 > .inner",
+    "repair_json_trailing_commas": true
+  }
+]

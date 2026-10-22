@@ -43,6 +43,8 @@ def local_venue(location, source_id, venues):
 def assess(item, at, venues):
     reasons = list(item.get('parser_holds', []))
     combined = norm(item['title'] + ' ' + item['description'])
+    if re.search(r'\b(?:kaybettiklerimiz|cenaze\w*|defin\w*|taziye\w*|vefat\w*|şehit\w*)\b', combined):
+        reasons.append('sensitive_claim_requires_review')
     if not item['title'] or len(item['description']) < 30:
         reasons.append('insufficient_source_text')
     if re.search(r'\b(?:iptal|ertelendi|ertelenmiştir|ertelenmistir|vazgeçildi)\b', combined):
@@ -119,7 +121,7 @@ def deduplicate(items):
             kept.append(item)
 
 
-def run(config_path, *, at=None, fetcher=None):
+def collect_sources(config_path, *, at=None, fetcher=None):
     at = at or datetime.now(TZ)
     if at.tzinfo is None:
         raise ValueError('Timezone-aware run timestamp required')
@@ -233,6 +235,20 @@ def run(config_path, *, at=None, fetcher=None):
     # Service/local news stays in the report even when campus events dominate.
     # This is a research ordering, not the future publication scheduler.
     items.sort(key=lambda i: (not i['eligible_for_drafting'], i['kind'] != 'event', i['title']))
+    return {'schema': 'isparta-research-v1', 'checked_at': at.isoformat(),
+            'publishing_enabled': False, 'source_health': health, 'items': items,
+            'discovery_health':discovery_health,'discovered_clubs':discovered_clubs,
+            'summary': {'sources': len(sources), 'parsed_items': len(items),
+                        'eligible_for_drafting': sum(i['eligible_for_drafting'] for i in items),
+                        'publication_ready': 0,
+                        'holds': dict(Counter(r for i in items for r in i['holds']))}}
+
+
+def public_report(collection):
+    """Copy/redact; full bodies never enter artifacts or the public report."""
+    from copy import deepcopy
+    report = deepcopy(collection)
+    items = report['items']
     for item in items:
         # Evidence excerpts and links, not full third-party article republication.
         description = item.pop('description')
@@ -243,13 +259,11 @@ def run(config_path, *, at=None, fetcher=None):
             evidence = item['audience'].pop('evidence')
             item['audience']['evidence_excerpt'] = evidence[:600]
             item['audience']['evidence_is_complete'] = len(evidence) <= 600
-    return {'schema': 'isparta-research-v1', 'checked_at': at.isoformat(),
-            'publishing_enabled': False, 'source_health': health, 'items': items,
-            'discovery_health':discovery_health,'discovered_clubs':discovered_clubs,
-            'summary': {'sources': len(sources), 'parsed_items': len(items),
-                        'eligible_for_drafting': sum(i['eligible_for_drafting'] for i in items),
-                        'publication_ready': 0,
-                        'holds': dict(Counter(r for i in items for r in i['holds']))}}
+    return report
+
+
+def run(config_path, *, at=None, fetcher=None):
+    return public_report(collect_sources(config_path, at=at, fetcher=fetcher))
 
 
 def main():

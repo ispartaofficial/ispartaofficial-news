@@ -1,0 +1,15 @@
+{
+  "version": "isparta-core-port-v1",
+  "repository": "ispartaofficial/ispartaofficial-news",
+  "instagram_username": "ispartaofficial",
+  "site_url": "https://ispartaofficial.github.io/ispartaofficial-news",
+  "publishing_enabled": false,
+  "meta_connected": false,
+  "facebook_enabled": false,
+  "weather_enabled": false,
+  "daily_news_feed_limit": 2,
+  "quota_status": "inherited_engine_ceiling_inactive_until_Isparta_activation",
+  "source_discovery_activation": false,
+  "learning_enabled": false,
+  "illustration_generation_configured": false
+}
