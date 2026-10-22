@@ -49,9 +49,11 @@
     "publishing_enabled": false,
     "research_reader_count": 29,
     "research_workflow": ".github/workflows/research.yml",
-    "research_schedule": "07:20–23:20 Europe/Istanbul every two hours; may start late",
+    "research_schedule": "07:20–23:50 Europe/Istanbul twice hourly; may start late",
     "source_coverage_stage": "29 reviewed content readers plus separate ISUBU club-directory discovery; source research only, cloud source availability reported per run",
-    "research_discovery_channels": 1
+    "research_discovery_channels": 1,
+    "engine_core_code_adapted": true,
+    "engine_provenance": "docs/engine-provenance.json"
   },
   "local_news": {
     "included": true,
