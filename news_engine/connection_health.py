@@ -9,6 +9,7 @@ from pathlib import Path
 import requests
 
 from .domain import now
+from .meta_identity import HOSTS, base_url, identity_query, identity_problem
 
 
 class CheckError(Exception):
@@ -42,16 +43,22 @@ def check(environ=None, session=None):
     session = session or requests.Session()
     version = env.get('META_GRAPH_VERSION', 'v26.0')
     account, token = env.get('INSTAGRAM_USER_ID', ''), env.get('INSTAGRAM_ACCESS_TOKEN', '')
+    mode = env.get('INSTAGRAM_AUTH_MODE', 'facebook_login')
     result = {'checked_at': now().isoformat(), 'instagram': 'settings_missing',
-              'facebook': 'disabled', 'expiry': 'not_checked', 'publication_attempted': False}
+              'facebook': 'disabled', 'expiry': 'not_checked', 'publication_attempted': False,
+              'auth_mode': mode if mode in HOSTS else 'invalid', 'publication_permission_verified': False}
     if not re.fullmatch(r'v\d+\.0', version):
         return result
-    base = 'https://graph.facebook.com/' + version
+    if mode not in HOSTS:
+        result['instagram'] = 'authentication_mode_invalid'
+        return result
+    base = base_url(mode, version)
     if token and re.fullmatch(r'\d{1,32}', account):
         try:
-            identity = get(session, base, account, token, 'id,username')
-            if identity.get('id') != account or identity.get('username') != 'ispartaofficial':
-                raise CheckError('account_mismatch')
+            path, fields = identity_query(mode, account)
+            identity = get(session, base, path, token, fields)
+            if reason := identity_problem(identity, mode, account, 'ispartaofficial'):
+                raise CheckError(reason)
             quota = get(session, base, account + '/content_publishing_limit', token, 'quota_usage,config')
             rows = quota.get('data')
             if not isinstance(rows, list) or not rows or not isinstance(rows[0], dict) or type(rows[0].get('quota_usage')) is not int or rows[0]['quota_usage'] < 0:
@@ -60,6 +67,9 @@ def check(environ=None, session=None):
         except CheckError as exc:
             result['instagram'] = str(exc)
     if env.get('FACEBOOK_PUBLISH_ENABLED') == 'true':
+        if mode != 'facebook_login':
+            result['facebook'] = 'unsupported_auth_mode'
+            return result
         page, page_token = env.get('FACEBOOK_PAGE_ID', ''), env.get('FACEBOOK_PAGE_ACCESS_TOKEN', '')
         result['facebook'] = 'settings_missing'
         if page_token and re.fullmatch(r'\d{1,32}', page) and re.fullmatch(r'\d{1,32}', account):
