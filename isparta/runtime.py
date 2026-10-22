@@ -140,6 +140,7 @@ def run(db_path, public_dir, config_path, *, at=None, fetcher=None, collection=N
     if at.tzinfo is None:
         raise ValueError('Timezone-aware timestamp required')
     config = json.loads(Path(config_path).read_text(encoding='utf-8'))
+    live_collection = collection is None
     collection = collection if collection is not None else collect_sources(config_path, at=at, fetcher=fetcher)
     if parse_date(collection['checked_at']) != at:
         raise ValueError('Collection must belong to this run')
@@ -149,6 +150,9 @@ def run(db_path, public_dir, config_path, *, at=None, fetcher=None, collection=N
         accepted = ingest(store, collection, sources, at)
         from news_engine.schedule import prepare
         prepare(store, at)
+        if live_collection:
+            from news_engine.pharmacy import refresh as refresh_pharmacy
+            refresh_pharmacy(store, at)
         assets = export(store, Path(public_dir), sources, at)
         validate_state(Path(db_path))
         report = public_report(collection)
