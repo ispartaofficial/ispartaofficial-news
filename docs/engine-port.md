@@ -52,11 +52,13 @@ Araştırma artifact'i kısa metinli rapordur. Pages kartların dağıtımıdır
 ## Etkin olmayan bağlantılar
 
 `config/runtime.json` içinde yayın kapalıdır. Meta bağlantısı doğrulanmamıştır;
-Facebook sayfası henüz yoktur. Görsel üretim hizmeti ve yerel OCR/konu modelinin
-bulut kurulumu bu bağımsız hesapta henüz etkin değildir; bu durumda denetlenmemiş
-görsel eklenmez, logolu bilgi kartı kullanılır. Koddaki fotoğraf/üretim yeteneği
-çalışan görsel teslimi olarak sunulmaz. Öğrenme ve yeni okuyucu etkinleştirme de
-şimdilik bağlı değildir.
+Facebook sayfası henüz yoktur. Görsel üretim hizmeti bağlı değildir. Kaynağa ait
+resimler, üretim hizmetinden ayrı `SOURCE_PHOTOS_ENABLED` kapısı ve yerel OCR/konu
+modeliyle değerlendirilir; [kaynak görseli denetimi](source-images.md) sınırları
+açıklar. Denetlenmemiş görsel eklenmez, logolu bilgi kartı kullanılır. Bulut model
+kurulumu ve gerçekten onaylanan resim ayrıca tarihli kanıt gerektirir. Koddaki
+fotoğraf/üretim yeteneği çalışan görsel teslimi olarak sunulmaz. Öğrenme ve yeni
+okuyucu etkinleştirme de şimdilik bağlı değildir.
 
 Instagram etkinleştirilmeden önce hesap kimliği `ispartaofficial` olarak GET ile
 doğrulanmalı, doğru bağımsız izinler ve medya adresleri kontrol edilmeli, günlük

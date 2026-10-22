@@ -66,7 +66,9 @@ afiş reddedilir. Diğer kaynak fotoğrafları da yalnız inceleme adayıdır.
 
 Araştırma turundaki benzer haberler gruplanır. Mevcut üretim çekirdeğinin kalıcı
 tekilleştirmesi, metin/tarih ve görsel/manifest kapıları ayrıca aktarılmıştır.
-Görsel hizmeti/model kurulumu ve Meta bağlantısı henüz etkin değildir.
+Görsel üretim hizmeti ve Meta bağlantısı henüz etkin değildir. Kaynak resimleri
+ayrı kapıyla ve yerel OCR/konu modeliyle denetlenir; `docs/source-images.md`
+kurulum ile gerçek resim onayının ayrı kanıtlar olduğunu açıklar.
 `eligible_for_drafting` yayın onayı değildir. Rapor tam yazı kopyası yerine kısa
 kaynak alıntısı, kaynak adresi ve kanıt özeti tutar. Kaynak okuyucusunun çalışması,
 içeriğin güncel olduğu veya otomatik yayına onaylandığı anlamına gelmez.
