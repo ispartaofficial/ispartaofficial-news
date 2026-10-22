@@ -119,6 +119,86 @@ def test_unconfigured_publish_never_contacts_meta_or_opens_state(tmp_path,monkey
     assert not (tmp_path/'missing.sqlite').exists()
 
 
+def test_news_category_uses_headline_not_incidental_sports_or_traffic_detail():
+    assert runtime.category({'kind':'news','title':"TOKİ Isparta'da arsa satışı yapacak!",
+                             'source_id':'bomba32','description':'Bölgede spor tesisleri ve trafik düzenlemesi de yer alıyor.'})=='news'
+    assert runtime.category({'kind':'news','title':'Isparta trafik düzenlemesi açıklandı',
+                             'source_id':'bomba32','description':'Spor salonuna giden sokakta değişiklik var.'})=='transport'
+
+
+@pytest.mark.parametrize('check_failure',[None,'model_unavailable','subject_rejected','ocr_unavailable','poster_date_mismatch'])
+def test_source_only_photo_rebinds_existing_text_card_without_generation(tmp_path,monkeypatch,check_failure):
+    import hashlib
+    import io
+    from news_engine.source_photos import SourcePhotos
+    path,collection=setup(tmp_path);db=tmp_path/'state.sqlite';public=tmp_path/'public'
+    monkeypatch.setenv('ILLUSTRATIONS_ENABLED','false')
+    monkeypatch.setenv('SOURCE_PHOTOS_ENABLED','false')
+    runtime.run(db,public,path,at=AT,collection=collection)
+    old=json.loads((public/'data.json').read_text(encoding='utf-8'))
+    old_review=old['posts'][0]['visual_review']
+    pixels=io.BytesIO();Image.new('RGB',(1080,720),'#574028').save(pixels,'JPEG')
+    event={'@type':'Event','name':'Isparta tiyatro buluşması','url':'https://example.org/duyuru',
+           'startDate':'2026-10-24T20:00:00+03:00','endDate':'2026-10-24T22:00:00+03:00',
+           'description':'Isparta tiyatro gösterimi herkese açıktır.',
+           'location':{'name':'Isparta Kültür Merkezi'}}
+    html='<script type="application/ld+json">'+json.dumps(event)+'</script><article><h1>Isparta tiyatro buluşması</h1><img src="/tiyatro.jpg"></article>'
+    fetcher=Mock();fetcher.get.return_value=(html,'https://example.org/duyuru')
+    fetcher.image.return_value=(pixels.getvalue(),'https://example.org/tiyatro.jpg')
+    monkeypatch.setattr('news_engine.source_photos.Fetcher',lambda sources:fetcher)
+    checked=[]
+    def check_text(raw,item,**kwargs):
+        from news_engine.image_safety import IllustrationCheckUnavailable
+        checked.append('ocr')
+        if check_failure=='ocr_unavailable':raise IllustrationCheckUnavailable()
+        if check_failure=='poster_date_mismatch':raise ValueError('Poster date mismatch')
+    def check_subject(raw,topic):
+        from news_engine.visual_match import MatchUnavailable,MatchRejected
+        checked.append(topic)
+        if check_failure=='model_unavailable':raise MatchUnavailable()
+        if check_failure=='subject_rejected':raise MatchRejected()
+    monkeypatch.setattr('news_engine.event_image_text.validate',check_text)
+    monkeypatch.setattr('news_engine.visual_match.validate_event_photo',check_subject)
+    monkeypatch.setenv('SOURCE_PHOTOS_ENABLED','true')
+    runtime.run(db,public,path,at=AT,collection=collection)
+    manifest=json.loads((public/'data.json').read_text(encoding='utf-8'))
+    entry=manifest['posts'][0];review=entry['visual_review']
+    if check_failure:
+        assert not review['images']
+        assert review['edition']==old_review['edition']
+        assert manifest['source_photos']['downloaded']==0
+        assert manifest['source_photos']['unavailable' if check_failure.endswith('unavailable') else 'rejected']==1
+        assert manifest['illustrations']['attempted']==0
+        with closing(Store(db)) as store:
+            assert store.rows('select count(*) as n from source_photos')==[{'n':0}]
+        return
+    assert checked==['ocr','theatre']
+    assert review['images'] and review['edition']!=old_review['edition']
+    for file,sha in review['assets'].items():
+        assert hashlib.sha256((public/file).read_bytes()).hexdigest()==sha.replace(':','')
+    assert manifest['source_photos']['downloaded']==1
+    assert manifest['illustrations']['enabled'] is False and manifest['illustrations']['attempted']==0
+    # A publisher has neither model nor generation setup. It must consume the
+    # persisted, checked pixels/proof rather than substitute a text-only render.
+    monkeypatch.setenv('SOURCE_PHOTOS_ENABLED','false')
+    runtime.run(db,public,path,at=AT,collection=collection)
+    later=json.loads((public/'data.json').read_text(encoding='utf-8'))
+    assert later['posts'][0]['visual_review']==review
+    assert later['posts'][0]['assets']==entry['assets']
+    with closing(Store(db)) as store:
+        assert all(p['status']=='prepared' for p in store.posts())
+        assert store.rows('select count(*) as n from source_photos')==[{'n':1}]
+    validate_state(db);validate_public(public)
+
+
+def test_explicit_source_photo_off_stays_off_even_if_generation_enabled(tmp_path,monkeypatch):
+    from news_engine.source_photos import SourcePhotos
+    monkeypatch.setenv('SOURCE_PHOTOS_ENABLED','false')
+    monkeypatch.setenv('ILLUSTRATIONS_ENABLED','true')
+    with closing(Store(tmp_path/'state.sqlite')) as store:
+        assert SourcePhotos(store,AT,tmp_path/'photos',[]).enabled is False
+
+
 def test_ticket_price_currency_and_access_condition_survive_adapter(tmp_path):
     _,collection=setup(tmp_path);row=collection['items'][0]
     row.update(price=536,currency='TRY',fee='Kaynak seans fiyatı: 536 TL',
