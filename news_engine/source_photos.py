@@ -151,7 +151,9 @@ def binding_reason(store,post,items,at):
 class SourcePhotos:
     def __init__(self,store,at,directory,sources,*,demo=False,fetcher=None,instagram_photos=None,instagram_checks=None):
         self.store,self.at,self.directory=store,at,directory
-        self.enabled=not demo and os.getenv('ILLUSTRATIONS_ENABLED')=='true'
+        # Source-owned photos don't require a generation service credential.
+        # An explicit false also keeps this path closed if generation is enabled.
+        self.enabled=not demo and os.getenv('SOURCE_PHOTOS_ENABLED', os.getenv('ILLUSTRATIONS_ENABLED', 'false'))=='true'
         self.sources={s['id']:s for s in sources if s.get('enabled') and s.get('trusted')
                       and ((s.get('kind') in ('html','rss') and s.get('access')=='robots')
                            or (s.get('kind')=='instagram_api' and s.get('access')=='api'))}

@@ -11,6 +11,7 @@ dependencies = ["Pillow>=11,<13", "requests>=2.32,<3", "beautifulsoup4>=4.12,<5"
 
 [project.optional-dependencies]
 test = ["pytest>=8,<10", "PyYAML>=6,<7"]
+visual = ["transformers==4.57.1", "numpy>=2,<3"]
 
 [tool.setuptools.packages.find]
 include = ["isparta*", "news_engine*"]
