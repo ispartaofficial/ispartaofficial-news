@@ -128,7 +128,7 @@ def _export(store: Store, public_dir: Path, sources: list[dict], at: datetime, d
                 from .visual_gate import review, valid_review
                 # Research checks real image pixels. A publisher without the
                 # vision runtime retains that proof and consumes deployed bytes.
-                if illustrator.enabled or not valid_review(post):
+                if illustrator.enabled or photos.enabled or not valid_review(post):
                     post['visual_review'] = review(post, illustrations, item_map)
             from .text_quality import TextRenderError
             try:
@@ -147,7 +147,7 @@ def _export(store: Store, public_dir: Path, sources: list[dict], at: datetime, d
                 from .visual_gate import record_assets
                 # A no-generation publisher must not replace a previous photo
                 # proof with hashes of its local text-only render.
-                if illustrator.enabled or not post['visual_review']['assets']:
+                if illustrator.enabled or photos.enabled or not post['visual_review']['assets']:
                     record_assets(post, assets[post['id']], public_dir)
                 with store.db:
                     store.db.execute("UPDATE posts SET payload=? WHERE id=? AND status='prepared'",
