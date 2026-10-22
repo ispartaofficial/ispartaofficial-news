@@ -122,10 +122,14 @@ def test_unconfigured_publish_never_contacts_meta_or_opens_state(tmp_path,monkey
 def test_ticket_price_currency_and_access_condition_survive_adapter(tmp_path):
     _,collection=setup(tmp_path);row=collection['items'][0]
     row.update(price=536,currency='TRY',fee='Kaynak seans fiyatı: 536 TL',
+               price_basis='listed_session_price_subject_to_ticket_conditions',
                audience={'kind':'ticketed','evidence':'Etkinlik 18 yaş ve üzeri katılımcılara açıktır; bilet gereklidir.'})
     item=runtime.adapt(row)
     assert item['price']=='536' and item['currency']=='TRY'
     assert '18 yaş' in item['participation'] and 'bilet' in item['participation']
+    assert 'Listelenen seans bileti: 536 TL' in runtime.caption(item,item['title'])
+    from news_engine.schedule import slide_body
+    assert 'Listelenen bilet: 536 TL' in slide_body(item)
 
 
 def test_access_rules_and_venue_do_not_invent_show_genre(tmp_path):
