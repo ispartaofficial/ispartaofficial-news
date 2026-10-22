@@ -103,7 +103,7 @@ def _footer_band(image):
 def _event_body(value):
     """Retain literal facts; put fee before optional organizer/address overflow."""
     lines = [plain_display(line) for line in value.splitlines() if plain_display(line)]
-    fees = [line for line in lines if line.startswith(('Ücret:', 'Ücretsiz', 'Ücretli'))]
+    fees = [line for line in lines if line.startswith(('Ücret:', 'Ücretsiz', 'Ücretli', 'Listelenen bilet:'))]
     organizers = [line for line in lines if line.startswith('Düzenleyen:')]
     venues = [line for line in lines if line not in fees and line not in organizers]
     return '\n'.join(venues + fees + organizers)
@@ -121,7 +121,7 @@ def editorial_card(title: str, body: str, category: str, target: Path, *, story=
     header_bottom = top + 144
     header = (LEFT, top, RIGHT, header_bottom - 12)
     fields.line('ISPARTA', LEFT, top + 35, 34, IVORY, 'brand', header, True)
-    fields.line('OFFICIAL', LEFT, top + 80, 24, TURQUOISE, 'brand', header)
+    fields.line('OFFICIAL', LEFT, top + 80, 24, IVORY, 'brand', header)
     with Image.open(logo_path(brand_version)) as original:
         logo = ImageOps.fit(original.convert('RGB'), (116, 116), method=Image.Resampling.LANCZOS)
     mask = Image.new('L', logo.size, 0)

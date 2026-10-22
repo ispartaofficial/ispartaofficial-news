@@ -184,7 +184,7 @@ def slide_body(item: dict) -> str:
         details.append("Ücretsiz")
     elif item.get("price"):
         currency = 'TL' if (item.get('currency') or '').upper() == 'TRY' else item.get('currency')
-        details.append("Ücret: " + item["price"] + (" " + currency if currency else ""))
+        details.append(("Listelenen bilet: " if item.get("price_basis") else "Ücret: ") + item["price"] + (" " + currency if currency else ""))
     elif item.get("free") is False:
         details.append("Ücretli")
     if item.get('participation'):
