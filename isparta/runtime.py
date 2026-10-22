@@ -163,17 +163,18 @@ def run(db_path, public_dir, config_path, *, at=None, fetcher=None, collection=N
 def publish(db_path, public_dir):
     """Production core remains gated until independent account setup is verified."""
     profile = json.loads((ROOT/'config/runtime.json').read_text(encoding='utf-8'))
-    if not profile['publishing_enabled']:
+    if profile.get('publishing_enabled') is not True or profile.get('meta_connected') is not True:
         return {'status': 'disabled'}
     if os.getenv('GITHUB_REPOSITORY') != REPOSITORY or os.getenv('GITHUB_REF') != 'refs/heads/main':
         raise ValueError('Isparta main workflow required')
     from news_engine.instagram import Instagram, publish_automatic
     api = Instagram()
+    if api.auth_mode != profile.get('instagram_auth_mode'):
+        return {'status': 'authentication_mode_mismatch'}
     if not api.enabled():
         return {'status': 'disabled'}
-    identity = api.call(api.account, 'GET', fields='id,username')
-    if identity.get('id') != api.account or identity.get('username') != 'ispartaofficial':
-        return {'status': 'account_mismatch'}
+    if reason := api.identity_problem('ispartaofficial'):
+        return {'status': reason}
     # A separate runner reads only the public manifest; raw image bytes are
     # rechecked by the inherited deployed-asset gate immediately before writes.
     import requests
