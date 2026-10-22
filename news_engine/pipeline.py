@@ -177,6 +177,8 @@ def _export(store: Store, public_dir: Path, sources: list[dict], at: datetime, d
     snapshot['factory'] = factory_summary(store, at)
     if not demo:
         snapshot['weather_story'] = {'enabled': False, 'reason': 'not_configured_for_isparta'}
+        from .pharmacy import export as export_pharmacy
+        snapshot['pharmacy_story'] = export_pharmacy(store, public_dir, at)
     if catalogue_path.exists():
         from .source_catalog import public_catalog
         catalogue = json.loads(catalogue_path.read_text(encoding='utf-8'))
