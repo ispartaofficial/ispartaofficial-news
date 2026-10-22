@@ -54,8 +54,8 @@ ISUBÜ topluluk dizini içerik kaynaklarından ayrı keşif kanalıdır. Toplulu
 bulunması, o topluluğun etkinlik veya Instagram okuyucusunun çalıştığını kanıtlamaz.
 Güncel kapsam ve kapalı adaylar `docs/source-coverage.md` içinde tutulur.
 Yerel haberler asıl makale tarihini kullanır; güncelleme, liste sırası veya bugünkü
-site başlığı eski haberi tazelemez. İki saatte bir planlanan bulut görevi yalnız
-araştırma raporu oluşturur. Alan adı, robots, sertifika, yanıt boyutu ve sayfa
+site başlığı eski haberi tazelemez. Saatte iki kez planlanan bulut görevi araştırma raporu, kalıcı kuyruk ve
+markaya uygun kart oluşturur. Bu hazırlık Meta teslimi değildir. Alan adı, robots, sertifika, yanıt boyutu ve sayfa
 sayısı sınırlandırılır. Bir kaynak kısmen okunursa rapor `partial` gösterir.
 
 Üniversite takviminde şehir dışı mekân, geçmiş başlangıç, eksik saat, tarih/saat
@@ -64,8 +64,9 @@ sayısı sınırlandırılır. Bir kaynak kısmen okunursa rapor `partial` göst
 denmez. Aynı afişin ilgisiz birden fazla ISUBÜ etkinliğinde görünmesi durumunda
 afiş reddedilir. Diğer kaynak fotoğrafları da yalnız inceleme adayıdır.
 
-Yalnız bu araştırma turundaki benzer haberler gruplanır. Kalıcı yayın geçmişiyle
-tekilleştirme ve gerçekten görsel/içerik doğrulayan yayın hattı sonraki aşamadır.
+Araştırma turundaki benzer haberler gruplanır. Mevcut üretim çekirdeğinin kalıcı
+tekilleştirmesi, metin/tarih ve görsel/manifest kapıları ayrıca aktarılmıştır.
+Görsel hizmeti/model kurulumu ve Meta bağlantısı henüz etkin değildir.
 `eligible_for_drafting` yayın onayı değildir. Rapor tam yazı kopyası yerine kısa
 kaynak alıntısı, kaynak adresi ve kanıt özeti tutar. Kaynak okuyucusunun çalışması,
 içeriğin güncel olduğu veya otomatik yayına onaylandığı anlamına gelmez.
@@ -92,11 +93,9 @@ haber siteleri ve resmî duyurular bu yüzden kapsamdan çıkarılmaz.
 
 ## Güncel sınır
 
-Bu aşama tam motor aktarımı değildir. GitHub bağlayıcısında yazma erişimi
-yokken, kullanıcıya ait Isparta tarayıcı oturumuyla kod ve PR işlemleri yapılabilir.
-Meta/yeni hesap bağlantıları ve sosyal yayın dağıtımı yoktur. Logo ve kart
-önizlemesi sosyal medya hesabında herhangi bir değişiklik yapmaz. Kaynak adayları
-`config/source-candidates.json` içinde, araştırma için etkin okuyucular ayrı
-`config/research-sources.json` içinde tutulur. Bulut görevinin dosyası, başarılı
-canlı araştırma ve gerçek yayın ayrı kanıtlardır.
-
+22 Ekim 2026: mevcut üretim çekirdeği `news_engine/` altında Isparta'ya
+uyarlanmıştır. `docs/engine-port.md` kapsamı ve etkin olmayan bağlantıları
+açıklar. Bağımsız Meta hesabı, Facebook sayfası, görsel hizmeti/model kurulumu,
+ölçüm ve kaynak etkinleştirme henüz bağlı değildir. Araştırma, kalıcı hazırlık,
+bulut dağıtımı ve gerçek sosyal teslim ayrı kanıtlardır. Başka şehrin anahtarı,
+logosu, veritabanı veya teslim kayıtları taşınmaz.
