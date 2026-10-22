@@ -16,6 +16,7 @@ import requests
 from .domain import digest, parse_date
 from .media_caption import generated_image_caption
 from .store import Store
+from .meta_identity import HOSTS, base_url, identity_query, identity_problem
 
 
 class Instagram:
@@ -23,25 +24,35 @@ class Instagram:
         self.session = session or requests.Session()
         self.token = os.getenv("INSTAGRAM_ACCESS_TOKEN", "")
         self.account = os.getenv("INSTAGRAM_USER_ID", "")
-        self.version = os.getenv("META_GRAPH_VERSION", "v25.0")
-        if not re.fullmatch(r"v\d+\.0", self.version):
-            raise ValueError("Invalid Graph API version")
-        self.base = f"https://graph.facebook.com/{self.version}"
+        self.version = os.getenv("META_GRAPH_VERSION", "v26.0")
+        self.auth_mode = os.getenv('INSTAGRAM_AUTH_MODE', 'facebook_login')
+        self.base = base_url(self.auth_mode, self.version)
 
     def enabled(self) -> bool:
         return (os.getenv("INSTAGRAM_PUBLISH_ENABLED") == "true" and
                 os.getenv("META_TESTS_COMPLETED") == "true" and
-                os.getenv("INSTAGRAM_AUTH_MODE") == "facebook_login" and
-                bool(self.token) and bool(re.fullmatch(r"\d+", self.account)))
+                os.getenv("INSTAGRAM_AUTH_MODE") in HOSTS and
+                os.getenv("INSTAGRAM_AUTH_MODE") == self.auth_mode and
+                bool(self.token) and bool(re.fullmatch(r"\d{1,32}", self.account)))
+
+    def identity_problem(self, username):
+        path, fields = identity_query(self.auth_mode, self.account)
+        return identity_problem(self.call(path, 'GET', fields=fields), self.auth_mode, self.account, username)
 
     def call(self, path: str, method: str = "POST", **params) -> dict:
         response = self.session.request(method, f"{self.base}/{path}", headers={"Authorization": f"Bearer {self.token}"},
                                         params=params if method == "GET" else None,
-                                        data=params if method != "GET" else None, timeout=(8, 30))
+                                        data=params if method != "GET" else None, timeout=(8, 30), allow_redirects=False)
         # Do not propagate a response body, request URL, token or raw API error to logs.
-        if not response.ok:
+        if not response.ok or 300 <= response.status_code < 400:
             raise RuntimeError(f"Meta API request failed (HTTP {response.status_code})")
-        return response.json()
+        try:
+            value = response.json()
+        except ValueError:
+            raise RuntimeError('Meta API response could not be verified') from None
+        if not isinstance(value, dict) or 'error' in value:
+            raise RuntimeError('Meta API response could not be verified')
+        return value
 
     def wait(self, container: str):
         for _ in range(10):

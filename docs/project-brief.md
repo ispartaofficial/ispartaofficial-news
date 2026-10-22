@@ -97,7 +97,11 @@ haber siteleri ve resmî duyurular bu yüzden kapsamdan çıkarılmaz.
 
 22 Ekim 2026: mevcut üretim çekirdeği `news_engine/` altında Isparta'ya
 uyarlanmıştır. `docs/engine-port.md` kapsamı ve etkin olmayan bağlantıları
-açıklar. Bağımsız Meta hesabı, Facebook sayfası, görsel hizmeti/model kurulumu,
-ölçüm ve kaynak etkinleştirme henüz bağlı değildir. Araştırma, kalıcı hazırlık,
+açıklar. Kaynak resimleri için OCR/konu modeli bulutta kurulmuştur; son doğrulanan
+turda gerçek bir kaynak resmi onaylanmamıştır. Bağımsız Meta bağlantısı ve görsel
+üretim hizmeti kapalıdır; Facebook sayfası yoktur. Instagram Login kodu ve yalnız
+GET testi `docs/meta-connection.md` içinde açıklanır; Meta'nın hesap sahibinden
+istediği şifre doğrulaması beklemektedir. Ölçüm ve kaynak etkinleştirme henüz
+bağlı değildir. Araştırma, kalıcı hazırlık,
 bulut dağıtımı ve gerçek sosyal teslim ayrı kanıtlardır. Başka şehrin anahtarı,
 logosu, veritabanı veya teslim kayıtları taşınmaz.

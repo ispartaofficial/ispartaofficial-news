@@ -2,6 +2,7 @@
   "version": "isparta-core-port-v1",
   "repository": "ispartaofficial/ispartaofficial-news",
   "instagram_username": "ispartaofficial",
+  "instagram_auth_mode": "instagram_login",
   "site_url": "https://ispartaofficial.github.io/ispartaofficial-news",
   "publishing_enabled": false,
   "meta_connected": false,

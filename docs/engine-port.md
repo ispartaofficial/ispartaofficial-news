@@ -60,8 +60,9 @@ kurulumu ve gerçekten onaylanan resim ayrıca tarihli kanıt gerektirir. Koddak
 fotoğraf/üretim yeteneği çalışan görsel teslimi olarak sunulmaz. Öğrenme ve yeni
 okuyucu etkinleştirme de şimdilik bağlı değildir.
 
-Instagram etkinleştirilmeden önce hesap kimliği `ispartaofficial` olarak GET ile
-doğrulanmalı, doğru bağımsız izinler ve medya adresleri kontrol edilmeli, günlük
+Instagram Login bağlantısı ve yalnız GET testi [bağlantı sözleşmesinde](meta-connection.md)
+açıklanır; kurulum kapalıdır. Instagram etkinleştirilmeden önce hesap kimliği
+`ispartaofficial` olarak GET ile doğrulanmalı, doğru bağımsız izinler ve medya adresleri kontrol edilmeli, günlük
 yayın düzeni netleştirilmelidir. Çekirdeğin iki gönderilik üst sınırı şu anda
 **etkin olmayan güvenlik tavanıdır**; yeni yayın kotası ilanı değildir. Hazırlık
 görevi Meta anahtarı almaz, içerik paylaşmaz ve eski içerikleri topluca yayınlamaz.
