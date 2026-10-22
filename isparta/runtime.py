@@ -36,9 +36,10 @@ def sources_for_engine(config):
 
 
 def category(row):
-    # Event access rules/venue names can mention theatre without identifying the
-    # show's genre. Only explicit title cues classify an event; uncertainty stays broad.
-    value = normalized(row['title'] if row['kind'] == 'event' else row['title'] + ' ' + row['description'])
+    # A venue or incidental body detail doesn't identify the main subject.
+    # For example, land-sale text can mention sports facilities without being
+    # sports news. Only explicit headline cues narrow the category.
+    value = normalized(row['title'])
     words = (('outage', r'\bkesinti\w*'), ('theatre', r'\btiyatro\w*'),
              ('concert', r'\bkonser\w*|\bcanli müzik\b'), ('festival', r'\bfestival\w*'),
              ('cinema', r'\bsinema\w*|\bfilm göster\w*'), ('sport', r'\bspor\w*|\bturnuva\w*'),
