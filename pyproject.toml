@@ -17,7 +17,7 @@ visual = ["transformers==4.57.1", "numpy>=2,<3"]
 include = ["isparta*", "news_engine*"]
 
 [tool.setuptools.package-data]
-isparta = ["assets/*.jpg"]
+isparta = ["assets/*.jpg", "assets/*.png"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
