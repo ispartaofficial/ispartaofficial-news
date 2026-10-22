@@ -11,5 +11,6 @@
   "quota_status": "inherited_engine_ceiling_inactive_until_Isparta_activation",
   "source_discovery_activation": false,
   "learning_enabled": false,
-  "illustration_generation_configured": false
+  "illustration_generation_configured": false,
+  "source_photos_enabled": true
 }
