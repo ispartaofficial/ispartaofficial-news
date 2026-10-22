@@ -105,3 +105,12 @@ istediği şifre doğrulaması beklemektedir. Ölçüm ve kaynak etkinleştirme 
 bağlı değildir. Araştırma, kalıcı hazırlık,
 bulut dağıtımı ve gerçek sosyal teslim ayrı kanıtlardır. Başka şehrin anahtarı,
 logosu, veritabanı veya teslim kayıtları taşınmaz.
+
+## 22 Ekim: günlük nöbetçi eczane story
+
+Kullanıcı Isparta merkez ve merkez mahalleleri için her gün 17:00 hedefiyle
+nöbetçi eczane adı, adresi ve varsa işletme telefonunu istedi. Kaynak Isparta
+Eczacı Odasıdır; ilçeler filtrelenir. Orijinal logo, açık gri/beyaz 3D fon ve
+kırmızı E tabelası kullanılır. İlk pembe/mor atmosfer ve artı simgesi kullanıcı
+tarafından reddedildi. [Akış ve sınırlar](daily-pharmacy-story.md). Meta ve
+yayın kapıları kapalı kalır; hazırlanmış kart gerçek paylaşım değildir.
