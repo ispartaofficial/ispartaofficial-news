@@ -14,7 +14,7 @@ PUBLIC_ITEM_FIELDS = ITEM_FIELDS - {"identity"}
 POST_FIELDS = {"id", "item_id", "revision", "kind", "due_at", "title", "caption", "category", "source_urls", "slides", "created_at", "formats",
                "publish_format", "parent_post_id", "story_asset", "story_index", "published_at", "status", "container_id", "media_id", "illustration_keys", "source_photo_keys", "visual_review", "card_layout", "brand_version"}
 SECRET_PATTERN = re.compile(
-    r"AIza[\w-]{35}|(?:gh[pousr]_[A-Za-z0-9]{20,})|github_pat_[A-Za-z0-9_]{20,}|EAA[A-Za-z0-9]{50,}|"
+    r"AIza[\w-]{35}|(?:gh[pousr]_[A-Za-z0-9]{20,})|github_pat_[A-Za-z0-9_]{20,}|EAA[A-Za-z0-9]{50,}|IG[A-Za-z0-9]{60,}|cfut_[A-Za-z0-9_-]{20,}|"
     r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|"
     r"(?:access[_-]?token|api[_-]?key|password|secret|authorization)\s*[=:]\s*[\"']?[^\s\"'&,;<>]{8,}", re.I)
 SECRET_VARIABLES = ("GEMINI_API_KEY", "CLOUDFLARE_API_TOKEN", "INSTAGRAM_ACCESS_TOKEN", "FACEBOOK_PAGE_ACCESS_TOKEN", "INSTAGRAM_USER_ID", "IG_SOURCE_ACCESS_TOKEN", "IG_SOURCE_USER_ID", "GITHUB_TOKEN", "GH_TOKEN", "STATE_WRITE_TOKEN")
@@ -74,11 +74,21 @@ def validate_state(path: Path):
     db = sqlite3.connect(f"file:{path.resolve()}?mode=ro", uri=True)
     try:
         tables = {r[0] for r in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
-        if not tables <= {"items", "posts", "withheld", "runs", "candidates", "annotations", "illustrations", "illustration_days", "source_photos", "source_health", "facebook_deliveries", "publication_checks", "weather_stories", "learning_profile", "source_checks", "delivery_audits", "learning_samples", "installation", "pharmacy_stories"}:
+        if not tables <= {"items", "posts", "withheld", "runs", "candidates", "annotations", "illustrations", "illustration_days", "source_photos", "source_health", "facebook_deliveries", "publication_checks", "weather_stories", "learning_profile", "source_checks", "delivery_audits", "learning_samples", "installation", "pharmacy_stories", "credential_capsules"}:
             raise ValueError("Unexpected state tables")
         if 'installation' not in tables or [r[0] for r in db.execute('SELECT repository FROM installation')] != ['ispartaofficial/ispartaofficial-news']:
             raise ValueError('Independent Isparta state identity required')
         for table in sorted(tables):
+            if table == 'credential_capsules':
+                if [r[1] for r in db.execute('PRAGMA table_info(credential_capsules)')] != ['slot', 'sealed']:
+                    raise ValueError('Unexpected encrypted credential fields')
+                rows = list(db.execute('SELECT slot,sealed FROM credential_capsules'))
+                if len(rows) > 1:
+                    raise ValueError('Unexpected encrypted credential history')
+                for slot, sealed in rows:
+                    if slot != 'instagram-v1' or not isinstance(sealed, bytes) or not 100 <= len(sealed) <= 8192 or not sealed.startswith(b'IGC1'):
+                        raise ValueError('Invalid encrypted credential envelope')
+                continue
             if table == 'pharmacy_stories':
                 from .pharmacy_data import validate_record
                 if [r[1] for r in db.execute('PRAGMA table_info(pharmacy_stories)')] != ['day','bulletin','status','checked_at','last_result','container_ids','media_ids','published_at']:

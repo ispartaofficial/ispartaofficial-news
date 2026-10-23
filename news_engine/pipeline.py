@@ -163,7 +163,9 @@ def _export(store: Store, public_dir: Path, sources: list[dict], at: datetime, d
                      **({'visual_review':p['visual_review']} if 'visual_review' in p else {})} for p in parents]
     snapshot = {"schema_version": 1, "generated_at": at.isoformat(), "demo": demo,
                 "brand": {"version": BRAND_VERSION, "logo": PUBLIC_ASSET},
-                "publishing_enabled": False, "illustrations": illustrator.stats,
+                "publishing_enabled": (os.getenv("PUBLICATION_AUTHORIZED") == "true" and
+                    json.loads((Path(__file__).resolve().parents[1]/"config/runtime.json").read_text(encoding="utf-8")).get("publishing_enabled") is True),
+                "illustrations": illustrator.stats,
                 "news": news, "events": events, "posts": public_posts,
                 "withheld_count": store.db.execute("SELECT COUNT(*) FROM withheld").fetchone()[0],
                 "sources": [public_source(s) for s in sources], "source_photos":photos.stats,

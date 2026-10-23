@@ -32,8 +32,9 @@ class ReadError(Exception):
 
 
 class Reader:
-    def __init__(self, session, version):
-        self.session, self.base, self.calls = session, 'https://graph.facebook.com/' + version + '/', 0
+    def __init__(self, session, version, mode='facebook_login'):
+        from .meta_identity import base_url
+        self.session, self.base, self.calls = session, base_url(mode, version) + '/', 0
 
     def get(self, path, token, fields):
         import requests
@@ -106,7 +107,11 @@ def refresh(store, at=None, *, environ=None, session=None):
     version = env.get('META_GRAPH_VERSION', 'v26.0')
     if not re.fullmatch(r'v\d+\.0', version):
         return summary(store, at)
-    reader = Reader(session or requests.Session(), version)
+    mode = env.get('INSTAGRAM_AUTH_MODE', 'facebook_login')
+    from .meta_identity import HOSTS, identity_query, identity_problem
+    if mode not in HOSTS:
+        return summary(store, at)
+    reader = Reader(session or requests.Session(), version, mode)
     previous = {r['id']: r for r in store.rows('SELECT * FROM delivery_audits')}
     tasks = []
     parents = {p['id']: p for p in store.posts() if not p.get('publish_format')}
@@ -144,7 +149,7 @@ def refresh(store, at=None, *, environ=None, session=None):
             continue
         if reader.calls >= MAX_GETS:
             break
-        if channel == 'facebook' and env.get('FACEBOOK_PUBLISH_ENABLED') != 'true':
+        if channel == 'facebook' and (env.get('FACEBOOK_PUBLISH_ENABLED') != 'true' or mode != 'facebook_login'):
             continue
         token = env.get('INSTAGRAM_ACCESS_TOKEN' if channel == 'instagram' else 'FACEBOOK_PAGE_ACCESS_TOKEN', '')
         account = env.get('INSTAGRAM_USER_ID' if channel == 'instagram' else 'FACEBOOK_PAGE_ID', '')
@@ -152,12 +157,14 @@ def refresh(store, at=None, *, environ=None, session=None):
             if not token or not re.fullmatch(r'\d{1,32}', account or '') or not re.fullmatch(r'\d{1,32}(?:_\d{1,32})?', media or ''):
                 raise ReadError('settings_missing')
             if channel not in identities:
-                identity = reader.get(account if channel == 'instagram' else 'me', token,
-                                      'id,username' if channel == 'instagram' else 'id,instagram_business_account')
-                linked = identity.get('instagram_business_account', {})
-                valid = (identity.get('id') == account and
-                         (identity.get('username') == 'ispartaofficial' if channel == 'instagram'
-                          else isinstance(linked, dict) and linked.get('id') == env.get('INSTAGRAM_USER_ID')))
+                if channel == 'instagram':
+                    query, fields = identity_query(mode, account)
+                    identity = reader.get(query, token, fields)
+                    valid = identity_problem(identity, mode, account, 'ispartaofficial') is None
+                else:
+                    identity = reader.get('me', token, 'id,instagram_business_account')
+                    linked = identity.get('instagram_business_account', {})
+                    valid = identity.get('id') == account and isinstance(linked, dict) and linked.get('id') == env.get('INSTAGRAM_USER_ID')
                 identities[channel] = 'ok' if valid else 'account_mismatch'
             if identities[channel] != 'ok':
                 raise ReadError(identities[channel])
