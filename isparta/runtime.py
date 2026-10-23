@@ -158,10 +158,18 @@ def run(db_path, public_dir, config_path, *, at=None, fetcher=None, collection=N
         report = public_report(collection)
         report['engine'] = {'version': 'isparta-core-port-v1', 'accepted_items': accepted,
             'prepared_parents': sum(p['status'] == 'prepared' and not p.get('publish_format') for p in store.posts()),
-            'rendered_parents': len(assets), 'publishing_enabled': False, 'meta_connected': False}
+            'rendered_parents': len(assets), 'publishing_enabled': False,
+            'publication_configured': json.loads((ROOT/'config/runtime.json').read_text(encoding='utf-8')).get('publishing_enabled') is True}
         return report
     finally:
         store.close()
+
+
+def initial_launch_allowed(store, target, event):
+    if event != 'workflow_dispatch' or not re.fullmatch(r'[a-f0-9]{24}', target):
+        return False
+    claims = [p for p in store.posts() if p['status'] in ('publishing','published','uncertain')]
+    return all(p['id'] == target or p.get('parent_post_id') == target for p in claims)
 
 
 def publish(db_path, public_dir):
@@ -193,8 +201,16 @@ def publish(db_path, public_dir):
     try:
         assets = {p['id']: p['assets'] for p in manifest['posts']}
         # Real publication always checkpoints remotely before contacting Meta.
-        result = publish_automatic(store, now(), SITE, assets, adapter=api,
-                                   checkpoint=lambda: persist(Path(db_path)), require_visual_review=True)
+        target = os.getenv('INITIAL_POST_ID', '')
+        if target:
+            if not initial_launch_allowed(store, target, os.getenv('GITHUB_EVENT_NAME')):
+                return {'status': 'already_claimed'}
+            from news_engine.instagram import publish_requested
+            result = publish_requested(store, now(), SITE, assets, target, adapter=api,
+                                       checkpoint=lambda: persist(Path(db_path)), require_visual_review=True)
+        else:
+            result = publish_automatic(store, now(), SITE, assets, adapter=api,
+                                       checkpoint=lambda: persist(Path(db_path)), require_visual_review=True)
         from news_engine.operations import record_check
         return record_check(store, result, now(), 'automatic')
     finally:
@@ -218,7 +234,7 @@ def main():
     print(json.dumps(report['engine'], ensure_ascii=False))
     if summary_file := os.getenv('GITHUB_STEP_SUMMARY'):
         rows = ['## Isparta içerik hazırlığı', '',
-                'Meta bağlantısı ve sosyal yayın kapalıdır. Kart hazırlığı teslim kanıtı değildir.', '',
+                'Bu iş yalnız araştırır ve kart hazırlar. Sosyal teslim ayrı yayın işinde doğrulanır.', '',
                 f"Araştırılan kayıt: {len(report['items'])}; çekirdeğin kabulü: {report['engine']['accepted_items']}; "
                 f"kartı hazırlanan içerik: {report['engine']['rendered_parents']}.", '',
                 '| Kaynak | Okuma | Ayrıştırılan |', '|---|---|---:|']
