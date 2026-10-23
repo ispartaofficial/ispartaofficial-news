@@ -94,6 +94,10 @@ def event_activity(category: str, title: str = '') -> str | None:
         return 'tile_art'
     if re.search(r'\batölye(?:si)?\b|\bworkshop\b', value):
         return 'workshop'
+    # Ticket feeds may group a children's stage play under "family". Its
+    # explicit activity must control both the badge and the visual scene.
+    if re.search(r'\b(?:çocuk|kukla|tiyatro) oyunu\b|\bçocuk tiyatrosu\b', value):
+        return 'theatre'
     return None
 
 
@@ -103,7 +107,8 @@ def event_type_label(category: str, title: str = '') -> str:
         return 'Elektrik kesintisi' if 'elektrik' in normalized(title) else 'Su kesintisi' if re.search(r'\bsu\b', normalized(title)) else 'Kesinti'
     activity = event_activity(category, title)
     if activity:
-        return {'yoga':'Yoga etkinliği', 'tile_art':'Çini etkinliği', 'workshop':'Atölye'}[activity]
+        return {'yoga':'Yoga etkinliği', 'tile_art':'Çini etkinliği', 'workshop':'Atölye',
+                'theatre':'Tiyatro oyunu'}[activity]
     return {"theatre": "Tiyatro oyunu", "concert": "Konser", "cinema": "Film gösterimi",
             "festival": "Festival", "culture": "Kültür ve sanat etkinliği",
             "family": "Aile ve çocuk etkinliği", "sport": "Spor etkinliği",
@@ -250,7 +255,7 @@ def _topic_tags(item: dict) -> list[str]:
         return ['#sosyaldestek'] + (['#istihdam'] if 'istihdam' in text else [])
     activity = event_activity(category, item.get('title', '')) if event else None
     if activity:
-        primary = {'yoga':'#yoga', 'tile_art':'#cini', 'workshop':'#atolye'}[activity]
+        primary = {'yoga':'#yoga', 'tile_art':'#cini', 'workshop':'#atolye', 'theatre':'#tiyatro'}[activity]
         return [primary, '#ailevecocuk' if category == 'family' else '#etkinlik']
     primary = {"theatre": "#tiyatro", "concert": "#konser", "cinema": "#sinema",
                "festival": "#festival", "culture": "#kultursanat", "family": "#ailevecocuk",

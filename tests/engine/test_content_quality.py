@@ -14,6 +14,8 @@ from news_engine.domain import digest
 from news_engine.image_safety import validate_jpeg
 from news_engine.render import card, graphic_title, readable_date_line
 from news_engine.schedule import card_location, queue_item, slide_body
+from news_engine.visual_subject import subject
+from news_engine.visual_match import LABELS, accepted
 
 
 @pytest.mark.parametrize('title,category,activity,label,cue', [
@@ -21,6 +23,7 @@ from news_engine.schedule import card_location, queue_item, slide_body
     ('Ayşin Koruk ile Yetişkin Çini Etkinliği','event','tile_art','Çini etkinliği','ceramic tile'),
     ('Ebeveyn & Çocuk Çini Etkinliği','family','tile_art','Çini etkinliği','ceramic tile'),
     ('Yalvaç tasarım atölyesi','culture','workshop','Atölye','craft workshop'),
+    ('Çizmeli Kedi - İyi Düşler Ülkesi Çocuk Oyunu','family','theatre','Tiyatro oyunu','theatre stage'),
 ])
 def test_explicit_activity_controls_type_tags_and_generic_scene(event,title,category,activity,label,cue):
     item={**event,'category':category,'title':title,'location':'Yalvaç', 'description':'Kaynak açıklaması'}
@@ -31,13 +34,26 @@ def test_explicit_activity_controls_type_tags_and_generic_scene(event,title,cate
     assert cue in illustration_prompt(item)
     assert title not in illustration_prompt(item)
     assert scene_version(item)==ACTIVITY_SCENE_VERSION
-    assert {'yoga':'#yoga','tile_art':'#cini','workshop':'#atolye'}[activity] in hashtags(item)
+    assert {'yoga':'#yoga','tile_art':'#cini','workshop':'#atolye','theatre':'#tiyatro'}[activity] in hashtags(item)
     assert all(tag==tag.lower() for tag in hashtags(item))
     assert item==before
 
 
+@pytest.mark.parametrize('category', ['family', 'event', 'culture'])
+def test_child_stage_play_rejects_playroom_visual(event, category):
+    item = {**event, 'category':category,
+            'title':'Çizmeli Kedi - İyi Düşler Ülkesi Çocuk Oyunu'}
+    assert subject(item) == 'theatre'
+    assert 'building blocks' not in illustration_prompt(item)
+    values = {label:0.1 for label in LABELS}
+    values['family'] = .32
+    assert not accepted(values, subject(item))
+
+
 @pytest.mark.parametrize('category,title',[('theatre','Yoga adlı oyun'),('concert','Çini salonunda konser'),
-    ('event','Konser salonunda buluşma'),('event','Yoga merkezinde buluşma'),('event','Yogacı ile söyleşi')])
+    ('event','Konser salonunda buluşma'),('event','Yoga merkezinde buluşma'),('event','Yogacı ile söyleşi'),
+    ('event','Tiyatro salonunda buluşma'),('event','Tiyatro ve edebiyat söyleşisi'),
+    ('family','Çocuk oyun alanı'),('family','Satranç oyunu')])
 def test_activity_is_not_guessed_from_plot_venue_or_word_fragment(event,category,title):
     assert event_activity(category,title) is None
     assert scene_version({**event,'category':category,'title':title})==SCENE_VERSION
@@ -151,8 +167,10 @@ def test_state_moves_to_badge_without_hiding_event_name_or_verified_date(tmp_pat
 
 
 @pytest.mark.parametrize('status',['published','publishing','uncertain'])
-def test_new_activity_copy_and_scene_key_do_not_rewrite_claimed_payload(store,event,at,status):
-    event.update(title='Canan Tutal İle Hatha Yoga',category='event')
+@pytest.mark.parametrize('title,category', [('Canan Tutal İle Hatha Yoga','event'),
+    ('Çizmeli Kedi - İyi Düşler Ülkesi Çocuk Oyunu','family')])
+def test_new_activity_copy_and_scene_key_do_not_rewrite_claimed_payload(store,event,at,status,title,category):
+    event.update(title=title,category=category)
     store.upsert(event,at.isoformat()); item=store.items()[0]
     queue_item(store,item,'announcement',at,at)
     key=store.posts()[0]['id']
@@ -165,8 +183,10 @@ def test_new_activity_copy_and_scene_key_do_not_rewrite_claimed_payload(store,ev
     assert store.rows('SELECT * FROM posts WHERE id=?',(key,))[0]==before
 
 
-def test_activity_refresh_respects_quota_and_keeps_only_published_old_binding(store,event,at,tmp_path,monkeypatch):
-    event.update(title='Canan Tutal İle Hatha Yoga',category='event')
+@pytest.mark.parametrize('title,category', [('Canan Tutal İle Hatha Yoga','event'),
+    ('Çizmeli Kedi - İyi Düşler Ülkesi Çocuk Oyunu','family')])
+def test_activity_refresh_respects_quota_and_keeps_only_published_old_binding(store,event,at,tmp_path,monkeypatch,title,category):
+    event.update(title=title,category=category)
     store.upsert(event,at.isoformat()); item=store.items()[0]
     previous=digest(MODEL+':editorial-photo-v5:'+item['id']+':'+str(item['revision'])+':'+topic(item))
     assert previous!=image_key(item)

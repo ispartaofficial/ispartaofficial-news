@@ -53,6 +53,7 @@ EVENT_SCENES = {
     'education': 'A learning workspace with an open blank notebook, pencils and a desk lamp, photographed in natural light. No lettering on any surface.',
 }
 ACTIVITY_SCENES = {
+    'theatre': EVENT_SCENES['theatre'],
     'yoga': 'An empty yoga practice space with a rolled and an open yoga mat, plain cork blocks and a folded blanket. Natural window light and realistic fabric and cork textures. No chairs, audience seats, people or lettering.',
     'tile_art': 'A close photographic view of a ceramic tile painting worktable with plain unfinished tiles, brushes, small unlabelled bowls of colour and simple clay tools. Realistic ceramic and brush textures. No children, people, toys, words or specific exhibition artwork.',
     'workshop': 'A close photographic view of a craft workshop table with plain paper, scissors, unlettered materials and simple hand tools. Natural light and realistic textures. No empty audience seating, people or written instructions.',
