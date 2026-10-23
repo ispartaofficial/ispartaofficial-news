@@ -112,6 +112,9 @@ def test_public_excerpt_is_rejected_as_full_source_and_foreign_database_refused(
 
 
 def test_unconfigured_publish_never_contacts_meta_or_opens_state(tmp_path,monkeypatch):
+    (tmp_path/'config').mkdir()
+    (tmp_path/'config/runtime.json').write_text('{"publishing_enabled":false,"meta_connected":false}')
+    monkeypatch.setattr(runtime,'ROOT',tmp_path)
     api=Mock(side_effect=AssertionError('Unexpected Meta adapter'))
     monkeypatch.setattr('news_engine.instagram.Instagram',api)
     assert runtime.publish(tmp_path/'missing.sqlite',tmp_path/'missing-public')=={'status':'disabled'}
