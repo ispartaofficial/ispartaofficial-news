@@ -1,5 +1,8 @@
 # IspartaOfficial
 
+23 Ekim 2026 güncel işletim ve bağlantı bilgisi: [Yayın hazırlığı](docs/live-readiness.md).
+Aşağıdaki ilk aktarım notları kurulum geçmişidir; gerçek güncel durum Pages ve yayın kayıtlarından okunur.
+
 Isparta merkez ve tüm ilçeleri için, üniversite yaşamı ve kültür sanat
 etkinliklerine öncelik veren bağımsız haber otomasyonu hazırlığı.
 
