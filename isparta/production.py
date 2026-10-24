@@ -5,20 +5,20 @@ import os
 from pathlib import Path
 
 from .credentials import CredentialError, active, resolve
-from news_engine.domain import now
+from news_engine.domain import TZ, now
 from news_engine.state_git import persist
 from news_engine.store import Store
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('action', choices=('publish', 'pharmacy', 'pharmacy-observe', 'check'))
+    parser.add_argument('action', choices=('publish', 'pharmacy', 'pharmacy-observe', 'weather', 'check'))
     parser.add_argument('--wait-for-target', action='store_true')
     args = parser.parse_args()
     path = Path('state/platform.sqlite')
     store = Store(path)
     try:
-        token, renewal = resolve(store, maintain=args.action in ('publish', 'pharmacy'),
+        token, renewal = resolve(store, maintain=args.action in ('publish', 'pharmacy', 'weather'),
                                  checkpoint=lambda: persist(path))
         if target := os.getenv('GITHUB_STEP_SUMMARY'):
             with Path(target).open('a', encoding='utf-8') as out:
@@ -33,6 +33,20 @@ def main():
                 observations = refresh(store)
                 print(json.dumps({'publication': result, 'observation': observations}))
                 if failed(result):
+                    raise SystemExit(1)
+            elif args.action == 'weather':
+                from news_engine.weather import record_result, run_weather
+                from news_engine.weather_data import SITE
+                result = run_weather(store, SITE, checkpoint=lambda: persist(path),
+                                     wait_for_target=args.wait_for_target)
+                record_result(store, now().astimezone(TZ).date().isoformat(), result)
+                from news_engine.delivery_audit import refresh
+                observations = refresh(store)
+                print(json.dumps({'weather': result, 'observation': observations}))
+                if target := os.getenv('GITHUB_STEP_SUMMARY'):
+                    with Path(target).open('a', encoding='utf-8') as out:
+                        out.write('### Günlük hava durumu story\n\n```json\n' + json.dumps(result, indent=2) + '\n```\n')
+                if result['status'] not in ('published', 'already_published', 'outside_window'):
                     raise SystemExit(1)
             elif args.action == 'check':
                 from news_engine.connection_health import main as check

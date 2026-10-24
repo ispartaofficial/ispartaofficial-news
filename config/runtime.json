@@ -7,7 +7,7 @@
   "publishing_enabled": true,
   "meta_connected": true,
   "facebook_enabled": false,
-  "weather_enabled": false,
+  "weather_enabled": true,
   "daily_news_feed_limit": 2,
   "quota_status": "daily_maximum_2_feeds_and_first_matching_stories",
   "source_discovery_activation": false,

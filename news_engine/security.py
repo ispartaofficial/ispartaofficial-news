@@ -150,8 +150,12 @@ def validate_state(path: Path):
                     raise ValueError('Source photo cache exceeds limit')
                 continue
             if table == 'weather_stories':
-                if db.execute('SELECT COUNT(*) FROM weather_stories').fetchone()[0]:
-                    raise ValueError('Isparta weather is not configured')
+                from .weather_data import validate_record
+                if [r[1] for r in db.execute('PRAGMA table_info(weather_stories)')] != ['day','forecast','status','checked_at','last_result','container_id','media_id','published_at']:
+                    raise ValueError('Unexpected weather story fields')
+                for row in db.execute('SELECT * FROM weather_stories'):
+                    assert_no_secrets(row)
+                    validate_record(row)
                 continue
             if table == 'publication_checks':
                 from datetime import datetime

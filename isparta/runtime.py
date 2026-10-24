@@ -153,6 +153,10 @@ def run(db_path, public_dir, config_path, *, at=None, fetcher=None, collection=N
         if live_collection:
             from news_engine.pharmacy import refresh as refresh_pharmacy
             refresh_pharmacy(store, at)
+            settings = json.loads((ROOT / 'config/runtime.json').read_text(encoding='utf-8'))
+            if settings.get('weather_enabled') is True:
+                from news_engine.weather import refresh_weather
+                refresh_weather(store, at)
         assets = export(store, Path(public_dir), sources, at)
         validate_state(Path(db_path))
         report = public_report(collection)
