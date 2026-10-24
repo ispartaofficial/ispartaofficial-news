@@ -14,7 +14,7 @@ from .collect import Fetcher,structured
 from .domain import canonical,normalized,parse_date
 from .illustrations import clean_image
 from .security import public_url,contains_secret
-from .source_photo_data import VERSION,EVENT_VERSION,key,validate_record,valid_bindings,MAX_CACHE_BYTES,MAX_CACHED_IMAGES
+from .source_photo_data import VERSION,EVENT_VERSION,key,validate_record,valid_bindings,MAX_CACHE_BYTES,MAX_CACHED_IMAGES,approved_image_url,IMAGE_ORIGINS
 from .visual_gate import fingerprint
 from .visual_match import validate_news_photo,MatchRejected,MatchUnavailable
 from .image_safety import IllustrationCheckUnavailable
@@ -36,6 +36,10 @@ def news_subject(item):
             and re.search(r'\b(?:başladi|sürüyor|yapiliyor)\b', title)):
         return 'citrus_harvest'
     if re.search(r'\b(?:toplanti\w*|bir araya gel\w*|buluştu|bulustu)\b',title):return 'meeting'
+    if (re.search(r'\b(?:cadde\w*|yol\w*|sokak\w*|asfalt\w*)\b', title)
+            and re.search(r'\b(?:yenile\w*|değişim\w*|çalişma\w*|yapim\w*)\b', title)
+            and re.search(r'\b(?:başladi|sürüyor|tamamlan\w*|yapiliyor)\b', title)):
+        return 'roadworks'
     if re.search(r'\b(?:trafik|çevre yolu|kavşak)\b',title):return 'traffic'
     return None
 
@@ -56,7 +60,13 @@ def identity_dates(item):
 def candidate(html,final_url,item,source):
     """Same article URL, headline and publication date, plus an in-article image."""
     if canonical(final_url)!=canonical(item['url']):raise ValueError('Article redirected')
-    matches=[row for row in structured(html,final_url,source) if row['kind']==item.get('kind')
+    if source.get('photo_identity_reader') == 'isparta-source-images-v1':
+        from isparta.source_images import identity_rows
+        rows = identity_rows(html, final_url, source)
+    else:
+        rows = structured(html, final_url, source)
+    matches=[row for row in rows if row['kind']==item.get('kind')
+             and not row.get('parser_holds') and not row.get('date_conflict')
              and canonical(row['url'])==canonical(item['url'])
              and normalized(row['title'])==normalized(item['title'])
              and all(parse_date(row.get(k))==parse_date(v) and parse_date(v) is not None
@@ -68,7 +78,17 @@ def candidate(html,final_url,item,source):
     canonical_node=soup.select_one('link[rel="canonical"][href]')
     if canonical_node and canonical(urljoin(final_url,canonical_node['href']))!=canonical(item['url']):
         raise ValueError('Article canonical mismatch')
-    article=soup.select_one(source.get('article_selector','article .entry-content, article .article-content, article, .news-detail, .haber-detay'))
+    if source.get('photo_identity_reader') == 'isparta-source-images-v1' and source.get('reader') in ('sdu','isubu'):
+        # Each calendar reader scopes image_candidate to this exact session,
+        # and rejects shared placeholders before it reaches the photo gate.
+        url = matches[0].get('image_candidate')
+        if not url or not approved_image_url(item['source_id'], item['url'], url):
+            raise ValueError('No session-bound source image')
+        nodes = [node for node in soup.select('img[src]') if urljoin(final_url,node['src'])==url]
+        if not nodes or any(ARCHIVE.search(normalized(' '.join(str(node.get(k,'')) for k in ('alt','title')))) for node in nodes):
+            raise ValueError('Session image label rejected')
+        return url
+    article=soup.select_one(source.get('photo_article_selector') or source.get('article_selector','article .entry-content, article .article-content, article, .news-detail, .haber-detay'))
     if not article:raise ValueError('No article image scope')
     # WordPress featured photos often sit beside entry-content inside article.
     article=article.find_parent('article') or article
@@ -81,20 +101,28 @@ def candidate(html,final_url,item,source):
     images={}
     for node in article.select('img'):
         if node.find_parent(['aside','nav','footer','header']):continue
-        raw=node.get('data-src') or node.get('src')
-        if not isinstance(raw,str):continue
-        url=urljoin(final_url,raw)
         label=normalized(' '.join(str(node.get(k,'')) for k in ('alt','title')))
         figure=node.find_parent('figure')
         if figure and (caption:=figure.find('figcaption')):label+=' '+normalized(caption.get_text(' ',strip=True))
-        if (not public_url(url) or len(url)>2048 or urlsplit(url).hostname!=urlsplit(item['url']).hostname
-                or ARCHIVE.search(label) or re.search(r'logo|avatar|banner|reklam|placeholder|no-image',urlsplit(url).path,re.I)):
-            continue
-        link=node.find_parent('a',href=True)
-        if link:
-            href=urljoin(final_url,link['href'])
-            if canonical(href) not in (canonical(url),canonical(item['url'])):continue
-        images[url]=label
+        raw_urls = [node.get('data-src'), node.get('src')]
+        # Reviewed lazy-loading publishers omit src entirely. A valid bounded
+        # srcset supplies candidates; OpenGraph must still choose an exact one.
+        for field in ('srcset', 'data-srcset'):
+            value = node.get(field, '')
+            if isinstance(value, str) and len(value) <= 8192:
+                raw_urls += [m[1] for part in value.split(',')[:12]
+                             if (m:=re.fullmatch(r'\s*(\S+)\s+(\d{2,4})w\s*', part)) and int(m[2])<=4096]
+        for raw in raw_urls:
+            if not isinstance(raw,str):continue
+            url=urljoin(final_url,raw)
+            if (not approved_image_url(item['source_id'], item['url'], url)
+                    or ARCHIVE.search(label) or re.search(r'logo|avatar|banner|reklam|placeholder|no-image',urlsplit(url).path,re.I)):
+                continue
+            link=node.find_parent('a',href=True)
+            if link:
+                href=urljoin(final_url,link['href'])
+                if canonical(href) not in (canonical(url),canonical(item['url'])):continue
+            images[url]=label
     primary=soup.select_one('meta[property="og:image"][content]')
     if primary:
         url=urljoin(final_url,primary['content'])
@@ -103,7 +131,7 @@ def candidate(html,final_url,item,source):
         # OpenGraph file. Match the same host/path, never filename alone.
         base=lambda value:re.sub(r'-\d{2,5}x\d{2,5}(?=\.(?:jpe?g|png|webp)$)','',canonical(value),flags=re.I)
         variants=[image for image in images if base(image)==base(url)]
-        if (public_url(url) and len(url)<=2048 and urlsplit(url).hostname==urlsplit(item['url']).hostname
+        if (approved_image_url(item['source_id'], item['url'], url)
                 and len(variants)==1):return variants[0]
     if len(images)!=1:raise ValueError('Ambiguous article photograph')
     return next(iter(images))
@@ -219,7 +247,11 @@ class SourcePhotos:
             self.stats['deferred']+=1;return None
         self.reads+=1
         try:
-            if self.fetcher is None:self.fetcher=Fetcher(list(self.sources.values()))
+            if self.fetcher is None:
+                cdns = [{'enabled': True, 'url': 'https://' + origin[1] + '/'}
+                        for sid, origin in IMAGE_ORIGINS.items() if sid in self.sources
+                        and urlsplit(self.sources[sid]['url']).hostname == origin[0]]
+                self.fetcher=Fetcher(list(self.sources.values()) + cdns)
             html,final=self.fetcher.get(item['url'])
             url=candidate(html,final,item,source)
             raw,final_image=self.fetcher.image(url)

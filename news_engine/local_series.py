@@ -1,4 +1,4 @@
-"""Small, source-bound local guides inside the existing two-feed daily budget."""
+"""Small, source-bound local guides inside the shared daily news budget."""
 from __future__ import annotations
 
 from datetime import datetime, time, timedelta

@@ -13,8 +13,31 @@ EVENT_VERSION='source-photo-event-v1'
 FIELDS={'version','source_id','source_url','image_url','title','published_at','checked_at','subject','sha256'}
 INSTAGRAM_FIELDS=(FIELDS-{'image_url'})|{'media_id'}
 EVENT_FIELDS=(FIELDS-{'published_at'})|{'start','end'}
-SUBJECTS=('meeting','flood','traffic','citrus_harvest')
+SUBJECTS=('meeting','flood','traffic','citrus_harvest','roadworks')
 EVENT_SUBJECTS=('theatre','concert','cinema','festival','culture','family','sport','market','food','education','yoga','tile_art','workshop')
+
+# Reviewed publisher-owned delivery origins. Exact source host, CDN host and
+# path namespace are mandatory; this never grants arbitrary subdomain trust.
+IMAGE_ORIGINS = {
+    'bomba32': ('www.bomba32.com', 'bomba32com.teimg.com',
+                r'/(?:crop/\d{2,4}x\d{2,4}/)?bomba32-com/uploads/[A-Za-z0-9_./-]+\.(?:jpe?g|png|webp)'),
+    'ajans32': ('www.ajans32.com', 'cdn.ajans32.com',
+                r'/news(?:_t|_ts)?/\d+\.(?:jpe?g|png|webp)'),
+}
+
+
+def approved_image_url(source_id, source_url, image_url):
+    from .security import public_url
+    if not public_url(image_url) or len(image_url) > 2048:
+        return False
+    page, image = urlsplit(source_url), urlsplit(image_url)
+    if image.hostname == page.hostname:
+        return True
+    origin = IMAGE_ORIGINS.get(source_id)
+    return bool(origin and page.hostname == origin[0] and image.hostname == origin[1]
+                and not image.query and not image.fragment
+                and not any(part in ('.', '..') for part in image.path.split('/'))
+                and re.fullmatch(origin[2], image.path, re.I))
 
 
 def key(item_id,revision,evidence):
@@ -48,8 +71,7 @@ def validate_evidence(value):
                 or not re.fullmatch(r'/p/[a-zA-Z0-9_-]{5,40}/',parts.path)
                 or not isinstance(value['media_id'],str) or not re.fullmatch(r'\d{8,32}',value['media_id'])):
             raise ValueError('Invalid Instagram photograph identity')
-    elif (not public_url(value['image_url']) or len(value['image_url'])>2048
-          or urlsplit(value['source_url']).hostname!=urlsplit(value['image_url']).hostname):
+    elif not approved_image_url(value['source_id'], value['source_url'], value['image_url']):
         raise ValueError('Invalid article photograph identity')
     return value
 
