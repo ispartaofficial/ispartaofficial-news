@@ -141,11 +141,15 @@ def test_source_only_photo_rebinds_existing_text_card_without_generation(tmp_pat
     old=json.loads((public/'data.json').read_text(encoding='utf-8'))
     old_review=old['posts'][0]['visual_review']
     pixels=io.BytesIO();Image.new('RGB',(1080,720),'#574028').save(pixels,'JPEG')
-    event={'@type':'Event','name':'Isparta tiyatro buluşması','url':'https://example.org/duyuru',
-           'startDate':'2026-10-24T20:00:00+03:00','endDate':'2026-10-24T22:00:00+03:00',
-           'description':'Isparta tiyatro gösterimi herkese açıktır.',
-           'location':{'name':'Isparta Kültür Merkezi'}}
-    html='<script type="application/ld+json">'+json.dumps(event)+'</script><article><h1>Isparta tiyatro buluşması</h1><img src="/tiyatro.jpg"></article>'
+    config=json.loads(path.read_text(encoding='utf-8'))
+    config['sources'][0]['url']='https://example.org/duyuru'
+    path.write_text(json.dumps(config),encoding='utf-8')
+    html='''<div class="modal-body"><img src="/tiyatro.jpg"><table>
+        <tr><th>Etkinlik Adı</th><td>Isparta tiyatro buluşması</td></tr>
+        <tr><th>Etkinlik Tarihi</th><td>24.10.2026</td></tr>
+        <tr><th>Açıklama</th><td>Tiyatro gösterimi herkese açıktır.<br>
+        Saat: 20:00–22:00<br>Yer: Isparta Kültür Merkezi</td></tr>
+        </table></div>'''
     fetcher=Mock();fetcher.get.return_value=(html,'https://example.org/duyuru')
     fetcher.image.return_value=(pixels.getvalue(),'https://example.org/tiyatro.jpg')
     monkeypatch.setattr('news_engine.source_photos.Fetcher',lambda sources:fetcher)

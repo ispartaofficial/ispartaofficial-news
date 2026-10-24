@@ -1,5 +1,32 @@
 # Kaynağa bağlı görseller — 22 Ekim 2026
 
+## 24 Ekim: aynı haberin gerçek görseline erişim
+
+Kullanıcı Isparta gönderi ve haber story'lerinde mümkün olduğunca doğru, uygun
+ve gerçek görsel istedi. Gerçek sayfa yapısında iki somut eksik doğrulandı:
+Bomba32'nin ana fotoğrafı metin gövdesinin dışında ve yayınevinin TE CDN
+alanında; Ajans32'nin ana görseli metin çocuğunun dışında, `src` yerine
+`srcset` kullanıyor. İki yayınevinin yalnız tam kaynak alanı, tam CDN alanı ve
+yayınevine özgü resim yolu eşleşmesi kabul edilir. CDN robots kuralları aynı
+normal TLS/robots okuyucusuyla uygulanır; yönlendirme veya genel alt alan
+izni yoktur. Yeni bir izin veya erişim anahtarı oluşturulmaz.
+
+Kaynak resminin kimliği, genel schema.org tahminine bırakılmaz. Isparta'nın
+gözden geçirilmiş makale okuyucusu aynı başlık ve asıl yayım tarihini yeniden
+okur. SDÜ/ISUBÜ takvimleri de aynı başlık, başlangıç/bitiş, saat ve mekânla
+eşleşen seansın kendi görselini seçer; ortak ISUBÜ yer tutucuları yine reddedilir.
+Arşiv/temsili etiketler, farklı tarih veya farklı başlık kabul edilmez.
+
+Cadde/yol yenilemesinin açıkça başladığı haber için ayrı `roadworks` konusu
+eklendi; yalnız aynı haberin kaynak fotoğrafında kullanılabilir, üretilecek
+bir olay görseli izni değildir. Yerel CLIP ve OCR eşikleri düşürülmedi. Yol
+fotoğrafını bulmak, fotoğrafın son onayı değildir: 24 Ekim yerel kontrolde
+Ajans32 Cumhuriyet Caddesi fotoğrafı doğru makaleye bağlanabildi ama CLIP
+eşik altında kaldı ve kullanılmadı. Bomba32 drone haberi için geniş bir yeni
+fotoğraf konusu etkinleştirilmedi. Görsel bulunamayan veya denetimi geçmeyen
+haberde bilgi kartı kalır; tüm haberlerin resimle tamamlandığı iddia edilmez.
+Bu yerel inceleme doğal bulut teslimi veya Instagram paylaşımı değildir.
+
 Isparta'nın kaynak fotoğrafı/afiş hattı, yeni üretim hizmetinden bağımsızdır.
 `SOURCE_PHOTOS_ENABLED=true`, yalnız mevcut güvenilir okuyuculardaki aynı
 makale/etkinliğe bağlı görsel adaylarını değerlendirmeye açar.

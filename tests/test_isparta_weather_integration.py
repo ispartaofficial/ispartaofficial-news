@@ -52,7 +52,8 @@ def test_weather_workflow_keeps_manual_preview_separate_from_production():
 def test_weather_is_enabled_but_existing_daily_news_and_pharmacy_limits_stay_independent():
     runtime = json.loads((ROOT/'config/runtime.json').read_text(encoding='utf-8'))
     assert runtime['weather_enabled'] is True
-    assert runtime['daily_news_feed_limit'] == 2
+    assert runtime['daily_news_feed_limit'] == 3
+    assert runtime['daily_news_story_limit'] == 3
     assert runtime['pharmacy_stories_enabled'] is True
     assert runtime['facebook_enabled'] is False
     research = yaml.safe_load((ROOT/'.github/workflows/research.yml').read_text(encoding='utf-8'))

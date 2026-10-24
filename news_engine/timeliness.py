@@ -98,6 +98,9 @@ def publication_reason(item: dict, at: datetime) -> str | None:
     """Recheck stored items for every destination, including legacy queues."""
     if item.get('verification_holds'):
         return 'reader_verification_held'
+    from .publication_policy import owner_exclusion
+    if reason := owner_exclusion(item):
+        return reason
     if reason := news_quality_reason(item):
         return reason
     if reason := service_validity_reason(item, at):

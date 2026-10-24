@@ -1,5 +1,10 @@
 # IspartaOfficial
 
+24 Ekim 2026 güncel kullanıcı kuralı: [günlük üç haber gönderisi ve üç haber
+story'si](news-publication-policy.md); hava ve eczane story'leri buna ektir.
+Kaynakla eşleşen gerçek görsel önceliklidir. Aşağıdaki tarihli aktarım notları
+kurulum geçmişidir; anlık bağlantı ve teslim sonucu ayrıca doğrulanır.
+
 21 Ekim 2026. Kullanıcıya ait yaklaşık 35 bin takipçili ve kullanıcının
 belirttiğine göre yaklaşık dört yıldır aktif olan sayfa için bağımsız kurulum.
 Profilde 35 B takipçi, 1.548 gönderi ve mevcut fuşya/gül kimliği görüldü.
