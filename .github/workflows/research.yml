@@ -65,7 +65,7 @@ jobs:
       - name: Restore independent durable history; never reset on failure
         id: restore
         run: python -m news_engine.state_git restore
-      - name: Read full sources and reuse production verification, queue and card gates
+      - name: Read full sources and prepare verified news, weather and pharmacy cards
         env:
           # Independent Isparta credentials only. Missing opt-in/credentials stays closed.
           ILLUSTRATIONS_ENABLED: ${{ vars.ILLUSTRATIONS_ENABLED == 'true' && 'true' || 'false' }}
