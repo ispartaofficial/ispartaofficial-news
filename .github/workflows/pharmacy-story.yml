@@ -72,14 +72,14 @@ jobs:
           STATE_WRITE_TOKEN: ${{ github.token }}
           INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
           INSTAGRAM_USER_ID: ${{ secrets.INSTAGRAM_USER_ID }}
-        run: python -m news_engine.pharmacy --wait-for-target
+        run: python -m isparta.production pharmacy --wait-for-target
       - name: Observe recorded pharmacy story membership with GET only
         if: always() && steps.restore.outcome == 'success'
         continue-on-error: true
         env:
           INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
           INSTAGRAM_USER_ID: ${{ secrets.INSTAGRAM_USER_ID }}
-        run: python -m news_engine.pharmacy --observe-only
+        run: python -m isparta.production pharmacy-observe
       - name: Preserve every claim and observation without replay
         if: always() && steps.restore.outcome == 'success'
         env:

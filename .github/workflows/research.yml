@@ -4,6 +4,12 @@ on:
     branches: [main]
     paths: ['isparta/**', 'news_engine/**', 'config/**', 'site/**', '.github/workflows/research.yml']
   workflow_dispatch:
+    inputs:
+      first_post_id:
+        description: Optional reviewed first launch parent; refused after any different claim
+        required: false
+        type: string
+        default: ""
   schedule:
     # Europe/Istanbul: 07:20–23:50, twice hourly. GitHub may start later.
     - cron: '20,50 4-20 * * *'
@@ -20,6 +26,7 @@ jobs:
     permissions:
       contents: write # Only the isolated automation-state branch is written.
     env:
+      PUBLICATION_AUTHORIZED: ${{ vars.INSTAGRAM_PUBLISH_ENABLED == 'true' && vars.META_TESTS_COMPLETED == 'true' && 'true' || 'false' }}
       INSTAGRAM_PUBLISH_ENABLED: 'false'
       ILLUSTRATIONS_ENABLED: 'false' # Only the explicit preparation-step opt-in can override this.
       SOURCE_PHOTOS_ENABLED: 'true'
@@ -122,13 +129,14 @@ jobs:
       - name: Publish only with independent configuration and verified account identity
         env:
           STATE_WRITE_TOKEN: ${{ github.token }}
+          INITIAL_POST_ID: ${{ github.event_name == 'workflow_dispatch' && inputs.first_post_id || '' }}
           INSTAGRAM_PUBLISH_ENABLED: ${{ vars.INSTAGRAM_PUBLISH_ENABLED }}
           META_TESTS_COMPLETED: ${{ vars.META_TESTS_COMPLETED }}
           INSTAGRAM_AUTH_MODE: ${{ vars.INSTAGRAM_AUTH_MODE || 'instagram_login' }}
           META_GRAPH_VERSION: ${{ vars.META_GRAPH_VERSION || 'v26.0' }}
           INSTAGRAM_USER_ID: ${{ secrets.INSTAGRAM_USER_ID }}
           INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
-        run: python -m isparta.runtime publish
+        run: python -m isparta.production publish
       - name: Preserve the final outcome, including uncertain claims
         if: always() && steps.restore.outcome == 'success'
         env:

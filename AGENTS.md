@@ -5,8 +5,8 @@ Seferihisar üretiminden bağımsızdır. `news_engine/`, Seferihisar'ın mevcut
 motorundan uyarlanır; eşdeğer kuralları yeniden yazmayın. Kökeni ve kapsamı
 `docs/engine-port.md` ile `docs/engine-provenance.json` içinde izlenir.
 `research.yml` kaynak araştırması, kalıcı kuyruk ve kart hazırlığı yapar; canlı
-çalışması Actions/Pages/durum dalı kanıtıyla ayrı doğrulanır. Meta bağlantısı ve
-sosyal yayın henüz etkin değildir. Kod veya başarılı hazırlık, gerçek teslim değildir.
+çalışması Actions/Pages/durum dalı kanıtıyla ayrı doğrulanır. Meta bağlantısı bağımsız Isparta hesabıyla doğrulanmıştır.
+23 Ekim kullanıcının yayına hazır etme talebiyle yayın kapıları açılabilir; gerçek teslim ayrıca doğrulanır. Kod veya başarılı hazırlık, gerçek teslim değildir.
 
 - Kullanıcı Isparta merkez ve bütün ilçelerini, özellikle üniversite yaşamı,
   konser, festival ve tiyatro içeriklerini önceliklendirdi.
@@ -26,8 +26,11 @@ sosyal yayın henüz etkin değildir. Kod veya başarılı hazırlık, gerçek t
 - `isparta.runtime` iç kaynak toplamasını ve mevcut motoru birleştirir. Tam kaynak
   metni yalnız bellekte doğrulanır; rapor ve açık durum dalı kısa alıntı taşır.
   Eski ya da yabancı veritabanını kullanmayın; Isparta kurulum kimliği zorunludur.
-- `config/runtime.json` yayın kapısını kapalı tutar. Bu sınırı bir test veya
-  başka giriş noktasıyla aşmayın. Yeni Meta anahtarı/izni oluşturmayın.
+- `config/runtime.json` ve GitHub yayın değişkenleri birlikte kapı oluşturur.
+  Kapalı kapıyı alternatif giriş noktasıyla aşmayın. Yeni Meta izni oluşturmayın.
+  Mevcut Instagram Login anahtarı resmî uç noktadan yenilenir; yalnız şifreli
+  kapsül kalıcı duruma girer. Asıl environment secret şifreleme anahtarıdır;
+  kapsülü korumadan değiştirmeyin. `docs/live-readiness.md` açıklamasını okuyun.
 - Tasarımda başlık, tarih/saat, mekân/ücret ve açıklama notu ayrı alanlardır.
   Kaynak görsel üzerinde değil açıklamadadır. Boş bir açıklama slaytı eklemeyin.
 
