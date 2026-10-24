@@ -29,7 +29,8 @@ def sources_for_engine(config):
     for source in config['sources']:
         if not source.get('research_enabled'):
             continue
-        result.append({**source, 'enabled': True, 'trusted': True, 'access': 'robots',
+        from .source_images import profile as photo_profile
+        result.append({**source, **photo_profile(source), 'enabled': True, 'trusted': True, 'access': 'robots',
                        'kind': 'html', 'article_selector': source.get('body_selector', 'article'),
                        'reviewed_local_scope': source['id'] not in ('bomba32', 'haber32', 'kanal32', 'ajans32')})
     return result
