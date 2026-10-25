@@ -1,5 +1,12 @@
 # IspartaOfficial
 
+24 Ekim akşam politikası: temel günlük üç haber gönderisi ve üç eşleşen
+haber story'si sürer. 25 Ekim 2026'dan başlayarak 20:00–22:59'da aslen
+yayımlanmış ve o akşam ilk kez keşfedilmiş ilk revizyon yeni haber için
+günlük toplam en fazla dört haber çifti olabilir. Yeni 20:00/22:00
+pencereleri de aynı başlangıç tarihine bağlıdır; 24 Ekim'e ek hak açılmaz.
+23:30 sonrası telafi yoktur. [Sınırlar](news-publication-policy.md).
+
 24 Ekim 2026 güncel kullanıcı kuralı: [günlük üç haber gönderisi ve üç haber
 story'si](news-publication-policy.md); hava ve eczane story'leri buna ektir.
 Kaynakla eşleşen gerçek görsel önceliklidir. Aşağıdaki tarihli aktarım notları

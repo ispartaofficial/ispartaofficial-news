@@ -11,6 +11,30 @@ eczane ayrı günlük tablolarda kalır. Haber story'si yayımlanmış haberin i
 eşleşen kartıdır; geçmiş pencere kaçırıldı diye eski story topluca gönderilmez.
 Mevcut haber pencereleri ve içerikler arasındaki aralık korunur.
 
+## Akşam yeni haber istisnası — Isparta başlangıcı 25 Ekim 2026
+
+Sonraki kullanıcı talimatıyla temel üç haber gönderisi ve ilk eşleşen üç
+haber story'si korunur. Kaynağın asıl yayım zamanı aynı Türkiye gününde
+20:00–22:59 olan **yeni bir haber** için günlük toplam en fazla dört
+haber gönderisi ve dört haber story'si olabilir. Bu sınırsız akşam kotası
+değildir. Etkinlik/takvim/hatırlatma veya eski haberi yeniden tarihlemek
+dördüncü hakkı açmaz. İlk keşif de aynı gün 20:00'dan sonra olmalı ve kalıcı
+kaynak kaydı ilk revizyonda kalmalıdır; eski/yeniden yazılan kayıt bu dar
+ek hak için yeterli kanıt değildir. Önceki yayımlanmış kartların metni,
+medya kimliği, kayıtları ve tekrar koruması değişmez.
+
+Isparta'da hem yeni 20:00/22:00 pencereleri hem bu dördüncü haber hakkı
+**25 Ekim 2026** tarihinde etkinleşir. 24 Ekim akşamına ek hak açılmaz.
+Mevcut 21:00 penceresi kalır. Akşam geç çalışan işler en geç 23:30'dan önce,
+yalnız bu yeni haber koşuluyla teslim deneyebilir. 23:30 sonrasında veya
+ertesi güne taşan toplu telafi yoktur. Diğer zaman, kaynak, görsel/metin,
+45 dakika aralığı ve günlük kalıcı iddia kontrolleri korunur. Bu dar
+koşullar sağlanmazsa normal üçlük bütçe geçerlidir.
+
+Hava durumu ve nöbetçi eczane story'leri ayrı günlük sınırlardadır;
+haberlerin üçüncü veya koşullu dördüncü eşleşen story'sine dahil edilmez.
+Başarılı kod/test/dağıtım, ilk doğal akşam tesliminin görüldüğü anlamına gelmez.
+
 Seferihisar'da aynı kesinti, iki revizyon altında aynı kartla paylaşılmıştı.
 Tekrar koruması yalnız kayıt kimliğine güvenmemelidir: donmuş önceki kart
 içeriği ve görsel bağları da denetlenir. Donmuş gönderi/story/Meta kimlikleri
