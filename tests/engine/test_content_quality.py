@@ -62,7 +62,7 @@ def test_activity_is_not_guessed_from_plot_venue_or_word_fragment(event,category
 @pytest.mark.parametrize('category,title',[('concert','Başbaşa Band Konseri'),('festival','Senirkent Kültür ve Sanat Festivali')])
 def test_explicit_event_type_is_not_repeated_in_title(event,category,title):
     assert event_title({**event,'category':category,'title':title})==title
-    assert event_title({**event,'category':'theatre','title':'Hafifletici Sebepler'})=='Hafifletici Sebepler — Tiyatro oyunu'
+    assert event_title({**event,'category':'theatre','title':'Hafifletici Sebepler'})=='Hafifletici Sebepler — Tiyatro gösterisi'
 
 
 def test_ticket_caption_avoids_duplicate_link_and_template_description_without_losing_facts(event):
@@ -147,7 +147,7 @@ def test_compact_yoga_details_keep_venue_and_price_visible(tmp_path,monkeypatch,
     ('İptal duyurusu: ','İPTAL'),('Bugün yakınınızda: ','BUGÜN'),('2 gün kaldı: ','2 GÜN KALDI')])
 @pytest.mark.parametrize('story',[False,True])
 def test_state_moves_to_badge_without_hiding_event_name_or_verified_date(tmp_path,monkeypatch,prefix,notice,story):
-    title=prefix+'Hafifletici Sebepler — Tiyatro oyunu'
+    title=prefix+'Hafifletici Sebepler — Tiyatro gösterisi'
     assert graphic_title(title,'theatre',True)==('Hafifletici Sebepler',notice)
     observed=[]
     original=ImageDraw.ImageDraw.text

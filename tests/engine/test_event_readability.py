@@ -10,7 +10,7 @@ from news_engine.render import readable_date_line
 
 
 @pytest.mark.parametrize("category,label", [
-    ("theatre", "Tiyatro oyunu"), ("concert", "Konser"),
+    ("theatre", "Tiyatro gösterisi"), ("concert", "Konser"),
     ("cinema", "Film gösterimi"), ("festival", "Festival"),
 ])
 def test_event_name_keeps_source_title_and_explains_verified_type(event, category, label):
@@ -43,7 +43,7 @@ def test_event_card_omits_unknown_extras_and_caption_keeps_full_address(event):
     assert address in content
     assert "Organizatör: Açıklanmadı" in content
     assert "Ücret bilgisi açıklanmadı" in content
-    assert content.split("\n\n")[0] == "Hafifletici Sebepler — Tiyatro oyunu"
+    assert content.split("\n\n")[0] == "Hafifletici Sebepler — Tiyatro gösterisi"
     assert 'Kaynak: ' + event['source_name'] in content and event['url'] in content
 
 
@@ -79,9 +79,9 @@ def test_digest_slides_and_caption_make_each_event_type_explicit(store, event, a
     for post in store.posts():
         if post["kind"] not in ("weekly", "monthly"):
             continue
-        assert post["slides"][1]["title"] == "Hafifletici Sebepler — Tiyatro oyunu"
+        assert post["slides"][1]["title"] == "Hafifletici Sebepler — Tiyatro gösterisi"
         assert post["slides"][1]["category"] == "theatre"
-        assert "Hafifletici Sebepler — Tiyatro oyunu" in post["caption"]
+        assert "Hafifletici Sebepler — Tiyatro gösterisi" in post["caption"]
         assert 'Kaynak: ' + event['source_name'] in post['caption'] and event['url'] in post['caption']
         assert all('Kaynak:' not in slide['body'] for slide in post['slides'])
 
@@ -105,7 +105,7 @@ def test_refresh_unclaimed_card_keeps_identity_dates_bindings_and_source_revisio
     assert refreshed["id"] == old["id"]
     assert refreshed["due_at"] == due.isoformat()
     assert refreshed["created_at"] == at.isoformat()
-    assert refreshed["title"] == "Hafifletici Sebepler — Tiyatro oyunu"
+    assert refreshed["title"] == "Hafifletici Sebepler — Tiyatro gösterisi"
     assert refreshed["illustration_keys"] == {"0": "a" * 24}
     assert "Görsel: yapay zekâyla hazırlanmış temsili görsel." not in refreshed["caption"]
     assert refreshed["status"] == status

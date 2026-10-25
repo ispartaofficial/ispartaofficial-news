@@ -118,6 +118,45 @@ def test_ticket_utc_session_organizer_age_and_price_kept_separate():
     assert item['publication_ready'] is False
 
 
+def genre_breadcrumb(label='Tiyatro', *, title='Isparta Sahne Gösterisi',
+                     terminal='https://www.bubilet.com.tr/isparta/etkinlik/ornek',
+                     tag='https://www.bubilet.com.tr/isparta/etiket/tiyatro'):
+    value={'@type':'BreadcrumbList','itemListElement':[
+        {'@type':'ListItem','position':1,'name':'Isparta','item':'https://www.bubilet.com.tr/isparta'},
+        {'@type':'ListItem','position':2,'name':label,'item':tag},
+        {'@type':'ListItem','position':3,'name':title,'item':terminal}]}
+    return '<script type="application/ld+json">'+json.dumps(value,ensure_ascii=False)+'</script>'
+
+
+def test_exact_ticket_genre_routes_to_theatre_visual_without_changing_session_facts():
+    from isparta.runtime import adapt
+    from news_engine.visual_subject import subject
+    raw=ticket_html()+genre_breadcrumb()+genre_breadcrumb(
+        'Trendler',tag='https://www.bubilet.com.tr/isparta/etiket/trendler')
+    row=tickets(raw)[0]
+    assert row['source_event_category']=='theatre'
+    item=adapt(row)
+    assert item['category']=='theatre' and subject(item)=='theatre'
+    assert item['start']=='2026-11-07T20:30:00+03:00'
+    assert item['price']=='900' and item['location']=='Isparta Kültür Merkezi · Isparta'
+    assert '13 yaş' in item['participation']
+    from news_engine.editor import event_title, hashtags
+    assert event_title(item)=='Isparta Sahne Gösterisi — Tiyatro gösterisi'
+    assert '#sahne' in hashtags(item) and '#tiyatrooyunu' not in hashtags(item)
+
+
+@pytest.mark.parametrize('breadcrumb',[
+    genre_breadcrumb(title='Başka Oyun'),
+    genre_breadcrumb(terminal='https://www.bubilet.com.tr/isparta/etkinlik/baska'),
+    genre_breadcrumb(tag='https://www.bubilet.com.tr/organizator/tiyatro'),
+    genre_breadcrumb(tag='https://foreign.example/isparta/etiket/tiyatro'),
+    genre_breadcrumb('Trendler',tag='https://www.bubilet.com.tr/isparta/etiket/trendler'),
+    genre_breadcrumb()+genre_breadcrumb('Konser',tag='https://www.bubilet.com.tr/isparta/etiket/konser'),
+])
+def test_unbound_unknown_or_conflicting_ticket_tags_do_not_supply_genre(breadcrumb):
+    assert 'source_event_category' not in tickets(ticket_html()+breadcrumb)[0]
+
+
 def test_ticket_two_sessions_do_not_collapse_to_one_event():
     rows=tickets(ticket_html(two_sessions=True))
     assert len({i['id'] for i in rows})==2

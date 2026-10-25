@@ -1,5 +1,40 @@
 # Kaynağa bağlı görseller — 22 Ekim 2026
 
+## 25 Ekim: gerçek haber fotoğrafı ve normal 4:3 kaynak çerçevesi
+
+Haber32'nin yalnız `www.haber32.com.tr` kaynağına ait
+`haber32comtr.teimg.com/haber32-com-tr/uploads/` resimleri ve aynı yolun
+açık boyutlu CDN türevleri gözden geçirildi. Bu tam kaynak/alan/yol eşleşmesi
+başka yayınevine, sorgulu adrese veya genel TE CDN alanlarına izin vermez.
+Normal robots, TLS, tür/boyut, yönlendirme ve makale kimliği kapıları sürer.
+
+Bu yayınevinin ana görseli çoğu zaman büyük başlık yazılı bir kolajdır.
+Yalnız makale metninin doğrudan resim paragraflarındaki doğal orijinaller
+önceliklidir; metin içine konan bağlantılı başka haber kartları, reklamlar ve
+arşiv/temsili etiketli resimler bu seçime girmez. Aynı makalenin ilk iki
+adayı sırayla denetlenebilir. Her aday mevcut turdaki iki resim okuma
+bütçesinden yer tüketir; ilk resim yanlış konudaysa ikinci otomatik onay
+almaz. Denetleyici kullanılamıyorsa ikinci resimle boşuna devam edilmez.
+
+Gerçek kaynak fotoğraflarında sık kullanılan 2048×1536 / 4:3 çerçeve,
+önceki en az 1,4 oran kuralı yüzünden konu denetimine ulaşamıyordu. En az
+640 piksel genişlik, dört milyon piksel, dosya/EXIF sınırları korunarak
+yatay 1,2–2,6 aralığı desteklenir. Haberlerde dikey/kare/küçük dosyalar
+genişletilmedi. Tam kaynak çerçevesi kartta korunur; yüzler veya kaynak
+işaretleri keyfi kırpılmaz.
+
+25 Ekim yerel gerçek kaynak kontrolünde Gül 2 Sanayi Kooperatifi genel
+kurul haberinin ilk doğal fotoğrafı (dışarıda yürüyen grup) mevcut CLIP
+toplantı denetiminde reddedildi. İkinci doğal fotoğraf (masa başındaki
+genel kurul heyeti) mevcut üç görünümde 0,24 eşik ve 0,015 fark koşulunu
+geçti; trafik/sel/yol yapımı olarak denemeler reddedildi. Model, metin
+tanımı veya eşikler değiştirilmedi. Yerel önizleme ve sonraki gerçek bulut
+hazırlığı/Meta teslimi farklı kanıtlardır; yerel sonuç paylaşım değildir.
+
+Kamu raporu artık yalnız sınırlı kontrol aşamalarının ret sayısını gösterir
+(`source_binding`, `image_format`, `visual_subject` gibi). Ham kaynak veya
+model hata metni, adres veya özel bilgi bu teşhise girmez.
+
 ## 24 Ekim: aynı haberin gerçek görseline erişim
 
 Kullanıcı Isparta gönderi ve haber story'lerinde mümkün olduğunca doğru, uygun

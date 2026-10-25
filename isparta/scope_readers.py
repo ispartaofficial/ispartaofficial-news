@@ -263,12 +263,50 @@ def _walk(value):
         for child in value:yield from _walk(child)
 
 
+def _ticket_category(soup, title, url):
+    """A provider genre belongs to this event only with its exact breadcrumb.
+
+    Navigation links, recommendations, venue names and organizer names are not
+    genre evidence. Unknown tags (for example Trendler) add no classification.
+    """
+    genres = {'tiyatro': 'theatre', 'konser': 'concert',
+              'festival': 'festival', 'sinema': 'cinema'}
+    found = set()
+    for script in soup.select('script[type="application/ld+json"]'):
+        try:
+            value = json.loads(script.get_text())
+        except (ValueError, TypeError):
+            continue
+        for obj in _walk(value):
+            if obj.get('@type') != 'BreadcrumbList':
+                continue
+            elements = obj.get('itemListElement')
+            if not isinstance(elements, list) or len(elements) != 3:
+                continue
+            if any(not isinstance(e, dict) for e in elements):
+                continue
+            if [e.get('position') for e in elements] != [1, 2, 3]:
+                continue
+            terminal = elements[-1]
+            if (norm(terminal.get('name')) != norm(title)
+                    or public_link(terminal.get('item'), url, same_host=True) != canonical(url)):
+                continue
+            genre = elements[1]
+            label = norm(genre.get('name'))
+            expected = urlsplit(url).path.split('/etkinlik/')[0] + '/etiket/' + label
+            link = public_link(genre.get('item'), url, same_host=True)
+            if label in genres and link == urlsplit(url)._replace(path=expected, query='', fragment='').geturl():
+                found.add(genres[label])
+    return next(iter(found)) if len(found) == 1 else None
+
+
 def ticket_sessions(html, url, source):
     soup=BeautifulSoup(html,'html.parser')
     heading=soup.select_one('h1')
     title=text(heading)
     if not title:
         raise ValueError('ticket_title_missing')
+    event_category = _ticket_category(soup, title, url)
     slug=urlsplit(url).path.rstrip('/').split('/')[-1]
     texts,records=public_transport(soup)
     event_metadata=[o for record in records for o in _walk(record)
@@ -310,6 +348,8 @@ def ticket_sessions(html, url, source):
         if session_url and not re.fullmatch(re.escape(urlsplit(url).path.rstrip('/'))+r'(?:/seans/\d+)?',urlsplit(session_url).path):
             session_url=None
         item=base_item(source,title,'',kind='event',key=session_url or url+'|'+str(session.get('startDate')),url=session_url or url)
+        if event_category:
+            item['source_event_category'] = event_category
         loc=session.get('location',{})
         loc=loc if isinstance(loc,dict) else {}
         address=loc.get('address',{})

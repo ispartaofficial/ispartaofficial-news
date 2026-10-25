@@ -54,7 +54,7 @@ def test_source_to_persistent_queue_caption_and_actual_jpegs(tmp_path, monkeypat
         before=deepcopy(parent)
         assert 'Kaynak: Örnek resmî takvim\nhttps://example.org/duyuru' in parent['caption']
         assert 'Katılım: Tiyatro gösterimi herkese açıktır.' in parent['caption']
-        assert parent['caption'].endswith('#isparta #tiyatro #tiyatrooyunu #etkinlik #ispartaofficial')
+        assert parent['caption'].endswith('#isparta #tiyatro #sahne #etkinlik #ispartaofficial')
         assert len(parent['slides'])==1
         entry=next(p for p in manifest['posts'] if p['id']==parent['id'])
         assert len(entry['assets']['feed'])==len(entry['assets']['story'])==1
@@ -224,6 +224,27 @@ def test_access_rules_and_venue_do_not_invent_show_genre(tmp_path):
     row.update(title='Eser Yenenler ile İtiraf Et',
                description='Tiyatro salonuna girişte bilet gereklidir.',location='Isparta Tiyatro Salonu')
     assert runtime.category(row)=='event'
+
+
+@pytest.mark.parametrize('title',['AFAD Farkındalık Eğitimi',
+    "Şarkikaraağaç MYO'da Etkili İletişim Yöntemleri Eğitimi"])
+def test_explicit_training_event_reaches_education_visual_and_keeps_access_limits(tmp_path,title):
+    from news_engine.visual_subject import subject
+    _,collection=setup(tmp_path);row=collection['items'][0]
+    row.update(title=title,source_id='isubu-events',
+        audience={'kind':'restricted','evidence':'Tüm öğrencilerimiz ve personelimiz davetlidir.'})
+    item=runtime.adapt(row)
+    assert item['category']=='education' and subject(item)=='education'
+    assert item['audience_kind']=='restricted' and 'öğrencilerimiz' in item['participation']
+
+
+def test_ticket_genre_not_accepted_for_news_or_other_readers():
+    row={'kind':'news','title':'Isparta gündeminden yeni gelişme','source_id':'bubilet-isparta',
+         'source_event_category':'theatre','description':'Konser salonunun yanındaki toplantı.'}
+    assert runtime.category(row)=='news'
+    assert runtime.category({**row,'kind':'event','source_id':'isubu-events'})=='event'
+    assert runtime.category({**row,'kind':'event','source_event_category':'unknown'})=='event'
+    assert runtime.category({**row,'title':'Yeni eğitim binasının ihalesi açıklandı'})=='news'
 
 
 def test_all_conditional_age_limits_are_preserved_or_held(tmp_path):
