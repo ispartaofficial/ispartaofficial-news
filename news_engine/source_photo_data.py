@@ -13,12 +13,14 @@ EVENT_VERSION='source-photo-event-v1'
 FIELDS={'version','source_id','source_url','image_url','title','published_at','checked_at','subject','sha256'}
 INSTAGRAM_FIELDS=(FIELDS-{'image_url'})|{'media_id'}
 EVENT_FIELDS=(FIELDS-{'published_at'})|{'start','end'}
-SUBJECTS=('meeting','flood','traffic','citrus_harvest','roadworks')
-EVENT_SUBJECTS=('theatre','concert','cinema','festival','culture','family','sport','market','food','education','yoga','tile_art','workshop')
+SUBJECTS=('meeting','flood','traffic','citrus_harvest','roadworks','hiking','glass_litter','football','landscape','parking','bus','electrical','water_utility','weather_sky','land_planning','education','health_workspace','public_service','food','market','concert','theatre','cinema','festival','culture','animal_care','citrus_processing','public_park')
+EVENT_SUBJECTS=('theatre','concert','cinema','festival','culture','family','sport','market','food','education','yoga','tile_art','workshop','electrical','water_utility')
 
 # Reviewed publisher-owned delivery origins. Exact source host, CDN host and
 # path namespace are mandatory; this never grants arbitrary subdomain trust.
 IMAGE_ORIGINS = {
+    'bubilet-isparta': ('www.bubilet.com.tr', 'cdn.bubilet.com.tr',
+                r'/cdn-cgi/image/width=\d{2,4},quality=\d{2,3}/files/Etkinlik/[A-Za-z0-9_.-]+\.(?:jpe?g|png|webp)'),
     'haber32': ('www.haber32.com.tr', 'haber32comtr.teimg.com',
                 r'/(?:crop/\d{2,4}x\d{2,4}/)?haber32-com-tr/uploads/[A-Za-z0-9_./-]+\.(?:jpe?g|png|webp)'),
     'bomba32': ('www.bomba32.com', 'bomba32com.teimg.com',
