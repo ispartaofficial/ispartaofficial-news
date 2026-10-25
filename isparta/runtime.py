@@ -39,7 +39,12 @@ def sources_for_engine(config):
 def category(row):
     # A venue or incidental body detail doesn't identify the main subject.
     # For example, land-sale text can mention sports facilities without being
-    # sports news. Only explicit headline cues narrow the category.
+    # sports news. News uses only explicit headline cues. Ticket event genres
+    # come from an exact event-bound provider breadcrumb, never a venue name.
+    if row['kind'] == 'event' and row['source_id'] == 'bubilet-isparta':
+        supplied = row.get('source_event_category')
+        if supplied in ('theatre', 'concert', 'festival', 'cinema'):
+            return supplied
     value = normalized(row['title'])
     words = (('outage', r'\bkesinti\w*'), ('theatre', r'\btiyatro\w*'),
              ('concert', r'\bkonser\w*|\bcanli müzik\b'), ('festival', r'\bfestival\w*'),
@@ -47,6 +52,8 @@ def category(row):
              ('family', r'\bçocuk oyunu\b'),
              ('culture', r'\bsergi\w*|\batölye\w*|\bsöyleşi\w*'),
              ('transport', r'\bulaşim\w*|\btrafik\w*|\basfalt\w*'))
+    if row['kind'] == 'event':
+        words += (('education', r'\b(?:eğitim|kurs|seminer|konferans)(?:i|u|lar|lari|ler|leri)?\b'),)
     return next((label for label, pattern in words if re.search(pattern, value)),
                 'event' if row['kind'] == 'event' else 'municipality' if 'belediye' in row['source_id'] else 'news')
 
