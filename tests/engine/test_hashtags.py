@@ -74,7 +74,7 @@ def test_caption_reserves_complete_source_url_and_hashtags_before_trimming(event
     content = caption(event, headline(event, "announcement"))
     assert len(content) <= 2200
     assert "Kaynak: Isparta Art\n" + event["url"] in content
-    assert content.endswith("#yalvac #tiyatro #tiyatrooyunu #etkinlik #ispartaofficial")
+    assert content.endswith("#yalvac #tiyatro #sahne #etkinlik #ispartaofficial")
     assert "#program" in content  # Preserve the canonical source URL fragment.
 
 
@@ -97,6 +97,6 @@ def test_weekly_and_monthly_caption_have_contextual_footer(store, event, at):
     prepare(store, at)
     for post in store.posts():
         if post["kind"] in ("weekly", "monthly"):
-            assert post["caption"].endswith("#yalvac #tiyatro #tiyatrooyunu #etkinlik #ispartaofficial")
+            assert post["caption"].endswith("#yalvac #tiyatro #sahne #etkinlik #ispartaofficial")
             assert len(post["caption"]) <= 2200
 
