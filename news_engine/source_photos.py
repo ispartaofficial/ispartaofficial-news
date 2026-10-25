@@ -24,24 +24,11 @@ ARCHIVE=re.compile(r'\b(?:ar[şs]iv\w*|temsili\w*|illustration\w*|ill[uü]strasy
 
 
 def news_subject(item):
-    if item.get('kind')!='news' or item.get('category')=='outage':return None
-    title=normalized(item.get('title',''))
-    # A warning, cancellation or proposal is not evidence that the pictured
-    # incident/meeting happened. Keep those notices on information cards.
-    if re.search(r'\b(?:uyari\w*|beklen\w*|risk\w*|iptal\w*|planlan\w*|yarin|yapilacak|gerçekleşecek|önlenecek)\b',title):
+    if item.get('kind') != 'news':
         return None
-    if re.search(r'\b(?:sel|su baskini|göle döndü|sular altinda)\b',title):return 'flood'
-    if (re.search(r'\b(?:mandalina\w*|satsuma)\b', title)
-            and re.search(r'\bhasat\w*\b', title)
-            and re.search(r'\b(?:başladi|sürüyor|yapiliyor)\b', title)):
-        return 'citrus_harvest'
-    if re.search(r'\b(?:toplanti\w*|bir araya gel\w*|buluştu|bulustu)\b',title):return 'meeting'
-    if (re.search(r'\b(?:cadde\w*|yol\w*|sokak\w*|asfalt\w*)\b', title)
-            and re.search(r'\b(?:yenile\w*|değişim\w*|çalişma\w*|yapim\w*)\b', title)
-            and re.search(r'\b(?:başladi|sürüyor|tamamlan\w*|yapiliyor)\b', title)):
-        return 'roadworks'
-    if re.search(r'\b(?:trafik|çevre yolu|kavşak)\b',title):return 'traffic'
-    return None
+    from .visual_topics import news_subjects
+    return news_subjects(item)[0]
+
 
 
 def photo_subject(item):
@@ -59,7 +46,10 @@ def identity_dates(item):
 
 def candidate_urls(html,final_url,item,source):
     """Bounded candidates from one exact article/session, never related stories."""
-    if canonical(final_url)!=canonical(item['url']):raise ValueError('Article redirected')
+    session_parent = (source.get('reader') == 'ticketing'
+                      and re.fullmatch(re.escape(final_url.rstrip('/')) + r'/seans/\d+', item['url']))
+    if canonical(final_url)!=canonical(item['url']) and not session_parent:
+        raise ValueError('Article redirected')
     if source.get('photo_identity_reader') == 'isparta-source-images-v1':
         from isparta.source_images import identity_rows
         rows = identity_rows(html, final_url, source)
@@ -76,14 +66,19 @@ def candidate_urls(html,final_url,item,source):
     if len(matches)!=1:raise ValueError('Article identity mismatch')
     soup=BeautifulSoup(html,'html.parser')
     canonical_node=soup.select_one('link[rel="canonical"][href]')
-    if canonical_node and canonical(urljoin(final_url,canonical_node['href']))!=canonical(item['url']):
+    if canonical_node and canonical(urljoin(final_url,canonical_node['href']))!=canonical(final_url if session_parent else item['url']):
         raise ValueError('Article canonical mismatch')
-    if source.get('photo_identity_reader') == 'isparta-source-images-v1' and source.get('reader') in ('sdu','isubu'):
+    if source.get('photo_identity_reader') == 'isparta-source-images-v1' and source.get('reader') in ('sdu','isubu','ticketing'):
         # Each calendar reader scopes image_candidate to this exact session,
         # and rejects shared placeholders before it reaches the photo gate.
         url = matches[0].get('image_candidate')
         if not url or not approved_image_url(item['source_id'], item['url'], url):
             raise ValueError('No session-bound source image')
+        if source.get('reader') == 'ticketing':
+            # This exact scheduled session supplies the image in its own
+            # schema. Provider posters use transformed CDN URLs, not a body
+            # photograph selector. OCR still checks the actual poster below.
+            return [url]
         nodes = [node for node in soup.select('img[src]') if urljoin(final_url,node['src'])==url]
         if not nodes or any(ARCHIVE.search(normalized(' '.join(str(node.get(k,'')) for k in ('alt','title')))) for node in nodes):
             raise ValueError('Session image label rejected')
@@ -164,7 +159,7 @@ def cleaned_photo(raw, *, poster=False):
     try:
         with Image.open(io.BytesIO(raw)) as image:
             if (image.format not in ('JPEG','PNG','WEBP') or image.width*image.height>4_000_000
-                    or not ((image.width>=640 and image.height>=300 and 1.2<=image.width/image.height<=2.6)
+                    or not ((image.width>=480 and image.height>=300 and max(image.size)>=640 and 0.5<=image.width/image.height<=2.6)
                             or (poster and image.width>=480 and image.height>=640 and .5<=image.width/image.height<1.4))
                     or getattr(image,'n_frames',1)!=1 or image.getexif().get(274,1)!=1):
                 # Cleaning strips EXIF. Do not silently turn an orientation-
@@ -308,13 +303,21 @@ class SourcePhotos:
                     stage='event_text'
                     from .event_image_text import validate as validate_event_text
                     with Image.open(io.BytesIO(image)) as pixels:portrait=pixels.width<pixels.height
-                    validate_event_text(image,item,poster=portrait)
+                    promotional = validate_event_text(image,item,poster=portrait)
                     stage='visual_subject'
                     from .visual_match import validate_event_photo
-                    validate_event_photo(image,expected)
+                    if not promotional:
+                        validate_event_photo(image,expected)
                 else:
                     stage='visual_subject'
-                    validate_news_photo(image,expected)
+                    try:
+                        validate_news_photo(image,expected)
+                    except MatchRejected as rejection:
+                        from .visual_match import validate_headline_photo
+                        try:
+                            validate_headline_photo(image,expected,item['title'])
+                        except (ValueError,IllustrationCheckUnavailable):
+                            raise rejection
                 stage='cache_binding'
                 sha=fingerprint(image)
                 for previous in self.store.rows('SELECT item_id,payload FROM source_photos WHERE item_id!=?',(item['id'],)):

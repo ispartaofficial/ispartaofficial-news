@@ -92,8 +92,8 @@ def test_natural_standard_four_by_three_photo_keeps_full_frame():
         assert image.getexif()=={} and image.format=='JPEG'
 
 
-@pytest.mark.parametrize('size',[(639,480),(480,640),(640,1200),(800,800),(4096,3072)])
-def test_small_portrait_square_or_oversized_news_photos_remain_rejected(size):
+@pytest.mark.parametrize('size',[(479,640),(480,639),(640,1400),(300,300),(4096,3072)])
+def test_tiny_extreme_aspect_or_oversized_news_photos_remain_rejected(size):
     with pytest.raises(ValueError,match='Unsupported source photo dimensions'):
         cleaned_photo(jpeg(size))
 

@@ -4,6 +4,7 @@ No HTML search, filename match or image model can establish article/session
 identity. These adapters re-read the same fields used by normal research.
 """
 from .readers import article, isubu, sdu
+from .scope_readers import ticket_sessions
 
 VERSION = 'isparta-source-images-v1'
 ARTICLE_SCOPES = {
@@ -16,7 +17,7 @@ ARTICLE_SCOPES = {
 
 
 def profile(source):
-    if source.get('reader') not in ('article', 'sdu', 'isubu'):
+    if source.get('reader') not in ('article', 'sdu', 'isubu', 'ticketing'):
         return {}
     return {'photo_identity_reader': VERSION,
             **({'photo_article_selector': ARTICLE_SCOPES[source['id']]}
@@ -30,6 +31,7 @@ def profile(source):
 def identity_rows(html, url, source):
     reader = source.get('reader')
     rows = ([article(html, url, source)] if reader == 'article' else
+            ticket_sessions(html, url, source) if reader == 'ticketing' else
             {'sdu': sdu, 'isubu': isubu}[reader](html, source))
     for row in rows:
         if row['kind'] == 'event':
