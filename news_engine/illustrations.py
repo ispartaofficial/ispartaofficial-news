@@ -89,11 +89,15 @@ def event_scene(item: dict) -> str | None:
 
 def scene_brief(item: dict) -> str:
     from .visual_topics import SCENES
-    selected_topic = subject(item)
-    if selected_topic == 'market' and re.search(r'\b(?:mandalina\w*|satsuma)\b', normalized(item.get('title',''))):
+    selected = subject(item)
+    if selected == 'market' and re.search(r'\b(?:mandalina\w*|satsuma)\b',normalized(item.get('title',''))):
         return SCENES['citrus_basket']
-    if selected_topic not in ('traffic','parking','bus','maintenance_tools','electrical','water_utility','weather_sky') and (selected := SCENES.get(selected_topic)):
-        return selected
+    if selected == 'weather_sky' and re.search(r'yağmur|yağiş|sağanak',normalized(item.get('title',''))):
+        return _legacy_scene_brief({**item,'category':'weather'})
+    return SCENES[selected] if selected in SCENES else _legacy_scene_brief(item)
+
+
+def _legacy_scene_brief(item: dict) -> str:
     if scene := event_scene(item):
         return scene
     category = item.get('category')
@@ -148,8 +152,7 @@ def illustration_prompt(item: dict) -> str:
 
 
 def scene_version(item: dict) -> str:
-    from .visual_topics import SCENES
-    if scene_brief(item) in SCENES.values():
+    if scene_brief(item) != _legacy_scene_brief(item):
         return 'editorial-photo-news-v8'
     if item.get('kind') == 'event' and event_activity(item.get('category'), item.get('title', '')):
         return ACTIVITY_SCENE_VERSION

@@ -33,27 +33,28 @@ LABELS = {
 }
 
 SCENES = {
+    'adult_workspace': 'An adult life-skills training workspace with everyday household objects, folded clothes and unlettered craft materials on a table. Natural photographic light and realistic textures. No people, children, toys, kite or written instructions.',
     'citrus_basket': 'A photographic close view of freshly harvested mandarins in a plain wicker basket on a simple table. No people harvesting, orchard identity, lettering or claim about an actual crop.',
     'citrus_processing': 'A photographic close view of tangerines, a few fresh mandarin peels and a small plain unlabelled oil bottle. No factory, manufacturing process, animals, people, lettering or unverified scientific claim.',
     'public_park': 'A photographic view of an ordinary unidentifiable park bench under leafy trees with natural greenery. No people, recognizable landmark, lettering or reconstruction of a named project.',
-    'traffic': 'Generic traffic on an ordinary unidentifiable roadway, photographed with natural light. No collision, emergency, recognizable street, people, signs or readable plates.',
+    'traffic': 'An ordinary roadway with clear lane markings and generic traffic seen from a distance. The road is the focal point. No collision, damage, police response or readable plates.',
     'event_calendar': 'A photographic close view of a plain open planner, blank unlettered tickets and a pen on a desk. No calendar numbers, text, logos, people or invented event details.',
     'hiking_gear': 'A close photographic view of hiking boots and a plain backpack beside a generic nature trail. No people, landmark, lettering or claim about an actual trip.',
     'glass_litter': 'A close photographic view of a few broken glass bottle fragments on ordinary outdoor paving. No people, injury, recognizable street, alcohol brand or lettering.',
     'football_equipment': 'A close photographic view of an unbranded football resting on grass near an empty goal. No people, team logo, scoreboard, lettering or reconstruction of an actual match.',
     'meeting_room': 'An empty generic meeting table with plain chairs, a blank notebook and a microphone. No people, official insignia, venue identity or lettering.',
     'rain_puddle': 'A close photographic view of raindrops falling into a small puddle on plain wet paving. No flood, damage, emergency, people or recognizable location.',
-    'electrical': 'A close photographic view of ordinary electrical utility cables and unlabelled maintenance equipment. No sparks, damage, people, lettering or identifiable location.',
-    'water_utility': 'A close photographic view of ordinary water utility pipes and a metal valve. No burst pipe, flood, damage, people or lettering.',
-    'weather_sky': 'A natural photographic view of sky and clouds without a recognizable landscape, storm damage, destruction, people or lettering.',
+    'electrical': 'A close view of ordinary electrical utility lines and unlabelled maintenance equipment. No sparks, accident or invented damage.',
+    'water_utility': 'A close view of ordinary water utility pipes, a valve and maintenance tools. No burst pipe, flood or invented damage.',
+    'weather_sky': 'A natural sky with clouds over a generic open landscape. No destruction, emergency or recognizable landmark.',
     'health_workspace': 'A photographic close view of a stethoscope and unlabelled medical equipment on a neutral desk. No patients, diagnosis, staff identity or lettering.',
     'public_service': 'A photographic close view of a plain blank clipboard and ordinary office supplies on an administrative desk. No people, seal, invented notice or lettering.',
     'land_planning': 'A photographic close view of blank architectural drawings and a small plain building model on a desk. No actual property, address, figures, lettering or specific project details.',
     'travel_gear': 'A photographic close view of a camera, folded unlettered map and plain travel bag. No people, coastline, landmark, destination claim or lettering.',
     'animal_care': 'A photographic close view of a small plain wooden cat shelter and unlabelled pet food bowls. No people, rescue incident, lettering or identifiable location.',
-    'parking': 'An ordinary generic parking area with marked unnumbered bays and parked unbranded cars. No people, signs, readable plates or recognizable location.',
-    'bus': 'A generic unlettered city bus photographed from the side. No readable route display, plates, passengers or recognizable location.',
-    'maintenance_tools': 'A photographic close view of road maintenance cones, asphalt and plain maintenance equipment. No people, project sign, readable plates or recognizable street.',
+    'parking': 'A generic ordinary parking area with marked parking spaces, plain unnumbered bays and a few unbranded cars viewed from the side. The parking spaces are the focal point. No numbers or symbols painted on the pavement. No civic building, people or signs. Vehicle plates must not be visible.',
+    'bus': 'A generic unlettered city bus on an ordinary roadway, viewed from the side. No readable plates, route display or passengers.',
+    'maintenance_tools': 'An empty generic road-maintenance area with traffic cones, asphalt and compact maintenance equipment. The roadway and work equipment are the focal point. No people, readable plates or project signs.',
 }
 
 
