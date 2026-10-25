@@ -109,7 +109,7 @@ def event_type_label(category: str, title: str = '') -> str:
     if activity:
         return {'yoga':'Yoga etkinliği', 'tile_art':'Çini etkinliği', 'workshop':'Atölye',
                 'theatre':'Tiyatro oyunu'}[activity]
-    return {"theatre": "Tiyatro oyunu", "concert": "Konser", "cinema": "Film gösterimi",
+    return {"theatre": "Tiyatro gösterisi", "concert": "Konser", "cinema": "Film gösterimi",
             "festival": "Festival", "culture": "Kültür ve sanat etkinliği",
             "family": "Aile ve çocuk etkinliği", "sport": "Spor etkinliği",
             "market": "Pazar ve fuar", "food": "Gastronomi etkinliği",
@@ -266,7 +266,9 @@ def _topic_tags(item: dict) -> list[str]:
                    category, "#etkinlik" if event else "#yerelhaber")
     topics = [primary]
     if category == "theatre" and event:
-        topics.append("#tiyatrooyunu")
+        play = re.search(r'\boyunu\b', normalized(item.get('title', ''))) or re.search(
+            r'\btiyatro oyunu\b', normalized(item.get('description', '')))
+        topics.append("#tiyatrooyunu" if play else "#sahne")
     elif category == "concert" and (event or "canli muzik" in text):
         topics.append("#canlimuzik")
     elif category == "cinema" and (event or "film goster" in text):

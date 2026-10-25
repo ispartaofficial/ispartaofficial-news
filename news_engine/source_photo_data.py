@@ -19,6 +19,8 @@ EVENT_SUBJECTS=('theatre','concert','cinema','festival','culture','family','spor
 # Reviewed publisher-owned delivery origins. Exact source host, CDN host and
 # path namespace are mandatory; this never grants arbitrary subdomain trust.
 IMAGE_ORIGINS = {
+    'haber32': ('www.haber32.com.tr', 'haber32comtr.teimg.com',
+                r'/(?:crop/\d{2,4}x\d{2,4}/)?haber32-com-tr/uploads/[A-Za-z0-9_./-]+\.(?:jpe?g|png|webp)'),
     'bomba32': ('www.bomba32.com', 'bomba32com.teimg.com',
                 r'/(?:crop/\d{2,4}x\d{2,4}/)?bomba32-com/uploads/[A-Za-z0-9_./-]+\.(?:jpe?g|png|webp)'),
     'ajans32': ('www.ajans32.com', 'cdn.ajans32.com',
