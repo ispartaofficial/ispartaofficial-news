@@ -44,3 +44,11 @@ sonucu işletim kaydında normal bekleme olarak saklanır; servis hatası sayıl
 Bilet sağlayıcısının `/seans/<id>` adresi için üst etkinlik sayfası okunur;
 orijinal seans adresi, başlığı, tam tarihi ve mekânı bu sayfada yine birebir
 doğrulanır. Üst sayfanın herhangi bir afişi seans eşleşmesi yerine geçmez.
+
+Reddedilen kaynak görseli aynı içerik/revizyon için her araştırmada yeniden
+indirilmez. Konu, biçim, OCR veya kaynak bağı reddi altı saat; ağ hatası bir saat;
+kontrol aracı erişimsizliği on beş dakika bekler. Yeni revizyon yeniden kontrol
+edilir. Kalıcı deneme kaydı yalnız içerik kimliği, revizyon, kontrollü aşama ve
+zaman taşır; adres, piksel veya sağlayıcı hata metni taşımaz. En fazla 400 kayıt
+tutulur ve kapsamdan çıkanlar temizlenir. Bekletilen görsel indirme hakkı tüketmez;
+diğer içerikler aynı iki dosya/tur bütçesiyle ilerler. Bu kayıt yayın onayı değildir.

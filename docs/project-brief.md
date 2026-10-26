@@ -3,6 +3,9 @@
 26 Ekim 2026: [görsel öncelikli yayın sözleşmesi](visual-first-publication.md).
 Yeni gönderide önce doğrulanmış kaynak fotoğrafı/afişi, yoksa konuya uygun
 gerçekçi görsel kullanılır; doğrulanmış kapak görseli olmayan yeni yayın bekler.
+Uyumsuz kaynak görselleri aynı içerik/revizyon için kısa kalıcı beklemeye alınır;
+iki dosyalık hak sonraki turlarda aynı reddedilen resimlerle tüketilmez. Görsel
+bekleme sonucu işletim kaydında hata yerine normal bekleme olarak kalır.
 
 24 Ekim akşam politikası: temel günlük üç haber gönderisi ve üç eşleşen
 haber story'si sürer. 25 Ekim 2026'dan başlayarak 20:00–22:59'da aslen
