@@ -20,6 +20,7 @@ from .visual_match import validate_news_photo,MatchRejected,MatchUnavailable
 from .image_safety import IllustrationCheckUnavailable
 
 MAX_READS=2
+MAX_SOURCE_CHECKS=6
 ARCHIVE=re.compile(r'\b(?:ar[şs]iv\w*|temsili\w*|illustration\w*|ill[uü]strasyon\w*|stok|stock|yapay zek[aâ]\w*|ai generated)\b')
 
 
@@ -205,7 +206,7 @@ class SourcePhotos:
         self.instagram_photos=instagram_photos or {}
         self.fetcher=fetcher
         self.stats={'enabled':self.enabled,'downloaded':0,'reused':0,'rejected':0,'unavailable':0,'deferred':0,
-                    'rejection_stages':{}}
+                    'rejection_stages':{},'source_checks':0}
         if instagram_checks is not None:self.stats['instagram']=instagram_checks
         self.reads=0
         self.results={}
@@ -270,9 +271,10 @@ class SourcePhotos:
                 self.stats['reused']+=1
                 self.results[item['id']]=(row['id'],self.materialize(row))
                 return self.results[item['id']]
-        if self.reads>=MAX_READS:
+        if self.reads>=MAX_READS or self.stats['source_checks']>=MAX_SOURCE_CHECKS:
             self.stats['deferred']+=1;return None
-        self.reads+=1
+        # Missing images consume bounded page checks, not binary-image slots.
+        self.stats['source_checks']+=1
         stage='source_read'
         try:
             if self.fetcher is None:
@@ -280,19 +282,24 @@ class SourcePhotos:
                         for sid, origin in IMAGE_ORIGINS.items() if sid in self.sources
                         and urlsplit(self.sources[sid]['url']).hostname == origin[0]]
                 self.fetcher=Fetcher(list(self.sources.values()) + cdns)
-            html,final=self.fetcher.get(item['url'])
+            page_url = item['url']
+            if (source.get('photo_identity_reader') == 'isparta-source-images-v1'
+                    and source.get('reader') == 'ticketing'):
+                # The reviewed provider serves parent HTML at session URLs
+                # without redirecting. Re-read the parent, then require the
+                # original exact session/title/date/venue in candidate_urls.
+                page_url = re.sub(r'/seans/\d+$', '', page_url)
+            html,final=self.fetcher.get(page_url)
             stage='source_binding'
             urls=candidate_urls(html,final,item,source)
         except (requests.RequestException,ValueError,TypeError,KeyError,OSError):
             self.failure(stage);return None
-        for index,url in enumerate(urls):
-            # MAX_READS still bounds all image candidates across this run.
-            # A second same-article image consumes the next existing slot;
-            # another source cannot then receive an extra read.
-            if index:
-                if self.reads>=MAX_READS:
-                    self.stats['deferred']+=1;break
-                self.reads+=1
+        for url in urls:
+            # Every attempted image, including network/quality failures,
+            # consumes one of the existing two image slots for this run.
+            if self.reads>=MAX_READS:
+                self.stats['deferred']+=1;break
+            self.reads+=1
             stage='image_read'
             try:
                 raw,final_image=self.fetcher.image(url)
