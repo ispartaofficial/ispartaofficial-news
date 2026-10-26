@@ -133,3 +133,7 @@ Eczacı Odasıdır; ilçeler filtrelenir. Orijinal logo, açık gri/beyaz 3D fon
 kırmızı E tabelası kullanılır. İlk pembe/mor atmosfer ve artı simgesi kullanıcı
 tarafından reddedildi. [Akış ve sınırlar](daily-pharmacy-story.md). Meta ve
 yayın kapıları kapalı kalır; hazırlanmış kart gerçek paylaşım değildir.
+
+26 Ekim 2026: [görsel kuyruğunu kurtarma ve kalıcı stok](visual-backlog-recovery.md).
+İki başarısız üretim, aynı seans sahnesinin gereksiz tekrarı ve Bubilet CDN robots 404 nedeni ayrı ele alınır.
+Canlı sonuç için tarihli dağıtım/SQL kanıtı gerekir; eski kurulum notları güncel Meta durumu sayılmaz.
