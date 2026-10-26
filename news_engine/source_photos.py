@@ -14,7 +14,7 @@ from .collect import Fetcher,structured
 from .domain import canonical,normalized,parse_date
 from .illustrations import clean_image
 from .security import public_url,contains_secret
-from .source_photo_data import VERSION,EVENT_VERSION,key,validate_record,valid_bindings,MAX_CACHE_BYTES,MAX_CACHED_IMAGES,approved_image_url,IMAGE_ORIGINS
+from .source_photo_data import VERSION,EVENT_VERSION,key,validate_record,valid_bindings,MAX_CACHE_BYTES,MAX_CACHED_IMAGES,approved_image_url,IMAGE_ORIGINS,delivery_sources,reviewed_ticket_source,same_event_artwork
 from .visual_gate import fingerprint
 from .visual_match import validate_news_photo,MatchRejected,MatchUnavailable
 from .image_safety import IllustrationCheckUnavailable
@@ -37,7 +37,7 @@ def photo_subject(item):
         if item.get('status') not in ('scheduled','rescheduled'):
             return None
         from .visual_subject import subject
-        return subject(item)
+        return subject(item) or ('event_poster' if item.get('category')=='event' else None)
     return news_subject(item)
 
 
@@ -47,7 +47,7 @@ def identity_dates(item):
 
 def candidate_urls(html,final_url,item,source):
     """Bounded candidates from one exact article/session, never related stories."""
-    session_parent = (source.get('reader') == 'ticketing'
+    session_parent = (reviewed_ticket_source(source)
                       and re.fullmatch(re.escape(final_url.rstrip('/')) + r'/seans/\d+', item['url']))
     if canonical(final_url)!=canonical(item['url']) and not session_parent:
         raise ValueError('Article redirected')
@@ -201,7 +201,7 @@ class SourcePhotos:
         # An explicit false also keeps this path closed if generation is enabled.
         self.enabled=not demo and os.getenv('SOURCE_PHOTOS_ENABLED', os.getenv('ILLUSTRATIONS_ENABLED', 'false'))=='true'
         self.sources={s['id']:s for s in sources if s.get('enabled') and s.get('trusted')
-                      and ((s.get('kind') in ('html','rss') and s.get('access')=='robots')
+                      and (((s.get('kind') in ('html','rss') or reviewed_ticket_source(s)) and s.get('access')=='robots')
                            or (s.get('kind')=='instagram_api' and s.get('access')=='api'))}
         self.instagram_photos=instagram_photos or {}
         self.fetcher=fetcher
@@ -269,12 +269,13 @@ class SourcePhotos:
             if (row['id'] not in self.frozen() and value['title']==item['title'] and value['source_url']==item['url']
                     and value['source_id']==item['source_id'] and all(value.get(k)==v for k,v in identity_dates(item).items())
                     and value['subject']==expected
-                    and self.at-timedelta(minutes=15)<=parse_date(value['checked_at'])<=self.at+timedelta(minutes=5)):
+                    and self.at-timedelta(minutes=45)<=parse_date(value['checked_at'])<=self.at+timedelta(minutes=5)):
                 self.stats['reused']+=1
                 self.results[item['id']]=(row['id'],self.materialize(row))
                 return self.results[item['id']]
         from .source_photo_retry import active,remember
-        if active(self.store,item,self.at):
+        obsolete = ('image_read',) if reviewed_ticket_source(source) else ()
+        if active(self.store,item,self.at,obsolete=obsolete):
             self.stats['cooldown']+=1;return None
         if self.reads>=MAX_READS or self.stats['source_checks']>=MAX_SOURCE_CHECKS:
             self.stats['deferred']+=1;return None
@@ -283,9 +284,7 @@ class SourcePhotos:
         stage='source_read'
         try:
             if self.fetcher is None:
-                cdns = [{'enabled': True, 'url': 'https://' + origin[1] + '/'}
-                        for sid, origin in IMAGE_ORIGINS.items() if sid in self.sources
-                        and urlsplit(self.sources[sid]['url']).hostname == origin[0]]
+                cdns = delivery_sources(self.sources)
                 self.fetcher=Fetcher(list(self.sources.values()) + cdns)
             page_url = item['url']
             if (source.get('photo_identity_reader') == 'isparta-source-images-v1'
@@ -304,7 +303,7 @@ class SourcePhotos:
             # Every attempted image, including network/quality failures,
             # consumes one of the existing two image slots for this run.
             if self.reads>=MAX_READS:
-                self.stats['deferred']+=1;break
+                self.stats['deferred']+=1;last_failure=None;break
             self.reads+=1
             stage='image_read'
             try:
@@ -335,7 +334,7 @@ class SourcePhotos:
                 sha=fingerprint(image)
                 for previous in self.store.rows('SELECT item_id,payload FROM source_photos WHERE item_id!=?',(item['id'],)):
                     old=json.loads(previous['payload'])
-                    if old.get('image_url')==url or old['sha256']==sha:
+                    if (old.get('image_url')==url or old['sha256']==sha) and not same_event_artwork(old,item):
                         raise ValueError('Photograph reused by another article')
                 evidence={'version':EVENT_VERSION if item.get('kind')=='event' else VERSION,'source_id':item['source_id'],'source_url':item['url'],
                           'image_url':url,'title':item['title'],**identity_dates(item),
@@ -345,7 +344,8 @@ class SourcePhotos:
                 # A missing checker cannot improve on another photograph.
                 self.failure(stage,unavailable=True);last_failure='checker_unavailable';break
             except (requests.RequestException,ValueError,TypeError,KeyError,OSError):
-                self.failure(stage);last_failure=stage
+                self.failure(stage)
+                last_failure='poster_delivery_v2' if stage=='image_read' and reviewed_ticket_source(source) else stage
         if last_failure:remember(self.store,item,self.at,last_failure)
         return None
 
@@ -355,7 +355,7 @@ class SourcePhotos:
         validate_record(photo,item['id'],item['revision'],payload,image)
         for previous in self.store.rows('SELECT item_id,payload FROM source_photos WHERE item_id!=?',(item['id'],)):
             old=json.loads(previous['payload'])
-            if old['sha256']==evidence['sha256'] or (evidence.get('media_id') and old.get('media_id')==evidence['media_id']):
+            if (old['sha256']==evidence['sha256'] or (evidence.get('media_id') and old.get('media_id')==evidence['media_id'])) and not same_event_artwork(old,item):
                 raise ValueError('Photograph reused by another item')
         frozen=self.frozen()
         with self.store.db:
