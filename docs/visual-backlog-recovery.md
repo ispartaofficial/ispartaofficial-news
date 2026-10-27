@@ -22,12 +22,12 @@ generate=False çağrısıyla yeni stok bağlayamaz.
 
 ## Denetim ve açık sınır
 
-Yedi stok sahne gerçek modelin üç kart kırpmasından geçer. Boş takvim, boş bilet
+Sekiz stok sahne gerçek modelin üç kart kırpmasından geçer. Boş takvim, boş bilet
 ve kalemden oluşan **tek** yatay kapak, 1080×436/506/586 boyutlarında görsel
 olarak incelenip tam JPEG özetiyle sabitlenmiştir: sınıflandırıcı bu boş kırtasiye
 nesnelerini kamu hizmeti masasıyla karıştırdığı için bu yalnız event_calendar
 konusuna ait kesin dosya kabulüdür. Değişen piksel veya başka konu bu kabulü
-kullanamaz. Sekiz dosyanın hepsinde normal OCR zorunludur; eşik genel olarak
+kullanamaz. Dokuz dosyanın hepsinde normal OCR zorunludur; eşik genel olarak
 düşürülmez. Yeni/bilinmeyen sahneler otomatik onaylanmış sayılmaz.
 
 Stok görsel genel konuyu anlatır; gerçek olayın yeri, kişisi veya fotoğrafı
@@ -95,10 +95,22 @@ da korur. Boş eski hata kaydı, yayımlanmış bir fotoğraf kaybı sayılmaz.
 konu nedeniyle fotoğrafsız bekliyordu. Açık kekik/endemik veya hasat/üretim
 bağı ayrı konuya alınır. Kaynağın başlık/tarih/URL bağı ve gerçek görüntü
 kontrolü korunur; başka bitki, restoran ve toplantı bu sınıfa girmez.
-Kaynak fotoğrafı önceliklidir; genel kekik sahnesi belirli bir endemik türün
-veya gerçek üretim yerinin fotoğrafı olduğunu iddia etmez.
+Kaynak fotoğrafı önceliklidir. Tam kaynak fotoğraflarının son incelemesi aşağıda
+ayrıca kayıtlıdır; hazırlanmış bir deneme geçerli stok sayılmaz.
 
-Aynı haber başlığı güçlü OCR ile eşleştiğinde yan şeritli kaynak grafiğinin
-karşı tarafındaki geniş fotoğraf ayrıca konu modeline girer. Küçük bölge veya
-ortaya serpilmiş yazı kabul edilmez; model eşikleri aynı kalır ve yayın dosyası
-kırpılmaz. Gerçek kaynak fotoğrafları bulutun yerel OCR/model testinde sınanır.
+
+## Son doğrulama düzeltmesi — 27 Ekim 2026
+
+Kaynak üzerinde başlık bulunan iki gerçek fotoğrafın model/OCR kabulü varsayımı
+bulut testinde doğrulanmadı. Genel model eşikleri ve OCR kuralları değiştirilmedi.
+Görseller doğrudan incelendi: Bomba32 müftülük ziyaretinde toplantı fotoğrafı ve
+eşleşen başlık, Sütçüler kekik haberinde bitki fotoğrafı ve eşleşen başlık var.
+Yalnız bu iki kesin temiz JPEG özeti, kaynak kimliği/adresi, görsel adresi,
+başlık ve tarih bileşimi kodda açık editör incelemesi olarak kayıtlıdır.
+Başka başlık/tarih/adres/piksel bunu kullanamaz. Kaynak sayfası her zamanki
+kimlik/tarih, robots/TLS ve tekrar/tazelik kapılarından geçer; fotoğrafın asıl
+pikselleri korunur. Bu kayıt modelin başarılı olduğunu iddia etmez.
+
+Başarısız kekik stok sahnesi etkin stok listesinden çıkarıldı. Dokuz geçerli
+stok sahne kullanılır; gelecekte yeni bir kekik haberi otomatik olarak bu
+ikisinin onayını alamaz. Yan panel OCR denemesi üretime eklenmedi.
