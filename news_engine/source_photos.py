@@ -277,6 +277,9 @@ class SourcePhotos:
                 return self.results[item['id']]
         from .source_photo_retry import active,remember
         obsolete = ('image_read',) if reviewed_ticket_source(source) else ()
+        from .reviewed_source_photos import reviewed_article
+        if reviewed_article(item):
+            obsolete += ('visual_subject',)
         if active(self.store,item,self.at,obsolete=obsolete):
             self.stats['cooldown']+=1;return None
         if self.reads>=MAX_READS or self.stats['source_checks']>=MAX_SOURCE_CHECKS:
@@ -331,7 +334,9 @@ class SourcePhotos:
                         try:
                             validate_headline_photo(image,expected,item['title'])
                         except (ValueError,IllustrationCheckUnavailable):
-                            raise rejection
+                            from .reviewed_source_photos import reviewed_photo
+                            if not reviewed_photo(image,item,url,expected):
+                                raise rejection
                 stage='cache_binding'
                 sha=fingerprint(image)
                 for previous in self.store.rows('SELECT item_id,payload FROM source_photos WHERE item_id!=?',(item['id'],)):
