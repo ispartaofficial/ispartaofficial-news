@@ -162,7 +162,9 @@ def cleaned_photo(raw, *, poster=False):
             if (image.format not in ('JPEG','PNG','WEBP') or image.width*image.height>4_000_000
                     or not ((image.width>=480 and image.height>=300 and max(image.size)>=640 and 0.5<=image.width/image.height<=2.6)
                             or (poster and image.width>=480 and image.height>=640 and .5<=image.width/image.height<1.4))
-                    or getattr(image,'n_frames',1)!=1 or image.getexif().get(274,1)!=1):
+                    or getattr(image,'n_frames',1)!=1 or image.getexif().get(274,1) not in (0,1)):
+                # EXIF 0 is undefined/no transform; decoded pixels stay upright.
+                # Actual rotation/mirroring values 2..8 remain rejected.
                 # Cleaning strips EXIF. Do not silently turn an orientation-
                 # dependent photograph sideways or change its displayed frame.
                 raise ValueError('Unsupported source photo dimensions')
@@ -275,6 +277,9 @@ class SourcePhotos:
                 return self.results[item['id']]
         from .source_photo_retry import active,remember
         obsolete = ('image_read',) if reviewed_ticket_source(source) else ()
+        from .reviewed_source_photos import reviewed_article
+        if reviewed_article(item):
+            obsolete += ('visual_subject',)
         if active(self.store,item,self.at,obsolete=obsolete):
             self.stats['cooldown']+=1;return None
         if self.reads>=MAX_READS or self.stats['source_checks']>=MAX_SOURCE_CHECKS:
@@ -329,7 +334,9 @@ class SourcePhotos:
                         try:
                             validate_headline_photo(image,expected,item['title'])
                         except (ValueError,IllustrationCheckUnavailable):
-                            raise rejection
+                            from .reviewed_source_photos import reviewed_photo
+                            if not reviewed_photo(image,item,url,expected):
+                                raise rejection
                 stage='cache_binding'
                 sha=fingerprint(image)
                 for previous in self.store.rows('SELECT item_id,payload FROM source_photos WHERE item_id!=?',(item['id'],)):
