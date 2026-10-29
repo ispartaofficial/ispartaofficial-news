@@ -22,6 +22,9 @@ from .district_readers import (campus_portal, club_directory, official_article,
                                official_entries, official_locality)
 
 ROOT = Path(__file__).resolve().parents[1]
+# Busy news listings move a local story out of the newest four links within an
+# hour or two; reviewed sources may opt into a wider, still bounded window.
+ARTICLE_LINK_CAP = 12
 
 
 def local_news(value):
@@ -141,7 +144,7 @@ def collect_sources(config_path, *, at=None, fetcher=None):
             body, final = fetcher.get(source['url'])
             row['read_pages'] += 1
             if source['reader'] == 'article':
-                links = news_links(body, source, limit=min(4, source.get('max_details', 4)))
+                links = news_links(body, source, limit=min(ARTICLE_LINK_CAP, source.get('max_details', 4)))
                 if not links:
                     raise ValueError('reviewed_article_links_missing')
                 for url in links:

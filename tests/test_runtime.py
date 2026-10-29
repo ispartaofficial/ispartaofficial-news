@@ -101,6 +101,33 @@ def test_removed_or_not_reobserved_event_does_not_keep_recent_approval(tmp_path)
     finally:store.close()
 
 
+@pytest.mark.parametrize('content_hold',[None,'sensitive_claim_requires_review'])
+def test_other_source_reobservation_lifts_only_reobservation_hold(tmp_path,content_hold):
+    path,collection=setup(tmp_path);db=tmp_path/'state.sqlite';public=tmp_path/'public'
+    runtime.run(db,public,path,at=AT,collection=collection)
+    original=deepcopy(collection['items'][0])
+    collection['items']=[]
+    runtime.run(db,public,path,at=AT,collection=collection)
+    with closing(Store(db)) as store:
+        item=store.items()[0]
+        assert item['verification_holds']==['not_reobserved_current_run']
+        if content_hold:
+            payload=json.loads(store.rows('SELECT payload FROM items WHERE id=?',(item['id'],))[0]['payload'])
+            payload['verification_holds']=['not_reobserved_current_run',content_hold]
+            with store.db:store.db.execute('UPDATE items SET payload=? WHERE id=?',(json.dumps(payload),item['id']))
+    # The same story now appears under another reviewed URL; the duplicate path
+    # keeps the first item, so that first item was observed in this run.
+    collection['items']=[dict(original,id='b'*24,url='https://example.org/baska-duyuru')]
+    runtime.run(db,public,path,at=AT,collection=collection)
+    with closing(Store(db)) as store:
+        items=store.items()
+        assert [i['id'] for i in items]==[item['id']]
+        assert items[0]['verification_holds']==([content_hold] if content_hold else [])
+        assert 'https://example.org/baska-duyuru' in items[0]['sources']
+        prepared=any(p['status']=='prepared' and p['item_id']==item['id'] for p in store.posts())
+        assert prepared is (content_hold is None)
+
+
 def test_public_excerpt_is_rejected_as_full_source_and_foreign_database_refused(tmp_path):
     _,collection=setup(tmp_path)
     with pytest.raises(ValueError,match='Full source'):runtime.adapt(public_report(collection)['items'][0])

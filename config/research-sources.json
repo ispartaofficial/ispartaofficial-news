@@ -13,7 +13,7 @@
       "title_selector": "h1[itemprop=headline]",
       "body_selector": ".article-text",
       "date_selector": "meta[name=datePublished]",
-      "max_details": 4
+      "max_details": 12
     },
     {
       "id": "haber32",
@@ -26,7 +26,7 @@
       "title_selector": "h1[itemprop=headline]",
       "body_selector": ".article-text",
       "date_selector": "meta[name=datePublished]",
-      "max_details": 4
+      "max_details": 12
     },
     {
       "id": "kanal32",
@@ -39,7 +39,7 @@
       "title_selector": "h1",
       "body_selector": ".detay",
       "date_selector": "meta[property='article:published_time']",
-      "max_details": 4
+      "max_details": 12
     },
     {
       "id": "ajans32",
@@ -52,7 +52,7 @@
       "title_selector": "h1.content-title",
       "body_selector": ".text-content",
       "date_selector": "meta[name=datePublished]",
-      "max_details": 4
+      "max_details": 12
     },
     {
       "id": "isparta-valilik",

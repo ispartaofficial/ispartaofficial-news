@@ -13,6 +13,8 @@
 | Kaymakamlık | Aksu, Atabey, Eğirdir, Gelendost, Gönen, Keçiborlu, Senirkent, Sütçüler, Şarkikaraağaç, Uluborlu, Yalvaç, Yenişarbademli |
 | İlçe belediyesi | Isparta Gönen Belediyesi, Keçiborlu Belediyesi, Senirkent Belediyesi |
 
+Yerel basın listelerinde her turda en yeni 12 haber bağlantısı okunur (genel üst sınır 12). 29 Ekim 2026 durum verisinde Bomba32 haberleri en yeni dört bağlantı içinde çoğunlukla 0–2 saat kalıyor, ardından `not_reobserved_current_run` ile bekliyordu. Aynı haberi başka incelenmiş kaynak o turda gösterirse ilk kayıt yeniden görülmüş sayılır; yalnız bu bekletme kalkar, içerik ve doğrulama bekletmeleri korunur.
+
 İlçe portallarında hem haber hem duyuru bağlantıları sınırlı sayıda okunur. Uzun haber listesi duyuruları gizlemez. Duyuru yükleme tarihi, ihale/başvuru son tarihi veya hizmetin geçerlilik süresi sayılmaz. Belgenin içeriği henüz doğrulanmamışsa duyuru bekletilir. Eski resmî haberler, aynı site yeni tarihle açıldı diye güncellenmiş sayılmaz.
 
 Aksu ve Gönen başka illerde de bulunduğundan resmî alan adı ile makalenin/liste sayfasının kurum kimliği birlikte kontrol edilir. Gönen Kaymakamlığı için `ispartagonen.gov.tr`, Isparta Gönen Belediyesi için e-Devlet'te kayıtlı `gonen.bel.tr` kullanılır. `gonen.gov.tr` Balıkesir kaynağıdır ve bu listeye alınmaz. Kurumun Isparta adresi, başka ildeki bir etkinliği veya ulusal duyuruyu kendiliğinden yerel yapmaz.

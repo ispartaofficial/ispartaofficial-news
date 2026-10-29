@@ -97,6 +97,7 @@ def ingest(store, collection, sources, at):
         run_id = store.db.execute('INSERT INTO runs(started_at) VALUES(?)', (at.isoformat(),)).lastrowid
     accepted = 0
     accepted_by_source = {}
+    stored_keys = set()
     for row in collection['items']:
         item = adapt(row)
         source = source_map.get(item['source_id'], {})
@@ -118,10 +119,23 @@ def ingest(store, collection, sources, at):
         # don't expose the full third-party article in a public state branch.
         item['description'] = excerpt(news_body(item) if item['kind'] == 'news' else item['description'], 600)
         assert_no_secrets(item)
-        store.upsert(item, at.isoformat())
+        stored, _ = store.upsert(item, at.isoformat())
+        if stored != digest(item['kind'] + ':' + item['identity']):
+            # Another reviewed source re-observed an existing story through the
+            # cross-source duplicate path. Its current verification lifts only
+            # the reobservation hold; every content/verification hold stays.
+            with store.db:
+                old = store.rows('SELECT payload FROM items WHERE id=?', (stored,))
+                payload = json.loads(old[0]['payload'])
+                holds = payload.get('verification_holds') or []
+                if 'not_reobserved_current_run' in holds:
+                    payload['verification_holds'] = [h for h in holds if h != 'not_reobserved_current_run']
+                    store.db.execute('UPDATE items SET payload=? WHERE id=?',
+                                     (json.dumps(payload, ensure_ascii=False), stored))
+        stored_keys.add(stored)
         accepted += 1
         accepted_by_source[item['source_id']] = accepted_by_source.get(item['source_id'], 0) + 1
-    observed = {digest(row['kind'] + ':' + adapt(row)['identity']) for row in collection['items']}
+    observed = {digest(row['kind'] + ':' + adapt(row)['identity']) for row in collection['items']} | stored_keys
     with store.db:
         for previous in store.items():
             if previous['id'] in observed:
