@@ -49,23 +49,28 @@ hatası yeni boş veriyle devam etme nedeni değildir.
 Araştırma artifact'i kısa metinli rapordur. Pages kartların dağıtımıdır.
 `prepared` veya yeşil workflow sosyal medya paylaşımı anlamına gelmez.
 
-## Etkin olmayan bağlantılar
+## Bağlantıların durumu (29 Ekim 2026)
 
-`config/runtime.json` içinde yayın kapalıdır. Meta bağlantısı doğrulanmamıştır;
-Facebook sayfası henüz yoktur. Görsel üretim hizmeti bağlı değildir. Kaynağa ait
-resimler, üretim hizmetinden ayrı `SOURCE_PHOTOS_ENABLED` kapısı ve yerel OCR/konu
-modeliyle değerlendirilir; [kaynak görseli denetimi](source-images.md) sınırları
-açıklar. Denetlenmemiş görsel eklenmez, logolu bilgi kartı kullanılır. Bulut model
-kurulumu ve gerçekten onaylanan resim ayrıca tarihli kanıt gerektirir. Koddaki
-fotoğraf/üretim yeteneği çalışan görsel teslimi olarak sunulmaz. Öğrenme ve yeni
-okuyucu etkinleştirme de şimdilik bağlı değildir.
+Bu bölümün 22 Ekim aktarım sürümü yayını kapalı gösteriyordu; o durum geçmişte
+kaldı. Güncel `config/runtime.json` Instagram yayınını ve bağımsız Meta bağlantısını,
+hava ve nöbetçi eczane story'lerini, kaynak fotoğrafı ve görsel üretim kapılarını
+açık gösterir. GitHub ortam değişkenleri ayrı kapıdır; config tek başına izin kanıtı
+değildir. Facebook sayfası yoktur; Facebook teslimi, ölçüme dayalı öğrenme ve yeni
+okuyucu etkinleştirme kapalıdır.
 
-Instagram Login bağlantısı ve yalnız GET testi [bağlantı sözleşmesinde](meta-connection.md)
-açıklanır; kurulum kapalıdır. Instagram etkinleştirilmeden önce hesap kimliği
-`ispartaofficial` olarak GET ile doğrulanmalı, doğru bağımsız izinler ve medya adresleri kontrol edilmeli, günlük
-yayın düzeni netleştirilmelidir. Çekirdeğin iki gönderilik üst sınırı şu anda
-**etkin olmayan güvenlik tavanıdır**; yeni yayın kotası ilanı değildir. Hazırlık
-görevi Meta anahtarı almaz, içerik paylaşmaz ve eski içerikleri topluca yayınlamaz.
+Günlük sınır en fazla üç haber gönderisi ve bunların ilk eşleşen üç story'sidir.
+Aynı gün 20:00–22:59 arasında aslen yayımlanan ve ilk kez o akşam bulunan yeni bir
+haber için en fazla dördüncü gönderi mümkündür; 23:30 sonrası telafi yoktur. Hava
+(08:00) ve nöbetçi eczane (17:00) story'leri bu sayıya ektir. Sayı, kaliteyi
+geçmeyen içeriği doldurma hedefi değildir.
+
+Kaynağa ait resimler `SOURCE_PHOTOS_ENABLED` kapısı ve yerel OCR/konu modeliyle
+değerlendirilir; [kaynak görseli denetimi](source-images.md) sınırları açıklar.
+Doğrulanmış kapağı olmayan yeni haber `awaiting_content_visual` olarak bekler.
+Instagram Login bağlantısı [bağlantı sözleşmesinde](meta-connection.md) açıklanır.
+Hazırlık görevi Meta anahtarı almaz ve eski içerikleri topluca yayınlamaz; yayın
+ayrı `publish` işindedir. Hazır kart, yeşil iş, kalıcı Meta yanıt kaydı ve platform
+ekranında görülme ayrı kanıtlardır.
 
 ## Doğrulama
 

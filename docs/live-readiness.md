@@ -14,11 +14,13 @@ Yayın yalnız güvenilir main çalışmasında `instagram-production` ortamın�
 Araştırma işine Instagram anahtarı verilmez. Ortak concurrency grubu araştırma,
 eczane ve normal yayın durumunun çakışmasını önler.
 
-Araştırma 07:20–23:50 arasında saatte iki kez planlanır. Mevcut motorun
-08:30, 12:30 ve 18:30 başlayan birer saatlik pencerelerinde, günde en fazla iki
-gönderi ve her birinin ilk eşleşen story'si yayımlanır. Bu üç pencere üç gönderi
-demek değildir. GitHub başlangıcı geciktirebilir; pencere geçince eski kuyruk
-topluca yayımlanmaz. Nöbetçi eczane listesi 17:00 hedefli ayrı günlük story'dir.
+Araştırma 07:20–23:50 arasında saatte iki kez planlanır. 29 Ekim 2026 itibarıyla
+motorun 08:30, 12:30, 15:00, 18:30 ve 21:00 yayın pencerelerinde günde en fazla üç
+haber gönderisi ve her birinin ilk eşleşen story'si yayımlanır. 25 Ekim'den beri
+aynı gün 20:00–22:59'da aslen yayımlanan ve ilk kez o akşam bulunan yeni bir haber
+için en fazla dördüncü gönderi mümkündür. Pencere sayısı gönderi hedefi değildir.
+GitHub başlangıcı geciktirebilir; pencere geçince eski kuyruk topluca yayımlanmaz
+ve 23:30 sonrası telafi yoktur. Nöbetçi eczane listesi 17:00 hedefli ayrı günlük story'dir.
 Kaynağın gerçek nöbet tarihi/aralığı, merkez filtresi ve dağıtılmış görsel kontrol
 edilir. Başarısız veya belirsiz teslim otomatik tekrar gönderilmez.
 
