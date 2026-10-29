@@ -217,6 +217,25 @@ def test_partial_source_failure_is_not_healthy(tmp_path):
     assert report['publishing_enabled'] is False
 
 
+@pytest.mark.parametrize('max_details,expected',[(None,12),(50,12),(4,4)])
+def test_busy_news_listing_reads_a_bounded_wider_window(tmp_path,max_details,expected):
+    source=dict(SOURCES['bomba32'])
+    if max_details is not None:source['max_details']=max_details
+    cfg=deepcopy(CONFIG);cfg['sources']=[source]
+    path=tmp_path/'config.json';path.write_text(json.dumps(cfg),encoding='utf8')
+    links=''.join(f'<a href="/isparta-test-haber-uzun-baslik-{n:02d}">x</a>' for n in range(15))
+    requested=[]
+    class Fake:
+        def get(self,url):
+            if url==source['url']:
+                return f'<div class="last-minutes-box">{links}</div>',url
+            if url.startswith('https://www.bomba32.com/'):requested.append(url)
+            raise FetchError('robots_disallowed')
+    run(path,at=AT,fetcher=Fake())
+    assert len(requested)==expected
+    assert requested==[f'https://www.bomba32.com/isparta-test-haber-uzun-baslik-{n:02d}' for n in range(expected)]
+
+
 @pytest.mark.parametrize('url', ['http://example.com/','https://evil.example/',
     'https://user:pass@example.com/','https://example.com:8443/'])
 def test_network_allowlist(url):
