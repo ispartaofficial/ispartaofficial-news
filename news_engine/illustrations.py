@@ -20,7 +20,9 @@ from .security import contains_secret
 from .illustration_review import save_rejected_image
 from .editor import event_activity
 from .visual_subject import subject
-from .visual_match import MatchRejected, MatchUnavailable, validate_match
+from .visual_match import MatchRejected, MatchUnavailable, validate_described, validate_match
+from .visual_topics import unclassified_news
+from .article_scenes import VERSION as ARTICLE_SCENE_VERSION, SceneRejected, describe
 
 MODEL = '@cf/black-forest-labs/flux-1-schnell'
 DAILY_ATTEMPTS = 20
@@ -153,9 +155,16 @@ def illustration_prompt(item: dict) -> str:
     return prompt + 'Category: ' + json.dumps(item.get('category', '')[:50], ensure_ascii=False)
 
 
+def article_prompt(scene: str) -> str:
+    # The validated English brief replaces the headline; no source prose is sent.
+    return STYLE + '\nScene brief: ' + scene + '\n' + SCENE_RULES + 'Category: "news"'
+
+
 def scene_version(item: dict) -> str:
     if item.get('visual_calendar') is True:
         return 'editorial-calendar-v9'
+    if unclassified_news(item):
+        return ARTICLE_SCENE_VERSION
     if scene_brief(item) != _legacy_scene_brief(item):
         return 'editorial-photo-news-v8'
     if item.get('kind') == 'event' and event_activity(item.get('category'), item.get('title', '')):
@@ -208,7 +217,8 @@ class Illustrator:
         self.ocr_ready = None
         self.match_checks = {}
         self.match_ready = True
-        self.stats.update({'subject_rejected': 0, 'subject_unavailable': 0, 'text_only': 0, 'stock_reused': 0, 'scene_reused': 0})
+        self.stats.update({'subject_rejected': 0, 'subject_unavailable': 0, 'text_only': 0, 'stock_reused': 0, 'scene_reused': 0,
+                           'article_scene': 0, 'scene_rejected': 0})
 
     def check_subject(self, key: str, data: bytes, expected: str):
         from .editorial_stock import reviewed_calendar
@@ -311,6 +321,8 @@ class Illustrator:
             return None
         expected = subject(item)
         if expected is None:
+            if unclassified_news(item):
+                return self._article_scene(item, generate)
             self.stats['text_only'] += 1
             return None
         key = image_key(item)
@@ -503,10 +515,94 @@ class Illustrator:
         self.stats['reused'] += 1
         return self.materialize(key, legacy['image'])
 
+    def _article_scene(self, item: dict, generate: bool) -> Path | None:
+        """Unclassified current news: a validated brief, then its own match check.
+
+        Uses the same per-run and per-day attempt claims as reviewed scenes.
+        The brief request belongs to the claimed attempt; a rejected brief or
+        mismatched pixels never become a cover and are not retried.
+        """
+        key = image_key(item)
+        if key in self.paths:
+            self.stats['reused'] += 1
+            return self.paths[key]
+        rows = self.store.rows('SELECT * FROM illustrations WHERE id=?', (key,))
+        old = rows[0] if rows else None
+        if old and old['status'] == 'ready':
+            try:
+                validate_jpeg(old['image'])
+                self.check_image(key, old['image'])
+                self.stats['reused'] += 1
+                return self.materialize(key, old['image'])
+            except IllustrationCheckUnavailable:
+                self.stats['deferred'] += 1
+                return None
+            except ValueError:
+                # Rejected lettering or a damaged cache is never regenerated.
+                self.quarantine(key)
+                self.stats['failed'] += 1
+                return None
+        if not generate:
+            return None
+        if self._frozen_key(key) or not self.can_check_text() or not self.match_ready:
+            self.stats['deferred'] += 1
+            return None
+        used = self.store.rows('SELECT attempts FROM illustration_days WHERE day=?', (self.day,))
+        attempts = used[0]['attempts'] if used else 0
+        if (not self.configured or self.stopped or self.stats['attempted'] >= RUN_ATTEMPTS or attempts >= DAILY_ATTEMPTS
+                or old and (old['attempts'] >= 2 or self.at < parse_date(old['retry_at']))):
+            self.stats['deferred'] += 1
+            return None
+        with self.store.db:
+            self.store.db.execute('INSERT INTO illustration_days VALUES (?,1) ON CONFLICT(day) DO UPDATE SET attempts=attempts+1', (self.day,))
+            self.store.db.execute('INSERT OR REPLACE INTO illustrations VALUES (?,?,?,NULL,?,?,?)',
+                                  (key, item['id'], 'pending', (old['attempts'] if old else 0) + 1,
+                                   self.retry_at, self.at.isoformat()))
+        self.stats['attempted'] += 1
+        try:
+            brief = describe(self.session, self.account, self.token, item)
+            data = self.render(article_prompt(brief['scene']))
+            self.check_image(key, data)
+            validate_described(data, brief['description'])
+            with self.store.db:
+                self.store.db.execute("UPDATE illustrations SET status='ready',image=? WHERE id=?", (data, key))
+            self.stats['generated'] += 1
+            self.stats['article_scene'] += 1
+            return self.materialize(key, data)
+        except SceneRejected:
+            with self.store.db:
+                self.store.db.execute("UPDATE illustrations SET status='failed',image=NULL,attempts=2 WHERE id=?", (key,))
+            self.stats['scene_rejected'] += 1
+            return None
+        except IllustrationTextRejected:
+            self.quarantine(key)
+            self.stats['failed'] += 1
+            return None
+        except IllustrationCheckUnavailable:
+            with self.store.db:
+                self.store.db.execute("UPDATE illustrations SET status='failed',image=NULL WHERE id=?", (key,))
+            self.stats['failed'] += 1
+            self.stopped = True
+            return None
+        except (MatchRejected, MatchUnavailable) as exc:
+            with self.store.db:
+                self.store.db.execute("UPDATE illustrations SET status='failed',image=NULL,attempts=2 WHERE id=?", (key,))
+            self.stats['subject_rejected' if isinstance(exc, MatchRejected) else 'subject_unavailable'] += 1
+            return None
+        except (requests.RequestException, ValueError, KeyError, TypeError, OSError, Image.DecompressionBombError):
+            with self.store.db:
+                self.store.db.execute("UPDATE illustrations SET status='failed' WHERE id=?", (key,))
+            self.stats['failed'] += 1
+            self.stopped = True
+            return None
+
     def generate(self, item: dict) -> bytes:
+        return self.render(illustration_prompt(item))
+
+    def render(self, prompt: str) -> bytes:
         endpoint = f'https://api.cloudflare.com/client/v4/accounts/{self.account}/ai/run/{MODEL}'
         with self.session.post(endpoint, headers={'Authorization': 'Bearer ' + self.token},
-                               json={'prompt': illustration_prompt(item), 'steps': 4},
+                               json={'prompt': prompt, 'steps': 4},
                                timeout=(10, 75), allow_redirects=False, stream=True) as response:
             if response.status_code != 200:
                 raise ValueError('Illustration provider rejected request')

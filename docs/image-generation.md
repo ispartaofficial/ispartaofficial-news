@@ -14,10 +14,24 @@ verilir. Model kurulumu, durumun kaydedilmesi, rapor, Pages dağıtımı ve sosy
 yayın adımları Cloudflare anahtarı almaz. Araştırma hiçbir Meta anahtarı almaz.
 Bu bağlantı Instagram yayın kapılarını açmaz.
 
-Önce aynı kaynağa bağlı ve denetlenmiş fotoğraf/afiş değerlendirilir. Üretici,
-yalnız mevcut konu sınıflandırıcısının desteklediği etkinlik sahnelerinde
-kullanılır. Haber olayları, gerçek kişiler veya gerçek mekânlar yeniden
-canlandırılmaz. Desteklenmeyen veya belirsiz konuya alakasız fotoğraf konmaz.
+Önce aynı kaynağa bağlı ve denetlenmiş fotoğraf/afiş değerlendirilir. Haber
+olayları, gerçek kişiler veya gerçek mekânlar yeniden canlandırılmaz.
+
+30 Ekim 2026 kullanıcı kararı: gözden geçirilmiş konu listesi dışındaki güncel
+haberin kendi uygun fotoğrafı yoksa habere uygun genel bir sahne üretilir.
+Aynı Workers AI hesabındaki `@cf/meta/llama-3.1-8b-instruct` metin modeli, başlık
+ve en fazla 400 karakterlik özetten İngilizce bir sahne tarifi ve kısa açıklama
+önerir. Bu çıktı güvenilmez veridir: kişi, yüz, el, kalabalık, yazı, tabela,
+logo, şiddet, kaza, tanınabilir mekân, sayı ve başlıktaki özel adlar içeren ya
+da biçimi bozuk tarif reddedilir; ölüm, yaralanma, suç, hastalık veya kişiye
+odaklı haberde model sahne önermez. Kabul edilen tarifle Flux görseli üretilir,
+OCR ile yazı denetlenir ve görsel, yerel CLIP modelinde kendi açıklamasına
+yazı grafiği, portre, kalabalık ve şehir silüetinden daha iyi uymalıdır
+(üç kart kırpması, en az 0,24 benzerlik ve 0,015 fark). Reddedilen tarif veya
+görsel kapak olmaz ve aynı haber için yeniden denenmez. Tarif isteği aynı
+üretim girişimine dahildir; tur/gün sınırları değişmez. Kartlara otomatik AI
+notu eklenmez. Desteklenmeyen etkinliklere ve ileri tarihli duyurulara
+alakasız görsel konmaz.
 
 Mevcut sınırlar korunur: tur başına en fazla iki, UTC günü başına en fazla
 yirmi üretim girişimi; öğe ve revizyona bağlı kalıcı önbellek; OCR ile yazı/tarih
