@@ -137,3 +137,12 @@ yayın kapıları kapalı kalır; hazırlanmış kart gerçek paylaşım değild
 26 Ekim 2026: [görsel kuyruğunu kurtarma ve kalıcı stok](visual-backlog-recovery.md).
 İki başarısız üretim, aynı seans sahnesinin gereksiz tekrarı ve Bubilet CDN robots 404 nedeni ayrı ele alınır.
 Canlı sonuç için tarihli dağıtım/SQL kanıtı gerekir; eski kurulum notları güncel Meta durumu sayılmaz.
+
+
+### 28 Ekim: eski görsel arşivinin sınırlı onarımı
+
+Önceki temizleme kuralıyla silinen, yayımlanmış kartlara bağlı görsel satırları yalnız bu deponun 26 Ekim durum yedeğinden geri alınır. Sabit yedek ve satır özeti, değişmemiş sahip yayın satırları ve gözlenen mevcut durum birlikte eşleşmelidir. Yeni bir yayın aynı anahtarı kullanıyorsa veya kayıt başka türlü değiştiyse onarım atlanır. Yeni yayın, kota artışı veya eski durum veritabanına dönüş yapılmaz. Mevcut budama koruması bu kayıtları korur. Instagram üzerinde eski içeriğin doğrudan gözlemiyle web arşivinin doğrulanması ayrı kanıtlardır.
+
+Onarım mevcut 80 görsel/12 MiB sınırını yükseltmez. Yer gerekiyorsa yalnız süresi geçmiş veya yerini yeni sürüm almış taslaklara bağlı kullanılmayan önbellek satırları temizlenir. Aktif taslak/yayın görseli temizlenmez; yeterli yer yoksa onarım atlanır, normal durum yüklemesi kesilmez.
+
+29 Ekim: budama bütçesi önce dondurulmuş yayın görsellerine ayrılır; yeni taslaklar yalnız kalan alana sığar. Eski zaman damgalı korunan satırların en sonda sayılıp toplam sınırı aşması iki regresyonla (adet/bayt) yeniden üretildi ve düzeltildi. Silinen taslaklar bütçeyi tüketmez; sınırlar artırılmadı.
