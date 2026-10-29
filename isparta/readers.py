@@ -4,6 +4,7 @@ from __future__ import annotations
 from collections import Counter
 from datetime import datetime
 import hashlib
+import json
 import re
 import unicodedata
 from urllib.parse import parse_qsl, urlencode, urljoin, urlsplit
@@ -17,6 +18,9 @@ MONTHS = {name: i for i, name in enumerate(('ocak', 'şubat', 'mart', 'nisan', '
 DISTRICTS = ('eğirdir', 'gelendost', 'keçiborlu', 'senirkent', 'sütçüler',
              'şarkikaraağaç', 'uluborlu', 'yalvaç', 'yenişarbademli', 'atabey')
 OUTSIDE = r'\b(?:antalya|ankara|istanbul|izmir|bursa|balikesir|bilecik|denizli|afyonkarahisar|burdur)\b'
+# Publisher-assigned paid/promotional sections (normalized). A news site's own
+# label is the evidence; promotional wording in the body alone is not.
+ADVERTORIAL_SECTION = re.compile(r'\b(?:reklam|sponsor|tanitim|advertorial|basin b[uü]lteni|ilan)')
 
 
 def text(node):
@@ -126,6 +130,26 @@ def news_links(html, source, limit=4):
     return found[:limit]
 
 
+def source_sections(soup, url):
+    """Section labels the publisher assigned: JSON-LD articleSection and breadcrumb.
+
+    The breadcrumb's link to the article itself carries the headline, not a
+    section, so a story *about* advertising is not mistaken for an advert.
+    """
+    labels = []
+    for node in soup.select('script[type="application/ld+json"]'):
+        try:
+            data = json.loads(node.string or '')
+        except ValueError:
+            continue
+        for entry in data if isinstance(data, list) else [data]:
+            section = entry.get('articleSection') if isinstance(entry, dict) else None
+            labels += section if isinstance(section, list) else [section]
+    labels += [text(a) for a in soup.select('.breadcrumb a, nav[aria-label=breadcrumb] a')
+               if public_link(a.get('href'), url) != canonical(url)]
+    return [label for label in labels if isinstance(label, str) and label.strip()]
+
+
 def article(html, url, source):
     soup = BeautifulSoup(html, 'html.parser')
     title = soup.select_one(source['title_selector'])
@@ -136,7 +160,9 @@ def article(html, url, source):
     if not body:
         raise ValueError('article_body_missing')
     item = base_item(source, text(title), ' '.join(body), kind='news', key=canonical(url), url=url)
-    dates = [timestamp(n.get('content')) for n in soup.select(source['date_selector'])]
+    if any(ADVERTORIAL_SECTION.search(norm(label)) for label in source_sections(soup, url)):
+        item['parser_holds'].append('advertorial_section')
+    dates =[timestamp(n.get('content')) for n in soup.select(source['date_selector'])]
     published = dates[0] if dates and all(d == dates[0] and d is not None for d in dates) else None
     if source.get('date_format') == 'dotted_date':
         dates = [dotted(text(n)) for n in soup.select(source['date_selector'])]
