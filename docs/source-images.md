@@ -1,5 +1,19 @@
 # Kaynağa bağlı görseller — 22 Ekim 2026
 
+## 30 Ekim: konusu sınıflandırılmamış güncel haberin kendi fotoğrafı
+
+Kullanıcı kararı: haberin kendi gerçek görseli varsa o kullanılır; yoksa habere
+uygun yapay zekâ görseli hazırlanır ([görsel üretimi](image-generation.md)).
+Gözden geçirilmiş konu listesi dışındaki güncel haber (`unclassified_news`) artık
+`article_photo` konusuyla aynı makale kimliği, başlık, tarih, kanonik adres,
+yayınevi CDN yolu, arşiv/temsili/reklam etiketi ve başka haberde kullanım
+kapılarından geçer. Konu etiketi olmadığından model yalnız fotoğrafın başlık
+grafiği, logo, ekran görüntüsü veya boş kare olmadığını denetler; OCR, iki
+segmentasyonda doğrulanan dört veya daha fazla kelime, görüntünün %3'ünü aşan
+yazı alanı ya da yıl içeren görseli reddeder. Bomba32/Haber32'nin büyük başlıklı
+kolajları bu yüzden kullanılmaz; haber yapay zekâ sahnesine geçer. İleri tarihli
+duyurular ve fotoğraf konusu bilerek kapatılmış haberler bu yola girmez.
+
 ## 25 Ekim: gerçek haber fotoğrafı ve normal 4:3 kaynak çerçevesi
 
 Haber32'nin yalnız `www.haber32.com.tr` kaynağına ait

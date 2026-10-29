@@ -148,7 +148,9 @@ def validate_match(data: bytes, expected: str) -> dict:
 def validate_news_photo(data: bytes, expected: str) -> dict:
     # These remain forbidden generated scenes. Only a separately verified,
     # article-bound source photograph may reach this narrow news taxonomy.
-    from .source_photo_data import SUBJECTS
+    from .source_photo_data import ARTICLE_PHOTO, SUBJECTS
+    if expected == ARTICLE_PHOTO:
+        return validate_article_photo(data)
     if expected not in SUBJECTS:
         raise MatchRejected('Unsupported news photograph')
     return _validate_crops(data,expected,source_photo=True)
@@ -212,6 +214,68 @@ def validate_event_photo(data: bytes, expected: str) -> dict:
     if expected not in EVENT_SUBJECTS:
         raise MatchRejected('Unsupported event photograph')
     return _validate_crops(data,expected,source_photo=True)
+
+
+# A photograph or generated scene must look more like its own description than
+# like a text graphic, logo, screenshot or blank frame.
+GRAPHIC_LABELS = ('a page of printed text', 'a graphic with large headline lettering',
+                  'a logo on a plain background', 'a screenshot of a website',
+                  'a blank solid colour image without objects')
+# A generated generic scene must also not drift into people or a skyline.
+SCENE_DISTRACTORS = GRAPHIC_LABELS + ('a portrait photograph of a person', 'a crowd of people',
+                                      'a city skyline with buildings', 'an abstract colourful pattern')
+ARTICLE_PHOTO_DESCRIPTION = 'a news photograph of a real scene'
+
+
+def described_scores(images: list[Image.Image], labels: tuple[str, ...]) -> list[list[float]]:
+    try:
+        torch, processor, model, _ = runtime()
+        with torch.inference_mode():
+            text = model.get_text_features(**processor(text=list(labels), padding=True, return_tensors='pt'))
+            text = text / text.norm(dim=-1, keepdim=True)
+            features = model.get_image_features(**processor(images=images, return_tensors='pt'))
+            features = features / features.norm(dim=-1, keepdim=True)
+            return (features @ text.T).tolist()
+    except Exception:
+        raise MatchUnavailable('Visual match unavailable') from None
+
+
+def validate_described(data: bytes, description: str, distractors=SCENE_DISTRACTORS, *,
+                       source_photo=False, minimum=0.24) -> dict:
+    """Check pixels against their own reviewed description, not a fixed topic.
+
+    The same three card crops and alternative-class margin as the fixed
+    taxonomy apply; only the positive text comes from the reviewed brief.
+    """
+    import math
+    if not isinstance(description, str) or not 10 <= len(description) <= 160:
+        raise MatchRejected('Invalid visual description')
+    try:
+        with Image.open(io.BytesIO(data)) as image:
+            image.load()
+            crops = [ImageOps.pad(image.convert('RGB'), (224, 224), Image.Resampling.LANCZOS, color='#777777') if source_photo
+                     else ImageOps.fit(image.convert('RGB'), size, Image.Resampling.LANCZOS)
+                     for size in ((1080, 436), (1080, 506), (1080, 586))]
+    except Exception:
+        raise MatchUnavailable('Visual match unavailable') from None
+    rows = described_scores(crops, (description, *distractors))
+    if len(rows) != 3 or any(len(row) != 1 + len(distractors) or not all(
+            type(value) in (int, float) and math.isfinite(value) for value in row) for row in rows):
+        raise MatchUnavailable('Visual match unavailable')
+    if not all(row[0] >= minimum and row[0] - max(row[1:]) >= 0.015 for row in rows):
+        raise MatchRejected('Visual description mismatch')
+    return {'subject': description, 'version': VERSION, 'image_sha256': hashlib.sha256(data).hexdigest()}
+
+
+def validate_article_photo(data: bytes) -> dict:
+    """The publisher bound this photo to the exact article; it must be a photo.
+
+    No topic label exists for these stories, so the model only rejects
+    headline graphics, logos, screenshots and blank frames.
+    """
+    from .image_safety import validate_photo_not_text_graphic
+    validate_photo_not_text_graphic(data)
+    return validate_described(data, ARTICLE_PHOTO_DESCRIPTION, GRAPHIC_LABELS, source_photo=True, minimum=0.0)
 
 
 def _validate_crops(data: bytes, expected: str, *, source_photo=False) -> dict:
