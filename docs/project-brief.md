@@ -85,7 +85,8 @@ afiş reddedilir. Diğer kaynak fotoğrafları da yalnız inceleme adayıdır.
 
 Araştırma turundaki benzer haberler gruplanır. Mevcut üretim çekirdeğinin kalıcı
 tekilleştirmesi, metin/tarih ve görsel/manifest kapıları ayrıca aktarılmıştır.
-Görsel üretim hizmeti ve Meta bağlantısı henüz etkin değildir. Kaynak resimleri
+Görsel üretim hizmeti ve bağımsız Meta bağlantısı 29 Ekim 2026'da yapılandırmada
+açıktır; gerçek teslim ayrıca kanıtlanır. Kaynak resimleri
 ayrı kapıyla ve yerel OCR/konu modeliyle denetlenir; `docs/source-images.md`
 kurulum ile gerçek resim onayının ayrı kanıtlar olduğunu açıklar.
 `eligible_for_drafting` yayın onayı değildir. Rapor tam yazı kopyası yerine kısa
@@ -113,6 +114,10 @@ Bilet listesinde öndeki kartların yanında kalan kartlar dönüşümlü araşt
 haber siteleri ve resmî duyurular bu yüzden kapsamdan çıkarılmaz.
 
 ## Güncel sınır
+
+29 Ekim 2026: yayın, Meta bağlantısı, hava, eczane, kaynak fotoğrafı ve görsel
+üretim kapıları açıktır; Facebook, öğrenme ve kaynak keşfi aktivasyonu kapalıdır.
+Aşağıdaki 22 Ekim notu aktarım anının kaydıdır; kapalı kapı ifadeleri o tarihe aittir.
 
 22 Ekim 2026: mevcut üretim çekirdeği `news_engine/` altında Isparta'ya
 uyarlanmıştır. `docs/engine-port.md` kapsamı ve etkin olmayan bağlantıları

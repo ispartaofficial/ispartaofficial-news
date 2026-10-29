@@ -15,9 +15,11 @@ topluluk sayısı çalışan etkinlik okuyucusu sayılmaz.
 [Kaynak kapsamı ve kalan engeller](docs/source-coverage.md).
 Ana dala alındıktan sonra GitHub'da saatte iki kez 07:20–23:50 arasında planlanır;
 başlangıç gecikebilir. `Run workflow` ile tek araştırma da başlatılabilir.
-Instagram yayın çekirdeği aktarılmıştır; bağımsız Meta bağlantısı ve yayın kapalıdır.
-Facebook sayfası, görsel hizmeti/model kurulumu, öğrenme ve kaynak etkinleştirme
-henüz bağlı değildir. [Aktarım kapsamı ve kalan kurulumlar](docs/engine-port.md).
+29 Ekim 2026: `config/runtime.json` Instagram yayını, bağımsız Meta bağlantısı, hava,
+nöbetçi eczane, kaynak fotoğrafı ve görsel üretim kapılarını açık; Facebook, öğrenme
+ve kaynak keşfi aktivasyonunu kapalı gösterir. GitHub ortam değişkenleri ayrı kapıdır.
+Kalıcı Meta yanıt kaydı teslim kanıtıdır, platform ekranında görülme kanıtı değildir.
+[Aktarım kapsamı ve bağlantılar](docs/engine-port.md).
 
 Kaynak durumu ve bekletme nedenleri Actions çalışmasının özetinde ve indirilebilir
 `research.json` dosyasında yer alır. Ayrıştırılan kaynak, tüm içeriklerinin güncel

@@ -1,6 +1,6 @@
 # Isparta kaynak kapsamı
 
-22 Ekim 2026. Kapsam bütün ilçelerden yerel haber ve kamu duyuruları ile üniversite/kültür sanat içerikleridir. Araştırma, haber yazımı ve sosyal yayın ayrı aşamalardır. Bu sürüm sosyal paylaşım yapmaz.
+22 Ekim 2026. Kapsam bütün ilçelerden yerel haber ve kamu duyuruları ile üniversite/kültür sanat içerikleridir. Araştırma, haber yazımı ve sosyal yayın ayrı aşamalardır. Araştırma aşaması sosyal paylaşım yapmaz; yayın ayrı `publish` işindedir.
 
 ## İncelenmiş içerik okuyucuları: 29
 

@@ -4,6 +4,16 @@ Tarih: 29 Ekim 2026 (Europe/Istanbul). Ana depo: https://github.com/ispartaoffic
 Devam dalı: **`codex/restore-frozen-visuals`**. Açık PR: https://github.com/ispartaofficial/ispartaofficial-news/pull/22
 Karşı proje: https://github.com/ntekintr/seferihisarofficial-news (kendi HANDOFF.md dosyası var).
 
+## 29 Ekim 2026 akşam güncellemesi (Claude Code)
+
+Bu bölüm aşağıdaki devir anı notlarından daha günceldir. Kullanıcı onayıyla:
+
+- PR #22 merge edildi (`f2e1b84`, 18:06 UTC). "PR #22 merge edilmeyecek" notu devir anına aittir.
+- PR #24 merge edildi (`c33913a`, 19:40 UTC): yayıncının kendi bölüm etiketi reklam/sponsor/tanıtım/ilan/basın bülteni olan makale `advertorial_section` ile bekletilir. 29 Ekim 15:03'te Bomba32 "Reklam Manşet20" bölümündeki bir firma tanıtımı haber olarak yayımlanmıştı; o gönderi Instagram'da durur, kaldırma kararı kullanıcıdadır.
+- PR #23 merge edildi (`51865e3`, 19:40 UTC): dört yerel basın kaynağında 12 bağlantı okunur; başka incelenmiş kaynakta görülen aynı haber yeniden görülmüş sayılır.
+
+Tarihli doğrulama sonuçları [HANDOFF-EVIDENCE.md](HANDOFF-EVIDENCE.md) içindedir. Açık kalanlar: reklam kapısının canlıda tetiklendiği henüz gözlenmedi; "Geleceğim Meslekte" saat çelişkisi (kayıt 10:00–16:00, açıklama 13:00) nedeniyle bekliyor; Facebook, öğrenme ve kaynak keşfi aktivasyonu kapalıdır.
+
 ## Mevcut durum ve amaç
 
 Isparta merkez ve tüm ilçeler için yerel haber, üniversite yaşamı, konser/festival/tiyatro ve hizmet duyuruları. Kullanıcı mevcut hesabın yaklaşık 35 bin takipçili ve dört yıllık olduğunu belirtti; bu bir güncel ölçüm değildir. `@ispartaofficial` gül logosu, mürdüm/füşya/açık zemin korunur. Eczane yalnız merkez ve merkez mahalleleri; kırmızı E işareti. Hava kartı Isparta kimlikli, Seferihisar salyangozu taşınmaz.
@@ -125,6 +135,9 @@ Bu liste GitHub merge kayıtlarından alınmıştır; her satır canlı teslim k
 | [#19](https://github.com/ispartaofficial/ispartaofficial-news/pull/19) | Keep rejected source pictures from starving later artwork | 2026-10-26T04:38:38Z |
 | [#20](https://github.com/ispartaofficial/ispartaofficial-news/pull/20) | Recover pending covers with verified posters and reusable reviewed scenes | 2026-10-26T18:11:38Z |
 | [#21](https://github.com/ispartaofficial/ispartaofficial-news/pull/21) | Complete visual recovery and preserve frozen publication images | 2026-10-28T11:16:49Z |
+| [#22](https://github.com/ispartaofficial/ispartaofficial-news/pull/22) | Restore archived image without changing publication claims | 2026-10-29T18:06:10Z |
+| [#24](https://github.com/ispartaofficial/ispartaofficial-news/pull/24) | Hold articles the publisher files under paid sections | 2026-10-29T19:40:03Z |
+| [#23](https://github.com/ispartaofficial/ispartaofficial-news/pull/23) | Keep fresh local news reobservable across busy listings | 2026-10-29T19:40:47Z |
 
 ## Yerel çalışma ve kanıtların korunması
 
