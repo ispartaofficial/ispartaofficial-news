@@ -157,7 +157,9 @@ def illustration_prompt(item: dict) -> str:
 
 def article_prompt(scene: str) -> str:
     # The validated English brief replaces the headline; no source prose is sent.
-    return STYLE + '\nScene brief: ' + scene + '\n' + SCENE_RULES + 'Category: "news"'
+    return (STYLE + '\nScene brief: ' + scene + '\n' + SCENE_RULES +
+            'Any decoration must suit a Turkish setting: no paper lanterns or East Asian ornaments. '
+            'Category: "news"')
 
 
 def scene_version(item: dict) -> str:

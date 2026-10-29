@@ -204,11 +204,30 @@ def test_generated_scene_must_beat_people_and_graphic_alternatives(monkeypatch):
     monkeypatch.setattr(visual_match, 'described_scores',
                         lambda images, labels: [[.29] + [.20] * (len(labels) - 1)] * 3)
     assert visual_match.validate_described(data, description)['subject'] == description
-    for row in ([.23] + [.10] * len(visual_match.SCENE_DISTRACTORS),
-                [.29, .20, .20, .20, .20, .20, .285, .20, .20, .20]):
+    distractors = visual_match.SCENE_DISTRACTORS
+    portrait = [.29] + [.285 if label == 'a portrait photograph of a person' else .20 for label in distractors]
+    lanterns = [.29] + [.30 if 'lanterns' in label else .20 for label in distractors]
+    for row in ([.23] + [.10] * len(distractors), portrait, lanterns):
         monkeypatch.setattr(visual_match, 'described_scores', lambda images, labels, row=row: [row] * 3)
         with pytest.raises(MatchRejected):
             visual_match.validate_described(data, description)
+
+
+def test_scene_decorations_must_suit_a_turkish_setting():
+    from news_engine.illustrations import article_prompt
+    item = news(title='Cumhuriyet Bayramı Coşkuyla Kutlandı')
+    assert 'paper lanterns' in article_scenes.SYSTEM
+    assert 'no paper lanterns or East Asian ornaments' in article_prompt('A plain red flag on a pole.')
+    flags = ('{"scene": "Several plain red flags with a white crescent and star waving on poles under a clear '
+             'autumn sky.", "description": "a photograph of red flags with a white crescent and star"}')
+    assert article_scenes.parse(flags, item)['description'].startswith('a photograph of red flags')
+    for bad in (flags.replace('waving on poles', 'beside hanging red paper lanterns'),
+                flags.replace('under a clear', 'near a pagoda under a clear'),
+                flags.replace('Several plain', 'Several Chinese style')):
+        with pytest.raises(article_scenes.SceneRejected):
+            article_scenes.parse(bad, item)
+    # A new brief version: cached v10 scenes are not reused for prepared posts.
+    assert article_scenes.VERSION == 'editorial-article-scene-v11'
 
 
 def test_article_bound_photo_is_saved_as_article_photo_evidence(tmp_path, monkeypatch):
