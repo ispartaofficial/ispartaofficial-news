@@ -7,6 +7,7 @@ import pytest
 
 from news_engine.editorial_stock import DIRECTORY
 from news_engine.image_safety import IllustrationTextRejected, ocr_available
+from news_engine.source_photos import cleaned_photo
 from news_engine.visual_match import LABELS, MatchRejected, validate_article_photo, validate_described
 
 FIXTURES = Path(__file__).parent / 'fixtures/visual-followup'
@@ -20,8 +21,10 @@ native = pytest.mark.skipif(os.getenv('RUN_VISUAL_NATIVE') != 'true', reason='Pi
 @pytest.mark.parametrize('name', ['official-visit-exif-zero.jpg', 'thyme-article.jpg'])
 def test_headline_collage_is_not_an_article_photo(name):
     assert ocr_available()
+    # Same order as the source-photo pipeline: metadata-free, bounded pixels first.
+    data = cleaned_photo((FIXTURES / name).read_bytes())
     with pytest.raises((IllustrationTextRejected, MatchRejected)):
-        validate_article_photo((FIXTURES / name).read_bytes())
+        validate_article_photo(data)
 
 
 @native
