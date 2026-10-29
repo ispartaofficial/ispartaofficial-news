@@ -168,6 +168,33 @@ def test_duplicate_news_and_separate_event_sessions():
     deduplicate([a,b]);assert 'duplicate_of' not in b
 
 
+def bomba32_page(slug, title, *, section=None, crumbs=()):
+    # Structure of the reviewed Bomba32 page that published a paid company
+    # promotion under "Reklam Manşet20" on 29 Oct 2026.
+    url=f'https://www.bomba32.com/{slug}'
+    ld=('<script type="application/ld+json">'+json.dumps({'@type':'NewsArticle','headline':title,
+        'articleSection':section})+'</script>') if section else ''
+    trail=''.join(f'<li class="breadcrumb-item"><a href="{href}">{label}</a></li>' for href,label in crumbs)
+    raw=f'''<meta name="datePublished" content="2026-10-21T15:00:00+03:00">{ld}
+    <nav aria-label="breadcrumb"><ol class="breadcrumb"><li><a href="https://www.bomba32.com">HABERLER</a></li>{trail}</ol></nav>
+    <h1 itemprop="headline">{title}</h1><div class="article-text"><p>Isparta merkezde
+    yeni yaşam alanları ve çalışmalar hakkında ayrıntılı açıklama yapıldı.</p></div>'''
+    return article(raw,url,SOURCES['bomba32'])
+
+
+@pytest.mark.parametrize('section,crumbs,held',[
+    ('Reklam Manşet20',[('/reklam-manset20','REKLAM MANŞET20')],True),
+    (None,[('/basin-bultenleri','Basın Bülteni')],True),
+    ('Ekonomi',[('/ekonomi','EKONOMİ')],False),
+    # A real story about advertising: only the self-link carries that word.
+    ('Gündem',[('/gundem','GÜNDEM'),('/isparta-reklam-panolari-kaldirildi','Isparta reklam panoları kaldırıldı')],False)])
+def test_publisher_paid_section_is_held_not_drafted(section,crumbs,held):
+    item=check(bomba32_page('isparta-reklam-panolari-kaldirildi','Isparta reklam panoları kaldırıldı',
+                            section=section,crumbs=crumbs))
+    assert ('advertorial_section' in item['holds']) is held
+    assert item['eligible_for_drafting'] is not held
+
+
 def test_listing_cannot_supply_external_article_or_tracking_duplicates():
     source=dict(SOURCES['bomba32'],link_selector='a[href]')
     raw='''<a href="https://evil.example/news-a-long-story-slug">x</a>

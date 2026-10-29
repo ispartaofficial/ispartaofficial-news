@@ -39,6 +39,8 @@ Kaynak adaylarının adres ve teknik sonuçları `config/source-candidates.json`
 
 İçerik okuyucuları `config/research-sources.json` içinde, dizin keşfi aynı dosyanın `discovery_sources` bölümündedir. Rapor içerik sağlığını `source_health`, dizin sağlığını `discovery_health` altında ayrı tutar. `parsed`, kaynağın o turda kayıt verdiğini; `partial`, ayrıntıların bir kısmında hata olduğunu; `failed`, okuma/ayrıştırmanın tamamlanamadığını gösterir. Eksik alanları nedeniyle bekletilen içerikler ayrıca gerekçelendirilir.
 
+Yayıncının kendi bölüm etiketi (JSON-LD `articleSection` veya breadcrumb) reklam, sponsorlu, tanıtım, ilan ya da basın bülteni ise makale `advertorial_section` ile bekletilir. 29 Ekim 2026'da Bomba32'nin "Reklam Manşet20" bölümündeki bir firma tanıtımı haber olarak yayımlanmıştı. Gövdedeki tanıtım dili tek başına ölçüt değildir; makalenin kendi başlığına giden breadcrumb bağlantısı bölüm sayılmaz.
+
 Kod/yerel test başarısı ile GitHub bulut erişimi farklı kanıtlardır. Kesin güncel kaynak durumu ilgili Actions çalışmasının indirilebilir `research.json` dosyasından alınmalıdır. Özellikle SDÜ SKS yerelde okunabilse de önceki bulut çalışmalarında zaman aşımı vermiştir; sonraki turda gerçek okuma kanıtı olmadan sağlıklı sayılmaz.
 
 Araştırma en fazla 40 içerik kaynağı ve dört ayrı keşif kanalı kabul eder. Her kaynağın ayrıntı sayısı ve toplam iş süresi sınırlıdır. Mevcut GitHub araştırması iki saatlik gündüz/akşam planında çalışır; başlangıç gecikebilir. Yayına hazır veya yayımlanmış kayıt sayısı bu aşamada daima sıfırdır.
