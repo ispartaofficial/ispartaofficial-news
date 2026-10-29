@@ -223,7 +223,8 @@ GRAPHIC_LABELS = ('a page of printed text', 'a graphic with large headline lette
                   'a blank solid colour image without objects')
 # A generated generic scene must also not drift into people or a skyline.
 SCENE_DISTRACTORS = GRAPHIC_LABELS + ('a portrait photograph of a person', 'a crowd of people',
-                                      'a city skyline with buildings', 'an abstract colourful pattern')
+                                      'a city skyline with buildings', 'an abstract colourful pattern',
+                                      'a photograph of hanging red paper lanterns')
 ARTICLE_PHOTO_DESCRIPTION = 'a news photograph of a real scene'
 
 

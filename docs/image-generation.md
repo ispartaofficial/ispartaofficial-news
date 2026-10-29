@@ -28,7 +28,11 @@ odaklı haberde model sahne önermez. Kabul edilen tarifle Flux görseli üretil
 OCR ile yazı denetlenir ve görsel, yerel CLIP modelinde kendi açıklamasına
 yazı grafiği, portre, kalabalık ve şehir silüetinden daha iyi uymalıdır
 (üç kart kırpması, en az 0,24 benzerlik ve 0,015 fark). Reddedilen tarif veya
-görsel kapak olmaz ve aynı haber için yeniden denenmez. Tarif isteği aynı
+görsel kapak olmaz ve aynı haber için yeniden denenmez. İlk canlı turda Cumhuriyet
+Bayramı sahnesine Doğu Asya tarzı kâğıt fenerler girdi; bu yüzden tarif, çizim
+isteği ve kontrol süslemelerin Türkiye'ye uygun olmasını ister, fener/pagoda/ejderha
+içeren tarif reddedilir ve görsel kendi açıklamasına kırmızı kâğıt fenerlerden daha
+iyi uymalıdır. Sahne sürümü v11'e yükseltildi; hazırlanmış eski sahneler yeniden üretilir. Tarif isteği aynı
 üretim girişimine dahildir; tur/gün sınırları değişmez. Kartlara otomatik AI
 notu eklenmez. Desteklenmeyen etkinliklere ve ileri tarihli duyurulara
 alakasız görsel konmaz.
