@@ -22,6 +22,7 @@ geçince kapatır. Kullanıcının kendi issue'larına dokunmaz.
 | `unresolved_delivery` | Sonucu belirsiz Instagram/Facebook teslimi var. |
 | `delivery_audit_failed` | Son 24 saatte yayın sonrası okuma kontrolü başarısız. |
 | `backup_missing` | Son iki günde başarılı yedek işi yok. |
+| `source_silent` | Daha önce kayıt vermiş bir kaynak şu an `empty`/`failed` ve en yeni kendi kaydı (`first_seen`) 72 saatten eski. Issue kaynak kimliğini, durumunu ve son yeni kayıt tarihini listeler. |
 | `panel_unreachable` / `invalid_panel` | Panel okunamadı veya doğrulanamadı. |
 
 Isparta'ya özgü iki fark vardır. Araştırma 07:20–23:50 arasında çalışır ve
@@ -30,6 +31,16 @@ gündüz eşiği 3 saattir, gece yalnız sabah turlarının hiç gelmemesi uyar�
 Panel yalnız araştırma dağıtımıyla yenilendiği için hava ve eczane, ancak pencere
 kapandıktan sonra üretilmiş bir panelde değerlendirilir; eski panel ayrıca
 `research_stale` ile yakalanır.
+
+### Sessiz kaynak
+
+Araştırma dışa aktarımı panele `quiet_sources` listesini yazar. `last_seen`
+kullanılmaz; başka kaynak aynı kaydı yeniden bildirince de ilerler. `partial`
+kaynak okuma yapıyordur, sayılmaz; süreli istek (`requested_until`) dışarıda
+kalır. `config/research-sources.json` içinde seyrek kaynak `quiet_after_hours`,
+aşılamayan bilinen engel `quiet_acknowledged` (gerekçe metni) alabilir;
+onaylanan kaynak panelde görünür ama uyarı vermez. 30 Ekim verisiyle ilk liste
+`bubilet-isparta` (okunamıyor/güncel değil, son yeni kayıt 22 Ekim).
 
 ## Yedek (`state-backup.yml`)
 
