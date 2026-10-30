@@ -46,6 +46,9 @@ garantisi değildir. Tek üretim kilidi altında kaynakları okur, bağımsız
 ve Pages paneline yalnız doğrulanmış kamu dosyalarını dağıtır. Durum dalına erişim
 hatası yeni boş veriyle devam etme nedeni değildir.
 
+Bağımsız işletim izlemesi ve günlük yedek/geri yükleme denemesi
+[ayrı belgede](operations-watch.md) açıklanır (30 Ekim 2026).
+
 Araştırma artifact'i kısa metinli rapordur. Pages kartların dağıtımıdır.
 `prepared` veya yeşil workflow sosyal medya paylaşımı anlamına gelmez.
 
