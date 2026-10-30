@@ -37,6 +37,26 @@ iyi uymalıdır. Sahne sürümü v11'e yükseltildi; hazırlanmış eski sahnele
 notu eklenmez. Desteklenmeyen etkinliklere ve ileri tarihli duyurulara
 alakasız görsel konmaz.
 
+30 Ekim akşamı: Ethem amca ve Yiğit (matematik olimpiyatı) kartları aynı boş
+oturma odasıyla yayımlandı; birinde pencereden yabancı bir şehir silüeti
+görünüyordu. Kurallar insanı, öğrenciyi ve mekânı yasaklayınca kişi haberinde
+geriye "boş iç mekân" kalıyordu; CLIP yalnız resmin kendi tarifine uyduğunu
+ölçüyordu. Kullanıcı kararı: yapay zekâ görseli haberle en az %70–80 uyumlu
+olmalı, alakasız görsel olmamalı. Sürüm v12:
+
+- Model önce habere özgü 2–4 somut nesne seçer (`objects`) ve sahne bu nesneleri
+  göstermelidir. Oturma odası, kanepe, koltuk, yatak odası, perde, pencere, manzara
+  ve balkon içeren tarif reddedilir. "Adı geçen kişi" artık sahneyi kendiliğinden
+  kapatmaz; kişi gösterilmeden konusunun nesneleriyle anlatılır. Ölüm, yaralanma,
+  suç ve hastalık haberinde sahne önerilmez.
+- Aynı metin modeli ikinci bir çağrıda tarifin haberi ne kadar anlattığını 0–10
+  puanlar; 7'nin altı reddedilir (`MIN_RELEVANCE`). Bu, kullanıcının %70 eşiğinin
+  karşılığıdır, kesin bir ölçüm değildir.
+- CLIP denetimine "boş oturma odası" ve "pencereden şehir" karşı etiketleri eklendi.
+- Reddedilen tarif veya görsel kapak olmaz; haber ilgisiz görselle yayımlanmaz.
+  Canlı modelin yeni biçime uyumu ilk turlarda `illustrations` istatistiklerinden
+  (`scene_rejected`, `article_scene`) izlenir.
+
 Mevcut sınırlar korunur: tur başına en fazla iki, UTC günü başına en fazla
 yirmi üretim girişimi; öğe ve revizyona bağlı kalıcı önbellek; OCR ile yazı/tarih
 kontrolü ve gerçek kart kırpmalarında konu denetimi. Bu girişim sınırları servis

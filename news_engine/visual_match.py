@@ -221,10 +221,13 @@ def validate_event_photo(data: bytes, expected: str) -> dict:
 GRAPHIC_LABELS = ('a page of printed text', 'a graphic with large headline lettering',
                   'a logo on a plain background', 'a screenshot of a website',
                   'a blank solid colour image without objects')
-# A generated generic scene must also not drift into people or a skyline.
+# A generated generic scene must also not drift into people or a skyline, or
+# back into the empty living room every 30 Oct person story became.
 SCENE_DISTRACTORS = GRAPHIC_LABELS + ('a portrait photograph of a person', 'a crowd of people',
                                       'a city skyline with buildings', 'an abstract colourful pattern',
-                                      'a photograph of hanging red paper lanterns')
+                                      'a photograph of hanging red paper lanterns',
+                                      'a photograph of an empty living room with a sofa',
+                                      'a view of a city through a window')
 ARTICLE_PHOTO_DESCRIPTION = 'a news photograph of a real scene'
 
 

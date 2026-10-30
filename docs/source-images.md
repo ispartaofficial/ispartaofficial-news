@@ -14,6 +14,30 @@ yazı alanı ya da yıl içeren görseli reddeder. Bomba32/Haber32'nin büyük b
 kolajları bu yüzden kullanılmaz; haber yapay zekâ sahnesine geçer. İleri tarihli
 duyurular ve fotoğraf konusu bilerek kapatılmış haberler bu yola girmez.
 
+30 Ekim akşamı kullanıcı önceliği netleştirdi: gerçek fotoğraf varsa mutlaka o.
+O gün yapay zekâ sahnesiyle yayımlanan beş haberden dördünün kaynak gövdesinde
+gerçek fotoğraf vardı; hiçbiri denenmemişti. Bomba32'nin öne çıkan görseli başlık
+kolajıydı (Ethem amca, Yiğit) ve yalnız Haber32 gövde fotoğrafı seçicisine
+sahipti. Değişiklik (`isparta/source_images.py`):
+
+- Bomba32 de `.article-text > p > img[src]` gövde fotoğraflarını kolajdan önce
+  dener. Başka haberlere bağlantılı küçük resimler bu seçiciye girmez.
+- Belediye/kaymakamlık portalları (`official_portal`, `archive_article`) kendi
+  gözden geçirilmiş okuyucularıyla yeniden okunur: kurum kimliği, sayfa
+  başlığı ve sayfada yazan tarih haberle aynı olmalıdır; gövdedeki görseller
+  sırayla denenir. Liste sayfası yeniden okunmaz, bu yüzden tarihi yalnız
+  listede olan haber fotoğrafsız kalır.
+- Isparta Belediyesi ile kaymakamlık portallarının `robots.txt` dosyası görsellerin
+  bulunduğu `/kurumlar` yolunu yasaklar; bu engel aşılmaz, bu kaynaklar yapay zekâ
+  sahnesine veya görselsiz bekleyişe kalır. Keçiborlu Belediyesi gibi engelsiz
+  portallarda gövde fotoğrafı kullanılır.
+
+30 Ekim durum kopyasıyla kuru deneme (CLIP/OCR hariç, salt okuma): Bomba32
+Ethem amca ve Cumhuriyet Bayramı haberlerinde iki gerçek gövde fotoğrafı seçildi
+ve boyut kapısından geçti; Keçiborlu, Ajans32 ve Haber32 de fotoğraf verdi. Yiğit
+haberinin gövdesinde fotoğraf yok, yalnız başlık kolajı var. Son "haber fotoğrafı
+mı, yazı grafiği mi" kararı bulutta CLIP ve OCR ile verilir.
+
 ## 25 Ekim: gerçek haber fotoğrafı ve normal 4:3 kaynak çerçevesi
 
 Haber32'nin yalnız `www.haber32.com.tr` kaynağına ait

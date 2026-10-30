@@ -61,6 +61,56 @@ def test_cdn_does_not_expand_to_other_publishers_namespaces_or_query_urls(source
     assert approved_image_url(source_id, page, image) is False
 
 
+def test_bomba32_body_photo_precedes_its_headline_collage():
+    # 30 Oct: the Ethem amca hero was a headline collage; the body had the real photos.
+    source, item, image, html = article_case('bomba32')
+    inline = 'https://bomba32com.teimg.com/bomba32-com/uploads/2026/10/whatsapp-image-2026-10-28.jpeg'
+    related = 'https://bomba32com.teimg.com/crop/250x150/bomba32-com/uploads/2026/10/baska-haber.jpg'
+    html = html.replace('bu sabah başlattı.</p>', 'bu sabah başlattı.</p>'
+                        f'<div class="related"><a href="/baska-haber"><img src="{related}"></a></div>'
+                        f'<p><img src="{inline}"></p>')
+    assert candidate(html, item['url'], item, source) == inline
+    assert candidate(article_case('bomba32')[3], item['url'], item, source) == image
+
+
+def portal_case(dated=True):
+    config = {'id': 'keciborlu-belediye', 'name': 'Keçiborlu Belediyesi', 'url': 'https://www.keciborlu.bel.tr/',
+              'research_enabled': True, 'reader': 'official_portal', 'district': 'Keçiborlu',
+              'jurisdiction': 'Isparta', 'identity_selector': 'title', 'identity_pattern': 'Keçiborlu Belediyesi',
+              'detail_path': '/(?:genel|duyurular|haberler)/[a-z0-9-]+/', 'title_selector': 'h1.page-title',
+              'body_selector': '.entry-content', 'body_text_fallback': True,
+              'date_selector': 'time[pubdate][datetime]', 'date_attribute': 'datetime', 'date_format': 'iso_date',
+              'feeds': [{'kind': 'news', 'selector': '#haberlerdiv .haber a[href]', 'title_selector': 'h3'}]}
+    source = sources_for_engine({'sources': [config]})[0]
+    title = 'Öğrencilerden Belediyemize Ziyaret'
+    url = 'https://www.keciborlu.bel.tr/genel/ogrencilerden-belediyemize-ziyaret/'
+    photos = [f'https://www.keciborlu.bel.tr/wp-content/uploads/2026/10/ziyaret-{n}.jpeg' for n in (1, 2)]
+    html = ('<title>Keçiborlu Belediyesi</title>' f'<h1 class="page-title">{title}</h1>'
+            + ('<time pubdate datetime="2026-10-29"></time>' if dated else '')
+            + '<div class="entry-content"><p>İlçemizdeki öğrenciler belediyemizi ziyaret ederek çalışmaları inceledi.</p>'
+            + ''.join(f'<p><img src="{photo}"></p>' for photo in photos) + '</div>')
+    item = {'source_id': 'keciborlu-belediye', 'kind': 'news', 'url': url, 'title': title,
+            'published_at': '2026-10-29T00:00:00+03:00'}
+    return source, item, photos, html
+
+
+def test_district_portal_body_photo_is_bound_by_its_own_reviewed_reader():
+    source, item, photos, html = portal_case()
+    assert source['photo_inline_selector'] == 'img[src]'
+    assert candidate(html, item['url'], item, source) == photos[0]
+    with pytest.raises(ValueError):
+        candidate(html.replace('Keçiborlu Belediyesi</title>', 'Başka Belediye</title>'), item['url'], item, source)
+    with pytest.raises(ValueError):
+        candidate(html, item['url'], {**item, 'published_at': '2026-10-28T00:00:00+03:00'}, source)
+
+
+def test_portal_page_without_its_own_date_keeps_no_photo():
+    # Isparta Belediyesi dates news only on its listing (and robots.txt blocks /kurumlar).
+    source, item, photos, html = portal_case(dated=False)
+    with pytest.raises(ValueError, match='identity'):
+        candidate(html, item['url'], item, source)
+
+
 def calendar_case():
     source = sources_for_engine({'sources': [{'id': 'sdu-calendar', 'name': 'Örnek takvim',
         'url': 'https://example.org/calendar', 'reader': 'sdu', 'research_enabled': True}]})[0]

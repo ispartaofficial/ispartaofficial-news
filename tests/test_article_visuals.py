@@ -22,7 +22,8 @@ from news_engine.visual_topics import unclassified_news
 
 AT = parse_date('2026-10-30T09:00:00+03:00')
 ACCOUNT = 'a' * 32
-GOOD = ('{"scene": "An open old notebook with a fountain pen and a small plain red flag on a wooden desk '
+GOOD = ('{"objects": ["open notebook", "fountain pen", "red flag"], '
+        '"scene": "An open old notebook with a fountain pen and a small plain red flag on a wooden desk '
         'in soft daylight.", "description": "a photograph of an open notebook, a fountain pen and a small red flag"}')
 
 
@@ -68,7 +69,12 @@ def test_scene_brief_is_untrusted_and_strictly_validated():
                 GOOD.replace('An open old notebook', 'Ethem holding an open old notebook'),
                 GOOD.replace('a photograph of an open', 'an open'),
                 GOOD.replace('wooden desk', 'wooden desk near Isparta castle'),
-                '{"scene": "A desk.", "description": "a photograph of a desk"}'):
+                '{"scene": "A desk.", "description": "a photograph of a desk"}',
+                GOOD.replace('"objects": ["open notebook", "fountain pen", "red flag"], ', ''),
+                GOOD.replace('"red flag"]', '"red flag", "brass medal"]'),         # listed, not drawn
+                GOOD.replace('on a wooden desk', 'on a coffee table in a living room'),
+                GOOD.replace('in soft daylight', 'by a window with a city view'),
+                GOOD.replace('"fountain pen"', '"Ethem pen"')):
         if 'in the year' in bad:
             article_scenes.parse(bad, item)
             with pytest.raises(article_scenes.SceneRejected):
@@ -78,19 +84,50 @@ def test_scene_brief_is_untrusted_and_strictly_validated():
             article_scenes.parse(bad, item)
 
 
-def test_brief_request_uses_existing_account_and_returns_only_validated_text():
-    response = MagicMock(status_code=200)
-    response.iter_content.return_value = [json.dumps({'success': True, 'result': {'response': GOOD}}).encode()]
+def model_session(*answers):
+    responses = []
+    for answer in answers:
+        response = MagicMock(status_code=200)
+        response.iter_content.return_value = [json.dumps({'success': True, 'result': {'response': answer}}).encode()]
+        responses.append(response)
     session = MagicMock()
-    session.post.return_value.__enter__.return_value = response
+    session.post.return_value.__enter__.side_effect = responses
+    return session, responses
+
+
+def test_brief_request_uses_existing_account_and_returns_only_validated_text():
+    session, responses = model_session(GOOD, '{"score": 8}', GOOD)
     brief = article_scenes.describe(session, ACCOUNT, 'test-token', news())
     url = session.post.call_args.args[0]
     assert url.endswith('/accounts/' + ACCOUNT + '/ai/run/' + article_scenes.TEXT_MODEL)
     assert session.post.call_args.kwargs['headers'] == {'Authorization': 'Bearer test-token'}
     assert brief['description'].startswith('a photograph of ')
-    response.status_code = 403
+    judged = session.post.call_args_list[1].kwargs['json']
+    assert judged['messages'][0]['content'] == article_scenes.JUDGE and judged['temperature'] == 0
+    assert json.loads(judged['messages'][1]['content'])['image_brief'] == brief['scene']
+    responses[2].status_code = 403
     with pytest.raises(ValueError):
         article_scenes.describe(session, ACCOUNT, 'test-token', news())
+
+
+@pytest.mark.parametrize('verdict', ['{"score": 6}', '{"score": 2}', 'Looks fine to me', '{"score": 11}',
+                                     '{"score": "seven"}'])
+def test_brief_that_does_not_clearly_fit_the_story_is_rejected(verdict):
+    session, _ = model_session(GOOD, verdict)
+    with pytest.raises(article_scenes.SceneRejected):
+        article_scenes.describe(session, ACCOUNT, 'test-token', news())
+    assert session.post.call_count == 2
+    assert article_scenes.relevance('{"score": "7"}') == 7 == article_scenes.MIN_RELEVANCE
+
+
+def test_living_room_brief_is_rejected_before_any_relevance_call():
+    # The 30 Oct cards for Ethem amca and Yiğit were both this empty room.
+    room = ('{"objects": ["sofa", "coffee table"], "scene": "A cozy living room with a sofa, a coffee table, a vase '
+            'of pink flowers and sunlight through tall windows.", "description": "a photograph of a cozy living room"}')
+    session, _ = model_session(room, '{"score": 9}')
+    with pytest.raises(article_scenes.SceneRejected, match='Generic interior'):
+        article_scenes.describe(session, ACCOUNT, 'test-token', news(title='Isparta’nın gururu Yiğit matematik olimpiyatında'))
+    assert session.post.call_count == 1
 
 
 def illustrator(store, tmp_path, monkeypatch):
@@ -218,16 +255,16 @@ def test_scene_decorations_must_suit_a_turkish_setting():
     item = news(title='Cumhuriyet Bayramı Coşkuyla Kutlandı')
     assert 'paper lanterns' in article_scenes.SYSTEM
     assert 'no paper lanterns or East Asian ornaments' in article_prompt('A plain red flag on a pole.')
-    flags = ('{"scene": "Several plain red flags with a white crescent and star waving on poles under a clear '
-             'autumn sky.", "description": "a photograph of red flags with a white crescent and star"}')
+    flags = ('{"objects": ["red flag", "flag pole"], "scene": "Several plain red flags with a white crescent and star '
+             'waving on poles under a clear autumn sky.", "description": "a photograph of red flags with a white crescent and star"}')
     assert article_scenes.parse(flags, item)['description'].startswith('a photograph of red flags')
     for bad in (flags.replace('waving on poles', 'beside hanging red paper lanterns'),
                 flags.replace('under a clear', 'near a pagoda under a clear'),
                 flags.replace('Several plain', 'Several Chinese style')):
         with pytest.raises(article_scenes.SceneRejected):
             article_scenes.parse(bad, item)
-    # A new brief version: cached v10 scenes are not reused for prepared posts.
-    assert article_scenes.VERSION == 'editorial-article-scene-v11'
+    # A new brief version: cached v11 scenes are not reused for prepared posts.
+    assert article_scenes.VERSION == 'editorial-article-scene-v12'
 
 
 def test_article_bound_photo_is_saved_as_article_photo_evidence(tmp_path, monkeypatch):
