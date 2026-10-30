@@ -6,9 +6,7 @@
   "state_copied": false,
   "brand_assets_copied": false,
   "excluded_city_services": [
-    "backup_history.py",
     "cli.py",
-    "ops_watch.py",
     "pipeline.py",
     "source_readers.py",
     "weather.py",
@@ -331,6 +329,22 @@
       "upstream_sha256": "7011ff506d5279eed8e9659b590e7db1764ccf7f959f6aff8cf93a3c643f21cf",
       "adapted": true,
       "target_sha256": "58a94392c1f28a43f9d09a349785524aa9a2a2b3461668f4f34dcccb58b03eab"
+    },
+    {
+      "upstream": "seferihisar/backup_history.py",
+      "target": "news_engine/backup_history.py",
+      "upstream_commit": "32d169e322f92c9f73f088ab4ba79205e4413345",
+      "upstream_sha256": "4ce970b8ba42eed054610502de874f1cfc40992b1a6347fc5f9e1b503f878371",
+      "adapted": true,
+      "target_sha256": "bf0e9456c06201f3d487b02c4e07e549a97b7515e75c43225f80427dbc30c09d"
+    },
+    {
+      "upstream": "seferihisar/ops_watch.py",
+      "target": "news_engine/ops_watch.py",
+      "upstream_commit": "32d169e322f92c9f73f088ab4ba79205e4413345",
+      "upstream_sha256": "b15a4c7fa15feb99ac0d89bfed7722a09d22b049691834f76548f1f13f4cda19",
+      "adapted": true,
+      "target_sha256": "fa5c8d9b685c61e77ea52e55089f12dfd025302f1bf787139de18234fdb3aacc"
     }
   ],
   "regression_test_files": 15,
