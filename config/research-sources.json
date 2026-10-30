@@ -171,7 +171,8 @@
       "reader": "ticketing",
       "link_selector": "a[href]:has(h3)",
       "detail_path": "/isparta/etkinlik/[a-z0-9-]+",
-      "max_details": 8
+      "max_details": 8,
+      "quiet_acknowledged": "Aynı alan adı 27 Ekim 2026'dan beri bulut sunucularına HTTP 403 dönüyor (Seferihisar kanıtı); yerel okuma 200. Engel aşılmaz."
     },
     {
       "id": "aksu-kaymakamlik",

@@ -42,6 +42,16 @@ aşılamayan bilinen engel `quiet_acknowledged` (gerekçe metni) alabilir;
 onaylanan kaynak panelde görünür ama uyarı vermez. 30 Ekim verisiyle ilk liste
 `bubilet-isparta` (okunamıyor/güncel değil, son yeni kayıt 22 Ekim).
 
+`failed` tek başına yetmez: kaynak son 4 tamamlanmış turun her birinin
+`runs.errors` kaydında da bulunmalıdır (Isparta'da bu kayıt `empty` ve
+`partial` kaynakları da `source_not_current` koduyla içerir). 25–30 Ekim'deki 100
+turda tekil hatalar en fazla 2 tur sürdü, kalıcı engeller 32–100 tur. Kural
+olmadan uyarı her ağ kesintisinde açılıp kapanır ve her değişiklik issue'ya
+yorum yazar. `bubilet-isparta` aynı gün `quiet_acknowledged` aldı: Seferihisar'da
+aynı alan adı 27 Ekim'den beri bulut sunucularına HTTP 403 dönüyor; Isparta
+okuyucusu aynı dönemden beri okunamıyor, proje kimliğiyle yerel okuma 200. Isparta
+motoru bulut hata kodunu ayrıca saklamadığı için kod doğrudan görülmedi.
+
 ## Yedek (`state-backup.yml`)
 
 Her gün 03:43 TR'de ve bu dosyalar değiştiğinde çalışır. `automation-state`
