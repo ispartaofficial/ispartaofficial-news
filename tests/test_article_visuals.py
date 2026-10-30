@@ -114,10 +114,37 @@ def test_brief_request_uses_existing_account_and_returns_only_validated_text():
                                      '{"score": "seven"}'])
 def test_brief_that_does_not_clearly_fit_the_story_is_rejected(verdict):
     session, _ = model_session(GOOD, verdict)
-    with pytest.raises(article_scenes.SceneRejected):
+    with pytest.raises(article_scenes.SceneRejected) as rejected:
         article_scenes.describe(session, ACCOUNT, 'test-token', news())
     assert session.post.call_count == 2
+    assert rejected.value.code in ('low_relevance', 'no_score')
+    assert (rejected.value.score is None) == (rejected.value.code == 'no_score')
     assert article_scenes.relevance('{"score": "7"}') == 7 == article_scenes.MIN_RELEVANCE
+
+
+def test_rejection_reason_and_score_reach_the_panel_stats(tmp_path, monkeypatch):
+    # 30 Oct: two v12 scenes were rejected and nothing said why.
+    verdicts = iter([article_scenes.SceneRejected('Generic interior scene', 'generic_interior'),
+                     article_scenes.SceneRejected('Scene unrelated to the story', 'low_relevance', 4)])
+
+    def fake_describe(session, account, token, item):
+        verdict = next(verdicts, None)
+        if verdict:
+            raise verdict
+        return {**article_scenes.parse(GOOD, item), 'relevance': 8}
+    monkeypatch.setattr('news_engine.illustrations.describe', fake_describe)
+    monkeypatch.setattr(Illustrator, 'render', lambda self, prompt: jpeg())
+    monkeypatch.setattr('news_engine.illustrations.validate_described', lambda *args: None)
+    with closing(Store(tmp_path / 'state.sqlite')) as store:
+        generator = illustrator(store, tmp_path, monkeypatch)
+        generator.image(news(1, 'Fenomen köfteci anlamlı ziyaret 1'), True)
+        generator.image(news(2, 'Fenomen köfteci anlamlı ziyaret 2'), True)
+        stats = Illustrator(store, AT, tmp_path / 'images', session=Mock()).stats
+        assert generator.stats['scene_rejections'] == {'generic_interior': 1, 'low_relevance': 1}
+        assert generator.stats['scene_scores'] == [4] and stats['scene_rejections'] == {}
+        later = illustrator(store, tmp_path, monkeypatch)
+        assert later.image(news(3, 'Fenomen köfteci anlamlı ziyaret 3'), True) is not None
+        assert later.stats['scene_scores'] == [8]
 
 
 def test_living_room_brief_is_rejected_before_any_relevance_call():

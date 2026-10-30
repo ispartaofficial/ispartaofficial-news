@@ -59,7 +59,15 @@ ALLOWED = re.compile(r"[A-Za-z ,.'()-]+")
 
 
 class SceneRejected(ValueError):
-    """The proposed brief is unsafe or unusable; no image is requested."""
+    """The proposed brief is unsafe or unusable; no image is requested.
+
+    `code` is one enumerated reason, safe for the public panel; the model's
+    own text never leaves this module. `score` is the relevance verdict.
+    """
+
+    def __init__(self, message, code='invalid_brief', score=None):
+        super().__init__(message)
+        self.code, self.score = code, score
 
 
 def request(item: dict) -> dict:
@@ -81,7 +89,7 @@ def parse(answer, item: dict) -> dict:
     else:
         match = re.search(r'\{.*\}', str(answer), re.S)
         if not match:
-            raise SceneRejected('No scene brief')
+            raise SceneRejected('No scene brief', 'no_brief')
         try:
             value = json.loads(match.group())
         except ValueError:
@@ -90,25 +98,25 @@ def parse(answer, item: dict) -> dict:
         raise SceneRejected('Invalid scene brief')
     scene, description, objects = value.get('scene'), value.get('description'), value.get('objects')
     if not isinstance(scene, str) or not isinstance(description, str):
-        raise SceneRejected('No safe scene for this story')
+        raise SceneRejected('No safe scene for this story', 'declined')
     scene, description = ' '.join(scene.split()), ' '.join(description.split()).rstrip('.')
     if (not 40 <= len(scene) <= 320 or not 20 <= len(description) <= 120
             or not description.lower().startswith('a photograph of ')
             or not ALLOWED.fullmatch(scene) or not ALLOWED.fullmatch(description)
             or FORBIDDEN.search(scene) or FORBIDDEN.search(description)):
-        raise SceneRejected('Unsafe scene brief')
+        raise SceneRejected('Unsafe scene brief', 'unsafe')
     if (not isinstance(objects, list) or not 2 <= len(objects) <= 4
             or not all(isinstance(o, str) and 3 <= len(o) <= 40 and ALLOWED.fullmatch(o) for o in objects)
             or any(FORBIDDEN.search(o) for o in objects)):
-        raise SceneRejected('No story objects')
+        raise SceneRejected('No story objects', 'no_objects')
     if any(GENERIC.search(text) for text in (scene, description, *objects)):
-        raise SceneRejected('Generic interior scene')
+        raise SceneRejected('Generic interior scene', 'generic_interior')
     # Each chosen object must be drawn, not just listed beside an unrelated scene.
     drawn = scene.lower()
     if not all(o.lower().split()[-1].rstrip('s') in drawn for o in objects):
-        raise SceneRejected('Story objects missing from the scene')
+        raise SceneRejected('Story objects missing from the scene', 'objects_missing')
     if set(re.findall(r'[a-z]+', (scene + ' ' + description + ' ' + ' '.join(objects)).lower())) & headline_names(item):
-        raise SceneRejected('Scene brief repeats a headline name')
+        raise SceneRejected('Scene brief repeats a headline name', 'headline_name')
     return {'scene': scene, 'description': description.lower()}
 
 
@@ -129,7 +137,7 @@ def relevance(answer) -> int:
     if isinstance(score, str) and score.isdigit():
         score = int(score)
     if type(score) is not int or not 0 <= score <= 10:
-        raise SceneRejected('No relevance score')
+        raise SceneRejected('No relevance score', 'no_score')
     return score
 
 
@@ -153,6 +161,7 @@ def run(session, account: str, token: str, body: dict) -> str:
 def describe(session, account: str, token: str, item: dict) -> dict:
     brief = parse(run(session, account, token, request(item)), item)
     # The owner's bar (30 Oct): an AI image only when it clearly fits the story.
-    if relevance(run(session, account, token, judge_request(item, brief))) < MIN_RELEVANCE:
-        raise SceneRejected('Scene unrelated to the story')
-    return brief
+    score = relevance(run(session, account, token, judge_request(item, brief)))
+    if score < MIN_RELEVANCE:
+        raise SceneRejected('Scene unrelated to the story', 'low_relevance', score)
+    return {**brief, 'relevance': score}

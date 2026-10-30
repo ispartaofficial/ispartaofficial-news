@@ -220,7 +220,9 @@ class Illustrator:
         self.match_checks = {}
         self.match_ready = True
         self.stats.update({'subject_rejected': 0, 'subject_unavailable': 0, 'text_only': 0, 'stock_reused': 0, 'scene_reused': 0,
-                           'article_scene': 0, 'scene_rejected': 0})
+                           'article_scene': 0, 'scene_rejected': 0,
+                           # 30 Oct: two v12 scenes were rejected with no stored reason.
+                           'scene_rejections': {}, 'scene_scores': []})
 
     def check_subject(self, key: str, data: bytes, expected: str):
         from .editorial_stock import reviewed_calendar
@@ -563,6 +565,8 @@ class Illustrator:
         self.stats['attempted'] += 1
         try:
             brief = describe(self.session, self.account, self.token, item)
+            if isinstance(brief.get('relevance'), int):
+                self.stats['scene_scores'].append(brief['relevance'])
             data = self.render(article_prompt(brief['scene']))
             self.check_image(key, data)
             validate_described(data, brief['description'])
@@ -571,10 +575,14 @@ class Illustrator:
             self.stats['generated'] += 1
             self.stats['article_scene'] += 1
             return self.materialize(key, data)
-        except SceneRejected:
+        except SceneRejected as rejection:
             with self.store.db:
                 self.store.db.execute("UPDATE illustrations SET status='failed',image=NULL,attempts=2 WHERE id=?", (key,))
             self.stats['scene_rejected'] += 1
+            reasons = self.stats['scene_rejections']
+            reasons[rejection.code] = reasons.get(rejection.code, 0) + 1
+            if isinstance(rejection.score, int):
+                self.stats['scene_scores'].append(rejection.score)
             return None
         except IllustrationTextRejected:
             self.quarantine(key)
