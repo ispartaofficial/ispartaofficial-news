@@ -33,7 +33,9 @@ LISTED_SESSION_CAP = 14
 # adresi" text ran as news). One such phrase occurs in real reporting; three
 # different ones in a story mean a sales text, which waits for review.
 SALES_PHRASES = ('ayricalikli', 'konforlu', 'modern yaşam', 'yaşam alan', 'yaşam kalite', 'yeni adres', 'prestijli',
-                 'lüks', 'daire seçenek', 'satiş ofis', 'uygun fiyat', 'müşteri memnuniyet', 'kaliteli hizmet')
+                 'lüks', 'daire seçenek', 'satiş ofis', 'uygun fiyat', 'müşteri memnuniyet', 'kaliteli hizmet',
+                 'varan indirim', 'indirim kampanya', 'indirim firsat', 'kaçirilmayacak firsat', 'alişveriş tutkun',
+                 'cazip fiyat')
 SALES_THRESHOLD = 3
 
 

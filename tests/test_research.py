@@ -205,6 +205,17 @@ def test_unlabelled_sales_text_is_held_but_one_shared_phrase_is_not():
     assert 'promotional_copy_requires_review' not in real['holds']
 
 
+def test_shop_sale_is_held_but_a_public_discount_is_not():
+    # 31 Oct: a menswear sale reached the queue as local news from Bomba32.
+    shop=check(story(title='JAKAMEN’DEN EFSANE KASIM KAMPANYASI! YÜZDE 70’E VARAN İNDİRİM FIRSATI',
+                     description='Isparta’da JAKAMEN, Kasım ayına özel başlattığı dev indirim kampanyasıyla alışveriş '
+                                 'tutkunlarına kaçırılmayacak fırsatlar sunuyor.'))
+    assert 'promotional_copy_requires_review' in shop['holds'] and not shop['eligible_for_drafting']
+    public=check(story(title='Isparta’da su faturalarına yüzde 50’ye varan indirim',
+                       description='Isparta Belediyesi ihtiyaç sahibi ailelerin su faturalarında indirim uygulanacağını açıkladı.'))
+    assert 'promotional_copy_requires_review' not in public['holds']
+
+
 def test_listing_cannot_supply_external_article_or_tracking_duplicates():
     source=dict(SOURCES['bomba32'],link_selector='a[href]')
     raw='''<a href="https://evil.example/news-a-long-story-slug">x</a>

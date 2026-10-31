@@ -43,6 +43,8 @@ Kaynak adaylarının adres ve teknik sonuçları `config/source-candidates.json`
 
 Yayıncının kendi bölüm etiketi (JSON-LD `articleSection` veya breadcrumb) reklam, sponsorlu, tanıtım, ilan ya da basın bülteni ise makale `advertorial_section` ile bekletilir. 29 Ekim 2026'da Bomba32'nin "Reklam Manşet20" bölümündeki bir firma tanıtımı haber olarak yayımlanmıştı. Gövdedeki tanıtım dili tek başına ölçüt değildir; makalenin kendi başlığına giden breadcrumb bağlantısı bölüm sayılmaz.
 
+Bölüm etiketi olmayan satış metinleri `promotional_copy_requires_review` ile bekletilir: bir haberde en az üç farklı satış ifadesi geçmelidir. 31 Ekim 2026'da Bomba32'nin etiketsiz bir mağaza indirimi yerel haber olarak kuyruğa girdi; bu yüzden indirim ve kampanya ifadeleri de listeye eklendi. Bir kurumun tek cümlelik indirim duyurusu bekletilmez.
+
 Kod/yerel test başarısı ile GitHub bulut erişimi farklı kanıtlardır. Kesin güncel kaynak durumu ilgili Actions çalışmasının indirilebilir `research.json` dosyasından alınmalıdır. Özellikle SDÜ SKS yerelde okunabilse de önceki bulut çalışmalarında zaman aşımı vermiştir; sonraki turda gerçek okuma kanıtı olmadan sağlıklı sayılmaz.
 
 Araştırma en fazla 40 içerik kaynağı ve dört ayrı keşif kanalı kabul eder. Her kaynağın ayrıntı sayısı ve toplam iş süresi sınırlıdır. Mevcut GitHub araştırması iki saatlik gündüz/akşam planında çalışır; başlangıç gecikebilir. Yayına hazır veya yayımlanmış kayıt sayısı bu aşamada daima sıfırdır.
