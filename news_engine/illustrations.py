@@ -455,8 +455,10 @@ class Illustrator:
         items = {i['id']:i for i in self.store.items()}
         for row in self.store.rows("SELECT * FROM illustrations WHERE status='ready' ORDER BY updated_at DESC,id"):
             donor = items.get(row['item_id'])
-            if (row['id'] != key and donor and image_key(donor) == row['id']
-                    and subject(donor) == expected and scene_brief(donor) == brief):
+            # An updated event keeps its own picture; the new revision's key must
+            # not wait for a fresh scene (31 Oct: Profesyonel Bıçak Eğitimi).
+            if (row['id'] != key and donor and (row['item_id'] == item['id'] or (
+                    image_key(donor) == row['id'] and subject(donor) == expected and scene_brief(donor) == brief))):
                 candidates.append(('scene_reused', row['image']))
         seen = set()
         import hashlib

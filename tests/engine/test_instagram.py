@@ -2,10 +2,13 @@ from datetime import timedelta
 from types import SimpleNamespace
 from unittest.mock import Mock
 
+import pytest
 import requests
 
 from news_engine.instagram import Instagram, prepare_story_jobs, publish_one
+from news_engine.operations import summary
 from news_engine.schedule import prepare
+from news_engine.security import validate_state
 
 
 def adapter(fail=False):
@@ -61,6 +64,25 @@ def test_uncertain_publish_is_not_retried(store,event,at):
     later=at+timedelta(hours=1)
     publish_one(store,later,'https://example.org/',assets_for(store),adapter=api)
     assert api.call.call_count==calls
+
+
+@pytest.mark.parametrize('failure,code', [
+    (requests.Timeout('hidden token'), 'timeout'),
+    (requests.ConnectionError('hidden token'), 'connection'),
+    (RuntimeError('Meta API request failed (HTTP 400)'), 'http_400'),
+    (RuntimeError('Meta media processing failed'), 'media_processing'),
+    (RuntimeError('Meta API response could not be verified'), 'unverified_response')])
+def test_failed_delivery_keeps_a_short_code_and_nothing_else(store,event,at,failure,code):
+    # 30 Oct: a feed attempt failed before reaching Meta and nothing said why.
+    store.upsert(event,at.isoformat())
+    prepare(store,at)
+    api=adapter()
+    api.container.side_effect=failure
+    assert publish_one(store,at,'https://example.org/',assets_for(store),adapter=api)['status']=='uncertain'
+    post=next(p for p in store.posts() if p['status']=='uncertain')
+    assert post['delivery_error']==code and 'hidden' not in str(post)
+    assert summary(store,at)['delivery_errors']=={code:1}
+    validate_state(store.path)
 
 
 def test_media_not_yet_deployed_prevents_meta_call(store,event,at):

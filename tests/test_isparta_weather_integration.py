@@ -24,9 +24,10 @@ def test_weather_workflow_keeps_manual_preview_separate_from_production():
     assert [r['cron'] for r in events['schedule']] == ['35 4 * * *', '0,17,32,47 5 * * *']
     assert events['workflow_run']['workflows'] == ['Research and prepare Isparta content']
     assert flow['permissions'] == {'contents':'read'}
-    assert flow['concurrency']['cancel-in-progress'] is False
-    assert 'isparta-production' in flow['concurrency']['group']
+    assert 'concurrency' not in flow
+    assert flow['jobs']['weather']['concurrency'] == {'group': 'isparta-production', 'cancel-in-progress': False}
     preview = flow['jobs']['preview']
+    assert preview['concurrency'] == {'group': 'isparta-weather-preview', 'cancel-in-progress': False}
     encoded = json.dumps(preview)
     assert "github.event_name == 'workflow_dispatch'" in preview['if']
     assert 'secrets.' not in encoded and 'STATE_WRITE_TOKEN' not in encoded

@@ -195,6 +195,16 @@ def test_publisher_paid_section_is_held_not_drafted(section,crumbs,held):
     assert item['eligible_for_drafting'] is not held
 
 
+def test_unlabelled_sales_text_is_held_but_one_shared_phrase_is_not():
+    # 29 Oct: a developer's paid piece carried no section label on Bomba32.
+    paid=check(story(title='ÖRNEK İNŞAAT’TAN ISPARTA’YA MODERN YAŞAMIN YENİ ADRESİ',
+                     description='Isparta’da faaliyet gösteren firma konforlu ve ayrıcalıklı yaşam alanları sunuyor.'))
+    assert 'promotional_copy_requires_review' in paid['holds'] and not paid['eligible_for_drafting']
+    real=check(story(title='Isparta’da yeni yaşam alanları için çalışma başladı',
+                     description='Isparta Belediyesi kent merkezinde yeni yaşam alanları için çalışma başlattı.'))
+    assert 'promotional_copy_requires_review' not in real['holds']
+
+
 def test_listing_cannot_supply_external_article_or_tracking_duplicates():
     source=dict(SOURCES['bomba32'],link_selector='a[href]')
     raw='''<a href="https://evil.example/news-a-long-story-slug">x</a>

@@ -107,7 +107,7 @@
       "link_selector": ".main__hd-listesi a[href]",
       "detail_path": "/tr/haber/[a-z0-9-]+-\\d+h\\.html",
       "listing_title_selector": "span:first-child",
-      "title_selector": "h2.page-title",
+      "title_selector": ".page-title",
       "body_selector": ".main__body",
       "date_selector": ".main__icerik-bilgi .col-sm-4",
       "date_format": "labelled",

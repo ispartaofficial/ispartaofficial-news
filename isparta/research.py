@@ -25,6 +25,12 @@ ROOT = Path(__file__).resolve().parents[1]
 # Busy news listings move a local story out of the newest four links within an
 # hour or two; reviewed sources may opt into a wider, still bounded window.
 ARTICLE_LINK_CAP = 12
+# Bomba32 prints paid pieces with no section label (29 Oct: a developer's "yeni
+# adresi" text ran as news). One such phrase occurs in real reporting; three
+# different ones in a story mean a sales text, which waits for review.
+SALES_PHRASES = ('ayricalikli', 'konforlu', 'modern yaşam', 'yaşam alan', 'yaşam kalite', 'yeni adres', 'prestijli',
+                 'lüks', 'daire seçenek', 'satiş ofis', 'uygun fiyat', 'müşteri memnuniyet', 'kaliteli hizmet')
+SALES_THRESHOLD = 3
 
 
 def local_news(value):
@@ -55,6 +61,8 @@ def assess(item, at, venues):
     if re.search(r'\b(?:cinayet\w*|intihar\w*|tutuk\w*|gözalt\w*|yarali\w*|hayatini kaybet\w*|ölüm\w*|iddia\w*|tecavüz\w*|istismar\w*|deprem\w*|sel felaketi|seçim\w*|siyasi|ak parti|chp|mhp)\b', combined):
         reasons.append('sensitive_claim_requires_review')
     if item['kind'] == 'news':
+        if sum(phrase in combined for phrase in SALES_PHRASES) >= SALES_THRESHOLD:
+            reasons.append('promotional_copy_requires_review')
         if re.search(r'\b(?:bebek\w*|çocuk\w*|özel gereksinim\w*|hastaliği|tedavisi)\b', combined):
             reasons.append('personal_or_child_story_requires_review')
         when = timestamp(item.get('published_at'))

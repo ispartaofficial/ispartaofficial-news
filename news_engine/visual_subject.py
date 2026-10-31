@@ -16,6 +16,10 @@ def subject(item: dict) -> str | None:
     if re.search(r'\brebetiko\b', normalized(item.get('title',''))):
         return 'concert'
     category = item.get('category')
+    # Career days stay in the broad "event" category and could never get a
+    # visual, so their card waited forever (31 Oct: "Geleceğim Meslekte").
+    if category == 'event' and re.search(r'\b(?:kariyer|meslek|seminer|sempozyum)\w*\b', normalized(item.get('title',''))):
+        return 'education'
     return category if category in (
         'theatre', 'concert', 'cinema', 'festival', 'culture', 'family',
         'sport', 'market', 'food', 'education') else None

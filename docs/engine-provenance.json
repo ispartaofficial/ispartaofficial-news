@@ -125,7 +125,7 @@
       "target": "news_engine/illustrations.py",
       "upstream_sha256": "72b7d8d6c09e788851ba2d83e4ddadf6aa8f9bb2f55b088f9cf3bee87ffc61a1",
       "adapted": false,
-      "target_sha256": "65f77feee675240326fdf675159ef55046d405e6a91f489769810e6d8ff7473f"
+      "target_sha256": "94159973d767c04cb410a1119f951ce38faa56d2ce129f2faca373aaf71073a3"
     },
     {
       "upstream": "seferihisar/image_safety.py",
@@ -139,7 +139,7 @@
       "target": "news_engine/instagram.py",
       "upstream_sha256": "ef994d34d9a853f86a08810b6ad6d4bf4e57cca83543d3b03400d5293a2c8a07",
       "adapted": false,
-      "target_sha256": "7d5581a8988528e7865f409ad6d839bef8548a9bf670a0d4fe9aa6f038d87c0b"
+      "target_sha256": "c93af64b026b92ecf79a2237a41e0c0629ae5fa3c810bd6f9979c73f435ca94f"
     },
     {
       "upstream": "seferihisar/instagram_source_photos.py",
@@ -188,7 +188,7 @@
       "target": "news_engine/operations.py",
       "upstream_sha256": "1c948629a4f68b33fc91d7a1ebb3b1d78c5e2ff911f62b875dd1479164368130",
       "adapted": true,
-      "target_sha256": "1191fcfad387efcf12318cfda4b9c94c61974694fdfda3138bc3a50598bafdca"
+      "target_sha256": "bbd4837bdacb00e02eff5baf9f22eb9696004ef3578d73d3b03a623255980c2a"
     },
     {
       "upstream": "seferihisar/quality.py",
@@ -216,7 +216,7 @@
       "target": "news_engine/security.py",
       "upstream_sha256": "516abe3c745bddc3ea93d89b9bceac4c6fdba573d7952ea2ab100ed27fb1c7ae",
       "adapted": true,
-      "target_sha256": "d12ab813d79d1a37e1a7c0ca80baeb6ac4e37d866fc6bef8ea134f92adb4d8b3"
+      "target_sha256": "ef7e75da7476161554081645804d71975d2532f2b16af270c486d919ec0800fb"
     },
     {
       "upstream": "seferihisar/selection.py",
@@ -321,7 +321,7 @@
       "target": "news_engine/visual_subject.py",
       "upstream_sha256": "203f5444d06aa80a5a6b467fd03d566306ad09121fd1fef3cac6ba8bf0a1cd4f",
       "adapted": false,
-      "target_sha256": "f31f1abf871ec170bffa698a16f4decc9464b1a7a95a5f2e7e848b0c5bfc3401"
+      "target_sha256": "21e68b979fbdcfaec753b861253dc41d83c9582dd81dee915645cdad05777385"
     },
     {
       "upstream": "seferihisar/pipeline.py",

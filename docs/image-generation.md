@@ -57,6 +57,24 @@ olmalı, alakasız görsel olmamalı. Sürüm v12:
   Canlı modelin yeni biçime uyumu ilk turlarda `illustrations` istatistiklerinden
   (`scene_rejected`, `article_scene`) izlenir.
 
+31 Ekim sabahı: dört kart görselsiz bekliyordu ve üçünün yolu kapalıydı. Sürüm v13:
+
+- Model kurallardaki "insan yok, yazı yok" ifadesini tarife kopyalayınca bu,
+  yasak kelimeyi içerdiği için ret sayılıyordu. Olumsuz cümlecik artık silinir;
+  ne görsele gider ne ret nedeni olur. Sahne sınırı 420 karaktere çıktı.
+- Reddedilen taslak bir kez, sıcaklığı değiştirilerek yeniden istenir; model
+  haberi reddetmişse (`declined`) yeniden istenmez. Ret nedeni tekrarda da
+  `scene_rejections`, puanlar `scene_scores` ile panele yazılır.
+- Sürüm anahtarı değiştiği için 30 Ekim'de deneme hakkı biten iki haber bir kez
+  yeni kurallarla denenir. Eski kayıtlara dokunulmaz.
+- Güncellenen etkinlik önceki revizyonunun denetimden geçmiş görselini kullanır;
+  OCR ve konu denetimi yeniden çalışır.
+- `event` genel kategorisindeki kariyer, meslek, seminer ve sempozyum başlıkları
+  `education` konusunu alır. Önceden bu etkinliklerin hiç görsel yolu yoktu.
+
+Canlı modelin yeni kurallara yanıtı yerel olarak denenemedi (Workers AI anahtarı
+yalnız GitHub'da); ilk gerçek sonuç paneldeki sayaçlardır.
+
 Mevcut sınırlar korunur: tur başına en fazla iki, UTC günü başına en fazla
 yirmi üretim girişimi; öğe ve revizyona bağlı kalıcı önbellek; OCR ile yazı/tarih
 kontrolü ve gerçek kart kırpmalarında konu denetimi. Bu girişim sınırları servis
