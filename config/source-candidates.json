@@ -173,6 +173,25 @@
       "checked_at": "2026-10-31T20:30:00+03:00"
     },
     {
+      "id": "aedas-planli",
+      "name": "AEDAŞ planlı kesintileri",
+      "url": "https://www.akdenizedas.com.tr/GetItemsData",
+      "priority": "service_notices",
+      "reader_verified": true,
+      "production_enabled": false,
+      "listing_readable": true,
+      "discovery": "Resmî dağıtım şirketinin sorgu sayfasının kendi okuduğu herkese açık liste; tek GET.",
+      "research_enabled": true,
+      "reader_kind": "aedas_outages",
+      "reader_verification": "31 Ekim 2026 canlı okuması. Sitede robots.txt yok; kullanıcı bu kaynağa özel olarak onayladı. Site ileride robots yayımlarsa ona uyulur.",
+      "publication_gates": [
+        "start and end in the record match its own message",
+        "Isparta segment of the message",
+        "upcoming within seven days"
+      ],
+      "checked_at": "2026-10-31T21:00:00+03:00"
+    },
+    {
       "id": "bubilet-isparta",
       "name": "Bubilet Isparta",
       "url": "https://www.bubilet.com.tr/isparta",

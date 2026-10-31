@@ -18,7 +18,7 @@ include = ["isparta*", "news_engine*"]
 
 [tool.setuptools.package-data]
 isparta = ["assets/*.jpg", "assets/*.png"]
-news_engine = ["assets/editorial-scenes/*.jpg", "assets/editorial-scenes/*.json"]
+news_engine = ["assets/editorial-scenes/*.jpg", "assets/editorial-scenes/*.json", "assets/fonts/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

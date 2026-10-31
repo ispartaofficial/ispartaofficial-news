@@ -15,6 +15,7 @@ from pathlib import Path
 import re
 
 from .fetch import Fetcher, error_code
+from .outage_reader import aedas_outages
 from .readers import DISTRICTS, OUTSIDE, TZ, article, isubu, news_links, norm, sdu, timestamp
 from .scope_readers import (archive_article, campus_notice, correlate_campus, culture_items,
                            culture_year_link, listed_sessions, listing_entries, ticket_sessions)
@@ -205,7 +206,8 @@ def collect_sources(config_path, *, at=None, fetcher=None):
                     except Exception as exc:
                         row['errors'].append({'stage':'detail','url':entry['url'],'code':error_code(exc)})
             else:
-                parsed = {'sdu': sdu, 'isubu': isubu}[source['reader']](body, source)
+                parsed = (aedas_outages(body, source, at) if source['reader'] == 'aedas_outages'
+                          else {'sdu': sdu, 'isubu': isubu}[source['reader']](body, source))
                 for item in parsed:
                     item['evidence_sha256'] = hashlib.sha256(body.encode()).hexdigest()
                     items.append(assess(item, at, config['venues']))

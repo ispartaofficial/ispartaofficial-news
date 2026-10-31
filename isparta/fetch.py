@@ -1,8 +1,10 @@
 """Bounded, anonymous public reads. Adapted from the established source fetcher.
 
-No authentication, missing-robots exception or TLS override. Explicitly reviewed
-hosts may use one timeout retry per run, never an HTTP/robots/TLS bypass.
-Each redirect is checked against both the host allowlist and that host's robots.
+No authentication or TLS override. Explicitly reviewed hosts may use one timeout
+retry per run, never an HTTP/robots/TLS bypass. Each redirect is checked against
+both the host allowlist and that host's robots. A missing robots file stays closed,
+except on the one host whose owner-reviewed source opts in (31 Oct: AEDAŞ publishes
+none). Any robots file that host publishes later is obeyed.
 """
 from __future__ import annotations
 
@@ -59,6 +61,8 @@ class Fetcher:
         if session is None:
             self.session.trust_env = False
         self.robots = {}
+        self.missing_robots_allowed = {urlsplit(s['url']).hostname for s in sources
+                                       if s.get('research_enabled') and s.get('allow_missing_robots')}
         self.last = {}
         self.timeouts={urlsplit(s['url']).hostname:(
             min(15,max(8,s.get('connect_timeout_seconds',8))),
@@ -94,7 +98,13 @@ class Fetcher:
             url = f'https://{host}/robots.txt'
             # Fail closed on errors, missing files, or a cross-host robots redirect.
             for _ in range(5):
-                body, redirect = self._request(url)
+                try:
+                    body, redirect = self._request(url)
+                except requests.HTTPError as exc:
+                    status = exc.response.status_code if exc.response is not None else None
+                    if host not in self.missing_robots_allowed or status not in (404, 410):
+                        raise
+                    body, redirect = '', None
                 if redirect:
                     if urlsplit(redirect).hostname != host:
                         raise FetchError('robots_redirect_not_approved')

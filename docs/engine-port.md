@@ -82,10 +82,18 @@ kayıtları feed'e çıkmaz. `publish_outage_story` 08:30–21:00 arasında her 
 kontrolünde en fazla bir story dener, günde en fazla 2 tane, bugünkü ve yarınki
 kesintiler için. Haberin 3 story hakkını tüketmez ve haberi geciktirmez.
 
-Isparta'da bugün kesinti kaydı yok, kural kayıt gelince işler. Resmî dağıtım şirketi
-AEDAŞ planlı çalışmaları `www.akdenizedas.com.tr/elektrik-kesintisi-sorgulama`
-sayfasında duyuruyor, ama sitede `robots.txt` yok. `isparta/fetch.py` eksik robots
-dosyasında kapalı kalır; bu sınır kullanıcı kararı olmadan açılmaz.
+Kaynak `aedas-planli`: resmî dağıtım şirketi AEDAŞ'ın sorgu sayfasının okuduğu
+herkese açık liste, tek GET isteği. Bütün iller aynı listededir. `county` alanı çok
+ilçeli kaydın yalnız birini gösterir ve bazen yanlıştır, bir kayıt Antalya veya
+Burdur da içerebilir. Bu yüzden ilçe ve yer adları mesajın Isparta bölümlerinden
+okunur. Alan ile mesajdaki saat çelişirse kayıt alınmaz. Aynı ilçe ve saatteki
+kayıtlar tek kartta birleşir. Yer adları özettir; sokak için kart resmî duyuruya
+yollar.
+
+Sitede `robots.txt` yok ve `isparta/fetch.py` bu durumda kapalı kalır. Kullanıcı 31
+Ekim'de yalnız bu kaynak için izin verdi: `allow_missing_robots` tek bu kayıtta
+vardır ve yalnız 404 veya 410 yanıtını kabul eder. 403, 429 ve 5xx kapalı kalır.
+Site ileride robots dosyası yayımlarsa ona uyulur.
 
 ## Doğrulama
 

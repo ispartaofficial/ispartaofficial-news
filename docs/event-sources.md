@@ -13,8 +13,8 @@ Isparta verisi yok.
 | `biletinial-isparta` | Biletinial müzik, Isparta | Konser; fiyat, organizatör, yaş sınırı |
 | `etkinlik-isparta` | etkinlik.io Isparta | Konser, festival, tiyatro; fiyat ve organizatör yok |
 
-Biletinial Seferihisar'da aynı alan adından bulutta okunuyor. etkinlik.io'nun bulut
-erişimi ilk koşuda görülecek. Okunamazsa diğer kaynakları durdurmaz, panelde görünür.
+Biletinial bulutta okunuyor. etkinlik.io okunamazsa diğer kaynakları durdurmaz,
+panelde görünür.
 
 ## `listed_sessions` okuyucusu
 
@@ -43,4 +43,12 @@ sayılır; önce yazılan Biletinial kalır, çünkü fiyatı ve organizatörü 
 - Yerel haberlerde başlığı veya metni konser, festival, kermes gibi sözcükler içeren
   kayıtlar `event_or_notice_validity_requires_review` ile bekler. Bu koruma değişmedi;
   festival duyurusu bu yüzden haberden değil etkinlik kaynağından gelmelidir.
-- Kesinti kaynağı yok; ayrıntı [motor aktarımı](engine-port.md) belgesindedir.
+- etkinlik.io ilk bulut koşusunda okunamadı. Site Cloudflare arkasında; neden doğrulanmadı.
+
+## Kart yazı ölçeği
+
+31 Ekim kullanıcı geri bildirimi: her kart farklı yazı boyutuyla çıkıyordu. Sürüm 2
+(`isparta-editorial-v2`) Seferihisar ile aynı ölçeği kullanır: başlık 52, tarih 34,
+metin 30, açıklama notu 26, kategori 28, marka 34/24, kullanıcı adı 23. Yalnız sığmayan
+başlık 44'e, sığmayan kategori 24'e iner. Yayımlanmış kartlar sürüm 1 boyutlarını korur.
+Bulut kartları DejaVu Sans kullanır; aynı yazı tipi `news_engine/assets/fonts` içindedir.
