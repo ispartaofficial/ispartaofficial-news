@@ -76,7 +76,7 @@
       "target": "news_engine/editorial_render.py",
       "upstream_sha256": "85087829d0b51a0bdf4b16fdd5cd14f2d0f4011a1653e71cef13fa33d321b1fc",
       "adapted": true,
-      "target_sha256": "3abf42563ce3468440c9544a851ee8f92270f4d787afbaeb79a92bff5c6c9bb6"
+      "target_sha256": "0b23bd7c382770185166218d44b05bdc0230cc4d20512abaee837aaa70984097"
     },
     {
       "upstream": "seferihisar/editorial_voice.py",
