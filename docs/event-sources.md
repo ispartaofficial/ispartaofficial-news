@@ -44,3 +44,11 @@ sayılır; önce yazılan Biletinial kalır, çünkü fiyatı ve organizatörü 
   kayıtlar `event_or_notice_validity_requires_review` ile bekler. Bu koruma değişmedi;
   festival duyurusu bu yüzden haberden değil etkinlik kaynağından gelmelidir.
 - etkinlik.io ilk bulut koşusunda okunamadı. Site Cloudflare arkasında; neden doğrulanmadı.
+
+## Kart yazı ölçeği
+
+31 Ekim kullanıcı geri bildirimi: her kart farklı yazı boyutuyla çıkıyordu. Sürüm 2
+(`isparta-editorial-v2`) Seferihisar ile aynı ölçeği kullanır: başlık 52, tarih 34,
+metin 30, açıklama notu 26, kategori 28, marka 34/24, kullanıcı adı 23. Yalnız sığmayan
+başlık 44'e, sığmayan kategori 24'e iner. Yayımlanmış kartlar sürüm 1 boyutlarını korur.
+Bulut kartları DejaVu Sans kullanır; aynı yazı tipi `news_engine/assets/fonts` içindedir.
