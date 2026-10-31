@@ -384,7 +384,7 @@ def caption(item: dict, label: str) -> str:
             currency = 'TL' if (item.get('currency') or '').upper() == 'TRY' else item.get('currency')
             price = "Ücretli" + ((": " + item["price"] + (" " + currency if currency else "")) if item.get("price") else "")
             if item.get('price_basis') and item.get('price'):
-                price = 'Listelenen seans bileti: ' + item['price'] + (' ' + currency if currency else '')
+                price = 'Listelenen seans bileti: ' + item['price'].removesuffix('.0') + (' ' + currency if currency else '')
                 price += '. Güncel fiyat ve bilet koşulları için kaynağı kontrol edin.'
         lines.append(price)
         if item.get("ticket_url") and canonical(item['ticket_url']) != canonical(item['url']):

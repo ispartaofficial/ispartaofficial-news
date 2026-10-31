@@ -16,6 +16,8 @@ from bs4 import BeautifulSoup
 from .readers import (base_item, canonical, dotted, norm, public_link, text,
                       timestamp, _audience, _fee)
 
+MONTHS = ('Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık')
+
 
 def html_text(value):
     return text(BeautifulSoup(str(value or ''), 'html.parser'))
@@ -412,6 +414,25 @@ def _age_limit(soup):
     return None
 
 
+def wall_clock(value):
+    """The printed local clock, without the offset a server appended to it."""
+    match = re.match(r'20\d{2}-\d{2}-\d{2}T\d{2}:\d{2}', str(value or ''))
+    return timestamp(match[0]) if match else None
+
+
+def shown_session(page, start, venue):
+    """The session row buyers see: `04 Kasım Çarşamba · 21:30 Isparta Holly Stone`.
+
+    Biletinial's structured clock can run three hours ahead: on 31 Oct one session
+    read 20:30 in one run and 23:30 in the next. The visible row decides; a record
+    that matches no row is held rather than guessed.
+    """
+    for clock in (start, start - timedelta(hours=3)):
+        if re.search(rf'\b0?{clock.day} {MONTHS[clock.month - 1]} \S+ · {clock:%H:%M} {re.escape(venue)}', page):
+            return clock
+    return None
+
+
 def listed_sessions(html, url, source):
     """One show's sessions from its page's own per-session Event records.
 
@@ -433,6 +454,7 @@ def listed_sessions(html, url, source):
         raise ValueError('ticket_event_schema_required')
     category = _listed_category(events, [o for o in found if o.get('@type') == 'BreadcrumbList'], source)
     age = _age_limit(soup)
+    page = text(soup)
     identifier = re.search(r'/(\d+)/', urlsplit(url).path)
     sold_here = bool(source.get('ticket_link') and identifier
                      and soup.select_one(f'a[href*="{source["ticket_link"]}{identifier[1]}"]'))
@@ -446,11 +468,16 @@ def listed_sessions(html, url, source):
             continue
         offer = session.get('offers')
         offer = offer if isinstance(offer, dict) else {}
-        start, end = timestamp(session.get('startDate')), timestamp(session.get('endDate'))
+        start, end = wall_clock(session.get('startDate')), wall_clock(session.get('endDate'))
+        shown = shown_session(page, start, text(place.get('name'))) if source.get('session_text') and start else None
+        if shown:
+            start, end = shown, end and end - (start - shown)
         item = base_item(source, title, html_text(session.get('description')), kind='event',
-                         key=url + '|' + str(session.get('startDate')), url=url)
+                         key=url + '|' + (start.isoformat() if start else str(session.get('startDate'))), url=url)
         if category:
             item['source_event_category'] = category
+        if source.get('session_text') and not shown:
+            item['parser_holds'].append('session_clock_unconfirmed')
         price = offer.get('price')
         price_valid = type(price) in (int, float) and 0 <= price <= 100000 and offer.get('priceCurrency') == 'TRY'
         organizer = session.get('organizer')
