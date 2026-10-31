@@ -135,6 +135,44 @@
       "checked_at": "2026-10-21T20:55:03.676569+03:00"
     },
     {
+      "id": "biletinial-isparta",
+      "name": "Biletinial Isparta konserleri",
+      "url": "https://biletinial.com/tr-tr/muzik/isparta",
+      "priority": "ticketed_events",
+      "reader_verified": true,
+      "production_enabled": false,
+      "listing_readable": true,
+      "discovery": "Şehir listesi yalnız gösteri sayfalarını verir; yer kanıtı seans kaydındaki Isparta adresidir.",
+      "research_enabled": true,
+      "reader_kind": "listed_sessions",
+      "reader_verification": "31 Ekim 2026 canlı okuması. Aynı alan adı Seferihisar'da bulut sunucusundan okunuyor.",
+      "publication_gates": [
+        "explicit session start",
+        "session address in Isparta",
+        "scheduled status and open sale"
+      ],
+      "checked_at": "2026-10-31T20:30:00+03:00"
+    },
+    {
+      "id": "etkinlik-isparta",
+      "name": "Etkinlik.io Isparta takvimi",
+      "url": "https://etkinlik.io/isparta",
+      "priority": "ticketed_events",
+      "reader_verified": true,
+      "production_enabled": false,
+      "listing_readable": true,
+      "discovery": "Konser, festival ve tiyatroyu birlikte listeler; Bubilet'in bulutta okunamayan etkinliklerini de kapsar.",
+      "research_enabled": true,
+      "reader_kind": "listed_sessions",
+      "reader_verification": "31 Ekim 2026 canlı okuması. Bulut erişimi ilk koşuda sınanacak.",
+      "publication_gates": [
+        "explicit session start",
+        "session address in Isparta",
+        "ticket link bound to this event"
+      ],
+      "checked_at": "2026-10-31T20:30:00+03:00"
+    },
+    {
       "id": "bubilet-isparta",
       "name": "Bubilet Isparta",
       "url": "https://www.bubilet.com.tr/isparta",

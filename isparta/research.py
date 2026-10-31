@@ -16,8 +16,8 @@ import re
 
 from .fetch import Fetcher, error_code
 from .readers import DISTRICTS, OUTSIDE, TZ, article, isubu, news_links, norm, sdu, timestamp
-from .scope_readers import (archive_article, campus_notice, correlate_campus,
-                           culture_items, culture_year_link, listing_entries, ticket_sessions)
+from .scope_readers import (archive_article, campus_notice, correlate_campus, culture_items,
+                           culture_year_link, listed_sessions, listing_entries, ticket_sessions)
 from .district_readers import (campus_portal, club_directory, official_article,
                                official_entries, official_locality)
 
@@ -25,6 +25,9 @@ ROOT = Path(__file__).resolve().parents[1]
 # Busy news listings move a local story out of the newest four links within an
 # hour or two; reviewed sources may opt into a wider, still bounded window.
 ARTICLE_LINK_CAP = 12
+# An event outside the run's reads loses its "reobserved" status, so a city's
+# whole short listing is read instead of rotating through it.
+LISTED_SESSION_CAP = 14
 # Bomba32 prints paid pieces with no section label (29 Oct: a developer's "yeni
 # adresi" text ran as news). One such phrase occurs in real reporting; three
 # different ones in a story mean a sales text, which waits for review.
@@ -107,9 +110,12 @@ def assess(item, at, venues):
 def same_story(a, b):
     if a['kind'] != b['kind']:
         return False
+    ta, tb = norm(a['title']), norm(b['title'])
+    # Two ticket listings spell one venue differently: Ozbi / Ozbi Konseri, 21:30.
+    if a['kind'] == 'event' and a.get('start') and a.get('start') == b.get('start') and (ta in tb or tb in ta):
+        return True
     if a['kind'] == 'event' and (a.get('start'), norm(a.get('location'))) != (b.get('start'), norm(b.get('location'))):
         return False
-    ta, tb = norm(a['title']), norm(b['title'])
     if ta == tb:
         return True
     # Conservative current-batch matching. Persistent publication deduplication
@@ -165,7 +171,7 @@ def collect_sources(config_path, *, at=None, fetcher=None):
                         row['parsed_items'] += 1
                     except Exception as exc:
                         row['errors'].append({'stage': 'detail', 'url': url, 'code': error_code(exc)})
-            elif source['reader'] in ('archive_article','campus_notice','ticketing','culture_archive','official_portal','campus_portal'):
+            elif source['reader'] in ('archive_article','campus_notice','ticketing','listed_sessions','culture_archive','official_portal','campus_portal'):
                 listing_source=source
                 if source['reader']=='culture_archive':
                     year_url=culture_year_link(body,source,at)
@@ -176,7 +182,7 @@ def collect_sources(config_path, *, at=None, fetcher=None):
                     else:
                         row['note']='current_year_archive_not_published'
                         body=''
-                limit=min(8 if source['reader']=='ticketing' else 4,source.get('max_details',4))
+                limit=min({'ticketing':8,'listed_sessions':LISTED_SESSION_CAP}.get(source['reader'],4),source.get('max_details',4))
                 entries=(official_entries(body,source,at,limit) if source['reader']=='official_portal'
                          else listing_entries(body,listing_source,at,limit))
                 if not entries and 'note' not in row:
@@ -186,6 +192,7 @@ def collect_sources(config_path, *, at=None, fetcher=None):
                         page,detail_url=fetcher.get(entry['url'])
                         row['read_pages']+=1
                         if source['reader']=='ticketing':parsed=ticket_sessions(page,detail_url,source)
+                        elif source['reader']=='listed_sessions':parsed=listed_sessions(page,detail_url,source)
                         elif source['reader']=='culture_archive':parsed=culture_items(page,detail_url,source,entry)
                         else:
                             reader={'archive_article':archive_article, 'campus_notice':campus_notice,

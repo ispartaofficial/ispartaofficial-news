@@ -51,7 +51,7 @@ def listing_entries(html, source, at, limit):
     if source.get('discovery_order') == 'id_descending':
         # Only crawl priority; IDs never become a publication date.
         rows.sort(key=lambda r:int(re.search(r'/TR-(\d+)/', r['url'])[1]), reverse=True)
-    if source.get('reader') == 'ticketing' and len(rows) > limit:
+    if source.get('reader') in ('ticketing', 'listed_sessions') and len(rows) > limit:
         # Retain leading cards and rotate the rest. A permanently static first
         # page must not hide all other concerts. No dates inferred from labels.
         leading = min(4, limit)
@@ -386,5 +386,92 @@ def ticket_sessions(html, url, source):
         if not conditions:item['parser_holds'].append('ticket_participation_conditions_unconfirmed')
         if not organizers:item['parser_holds'].append('actual_organizer_unconfirmed')
         if not session_url:item['parser_holds'].append('ticket_session_url_unconfirmed')
+        results.append(item)
+    return results
+
+
+def _listed_category(events, breadcrumbs, source):
+    if source.get('event_category'):
+        return source['event_category']
+    genres = {'konser': 'concert', 'festival': 'festival', 'festivaller': 'festival',
+              'sinema': 'cinema', 'sahne sanatlari': 'theatre'}
+    for crumbs in breadcrumbs:
+        names = [norm(e.get('name')) for e in crumbs.get('itemListElement', []) if isinstance(e, dict)]
+        # Ana Sayfa / Isparta / Konser / ... / the event's own title.
+        if len(names) >= 4 and names[1] == 'isparta' and names[2] in genres and names[-1] == norm(events[0].get('name')):
+            return genres[names[2]]
+    return None
+
+
+def _age_limit(soup):
+    for label in soup.select('dt'):
+        if norm(label) == 'yaş siniri':
+            value = label.find_next_sibling('dd')
+            match = re.fullmatch(r'(\d{1,2})\+', text(value)) if value else None
+            return int(match[1]) if match else None
+    return None
+
+
+def listed_sessions(html, url, source):
+    """One show's sessions from its page's own per-session Event records.
+
+    A touring show's page lists every city. Only a record whose address names
+    Isparta becomes an item; being on the city listing proves nothing by itself.
+    """
+    soup = BeautifulSoup(html, 'html.parser')
+    title = text(soup.select_one('h1'))
+    if not title:
+        raise ValueError('ticket_title_missing')
+    found = []
+    for script in soup.select('script[type="application/ld+json"]'):
+        try:
+            found += list(_walk(json.loads(script.get_text())))
+        except (ValueError, TypeError):
+            continue
+    events = [o for o in found if o.get('@type') == 'Event' and norm(o.get('name')) == norm(title)]
+    if not events or len(events) > 40:
+        raise ValueError('ticket_event_schema_required')
+    category = _listed_category(events, [o for o in found if o.get('@type') == 'BreadcrumbList'], source)
+    age = _age_limit(soup)
+    identifier = re.search(r'/(\d+)/', urlsplit(url).path)
+    sold_here = bool(source.get('ticket_link') and identifier
+                     and soup.select_one(f'a[href*="{source["ticket_link"]}{identifier[1]}"]'))
+    results = []
+    for session in events:
+        place = session.get('location')
+        place = place if isinstance(place, dict) else {}
+        address = place.get('address')
+        address = address if isinstance(address, dict) else {}
+        if norm(address.get('addressRegion')) != 'isparta':
+            continue
+        offer = session.get('offers')
+        offer = offer if isinstance(offer, dict) else {}
+        start, end = timestamp(session.get('startDate')), timestamp(session.get('endDate'))
+        item = base_item(source, title, html_text(session.get('description')), kind='event',
+                         key=url + '|' + str(session.get('startDate')), url=url)
+        if category:
+            item['source_event_category'] = category
+        price = offer.get('price')
+        price_valid = type(price) in (int, float) and 0 <= price <= 100000 and offer.get('priceCurrency') == 'TRY'
+        organizer = session.get('organizer')
+        organizer = text(organizer.get('name')) if isinstance(organizer, dict) else None
+        ticketed = bool(offer) or sold_here
+        evidence = ('Biletli etkinlik.' + (f' Yaş sınırı {age}+.' if age else '')) if ticketed else None
+        item.update(start=start.isoformat() if start else None,
+                    end=(end or start).isoformat() if start else None,
+                    time_known=bool(start and 'T' in str(session.get('startDate'))),
+                    location=' · '.join(filter(None, [text(place.get('name')), text(address.get('streetAddress')),
+                                                      text(address.get('addressRegion'))])) or None,
+                    organizer=organizer or None, ticket_platform=source.get('ticket_platform'),
+                    audience={'kind': 'ticketed' if ticketed else 'unknown', 'evidence': evidence, 'minimum_age': age},
+                    fee=f'Kaynak seans fiyatı: {price:g} TL' if price_valid else 'Ücret açıklanmamış',
+                    price=price if price_valid else None, currency='TRY' if price_valid else None,
+                    price_basis='listed_session_price_subject_to_ticket_conditions', date_conflict=False)
+        image = session.get('image')
+        item['image_candidate'] = public_link(image, url) if isinstance(image, str) else None
+        if str(session.get('eventStatus', '')).split('/')[-1] != 'EventScheduled':
+            item['parser_holds'].append('ticket_session_not_scheduled')
+        if offer and str(offer.get('availability', '')).split('/')[-1] != 'InStock':
+            item['parser_holds'].append('ticket_availability_unconfirmed_or_sold_out')
         results.append(item)
     return results

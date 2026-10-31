@@ -175,6 +175,29 @@
       "quiet_acknowledged": "Aynı alan adı 27 Ekim 2026'dan beri bulut sunucularına HTTP 403 dönüyor (Seferihisar kanıtı); yerel okuma 200. Engel aşılmaz."
     },
     {
+      "id": "biletinial-isparta",
+      "name": "Biletinial Isparta konserleri",
+      "url": "https://biletinial.com/tr-tr/muzik/isparta",
+      "research_enabled": true,
+      "reader": "listed_sessions",
+      "link_selector": "a[href]",
+      "detail_path": "/tr-tr/muzik/(?!isparta$)[a-z0-9-]+",
+      "max_details": 14,
+      "event_category": "concert",
+      "ticket_platform": "Biletinial"
+    },
+    {
+      "id": "etkinlik-isparta",
+      "name": "Etkinlik.io Isparta takvimi",
+      "url": "https://etkinlik.io/isparta",
+      "research_enabled": true,
+      "reader": "listed_sessions",
+      "link_selector": "a[href*=\"/etkinlik/\"]",
+      "detail_path": "/etkinlik/\\d+/[a-z0-9-]+",
+      "max_details": 14,
+      "ticket_link": "/redirect-ticket-url/"
+    },
+    {
       "id": "aksu-kaymakamlik",
       "name": "Aksu Kaymakamlığı",
       "url": "https://www.aksu.gov.tr/",

@@ -21,6 +21,7 @@ from .research import collect_sources, public_report
 ROOT = Path(__file__).resolve().parents[1]
 REPOSITORY = 'ispartaofficial/ispartaofficial-news'
 SITE = 'https://ispartaofficial.github.io/ispartaofficial-news'
+TICKET_SOURCES = ('bubilet-isparta', 'biletinial-isparta', 'etkinlik-isparta')
 
 
 def sources_for_engine(config):
@@ -41,7 +42,7 @@ def category(row):
     # For example, land-sale text can mention sports facilities without being
     # sports news. News uses only explicit headline cues. Ticket event genres
     # come from an exact event-bound provider breadcrumb, never a venue name.
-    if row['kind'] == 'event' and row['source_id'] == 'bubilet-isparta':
+    if row['kind'] == 'event' and row['source_id'] in TICKET_SOURCES:
         supplied = row.get('source_event_category')
         if supplied in ('theatre', 'concert', 'festival', 'cinema'):
             return supplied
@@ -237,6 +238,10 @@ def publish(db_path, public_dir):
         else:
             result = publish_automatic(store, now(), SITE, assets, adapter=api,
                                        checkpoint=lambda: persist(Path(db_path)), require_visual_review=True)
+            from news_engine.instagram import publish_outage_story
+            result['outage_story'] = publish_outage_story(store, now(), SITE, assets, adapter=api,
+                                                          checkpoint=lambda: persist(Path(db_path)),
+                                                          require_visual_review=True)['status']
         from news_engine.operations import record_check
         return record_check(store, result, now(), 'automatic')
     finally:
