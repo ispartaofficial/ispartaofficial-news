@@ -82,3 +82,11 @@ def test_bundled_typeface_draws_turkish_text(name):
     face = ImageFont.truetype(str(ASSETS/'fonts'/name), 40)
     assert face.getname()[0] == 'DejaVu Sans'
     editorial_render.ensure_glyphs('ISPARTA ığüşöçİĞÜŞÖÇ', face)
+
+def test_long_essential_facts_step_down_once_instead_of_blocking_the_card(tmp_path, monkeypatch):
+    seen = roles(monkeypatch)
+    venue = 'Sütçüler Prof. Dr. Hasan Gürbüz Meslek Yüksekokulu Abdullah Tayyip Olçok Konferans Salonu'
+    body = f'26.11.2026 · 10:00\n\n{venue}\n\nDüzenleyen: {venue}\n\nKatılım: Öğrenciler ve mezunlar için kayıtla açık etkinlik'
+    editorial_card('Geleceğim Meslekte', body, 'event', tmp_path/'long.jpg', event_details=True, caption_note=True,
+                   illustration=photo(tmp_path))
+    assert seen['details'] == {28}
