@@ -12,6 +12,7 @@ from .editor import event_activity, event_type_label, news_type_label
 from .text_quality import TextRenderError, plain_display, ensure_glyphs
 from .card_layout import CAPTION_NOTE, inline_note, editorial
 from .brand import VERSION as BRAND_VERSION, logo_path, version_for
+from .publication_policy import story_only
 
 NAVY, IVORY, ORANGE, TURQUOISE = '#68103f', '#fcf8fa', '#ead9e2', '#a52e73'
 ASSETS = Path(__file__).with_name('assets')
@@ -308,7 +309,9 @@ def render_post(post: dict, public_dir: Path, illustrations: dict[int, Path] | N
                  story_details=(review.get('version') in ('content-visual-v2','content-visual-v3') or mutable and not review),
                  text_review=review.get('version') == 'content-visual-v3' or mutable and not review,
                  source_photo=bool(post.get('source_photo_keys',{}).get(str(i))),
-                 caption_note=note and i==0, brand_version=version_for(post), editorial_layout=editorial(post))
+                 # A power-cut story has no feed post whose caption it could point to.
+                 caption_note=note and i==0 and not (fmt == 'story' and mutable and story_only(post)),
+                 brand_version=version_for(post), editorial_layout=editorial(post))
             assets[fmt].append(relative)
     return assets
 

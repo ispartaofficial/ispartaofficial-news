@@ -1,9 +1,12 @@
 import json
 from datetime import datetime
 from pathlib import Path
+from unittest.mock import Mock
 
 import pytest
+import requests
 
+from isparta.fetch import FetchError, Fetcher
 from isparta.outage_reader import aedas_outages, place_name, places, proper
 from isparta.readers import TZ
 from isparta.research import assess
@@ -137,3 +140,59 @@ def test_outage_passes_research_and_engine_gates_as_a_story_only_cut():
     assert verify(item, sources_for_engine({'sources': [SOURCE]})[0], AT) is None
     from news_engine.publication_policy import story_only
     assert story_only(item)
+
+
+class Reply:
+    is_redirect = False
+    headers = {'Content-Type': 'application/json; charset=utf-8'}
+
+    def __init__(self, status, body=b'[]'):
+        self.status_code, self.body = status, body
+
+    def raise_for_status(self):
+        if self.status_code >= 400:
+            raise requests.HTTPError(response=self)
+
+    def iter_content(self, size):
+        return iter([self.body])
+
+    def close(self):
+        pass
+
+
+@pytest.fixture
+def reader(monkeypatch):
+    monkeypatch.setattr('isparta.fetch.socket.getaddrinfo', lambda *a, **k: [(2, 1, 6, '', ('93.184.216.34', 443))])
+    monkeypatch.setattr('isparta.fetch.time.sleep', lambda seconds: None)
+
+    def build(source, robots):
+        session = Mock()
+        session.get.side_effect = lambda url, **k: robots if url.endswith('/robots.txt') else Reply(200)
+        return Fetcher([source], session=session)
+    return build
+
+
+def test_only_the_reviewed_source_opts_out_of_a_robots_file():
+    assert [s['id'] for s in CONFIG['sources'] if s.get('allow_missing_robots')] == ['aedas-planli']
+
+
+@pytest.mark.parametrize('status', [404, 410])
+def test_reviewed_host_without_a_robots_file_is_readable(reader, status):
+    assert reader(SOURCE, Reply(status)).get(SOURCE['url'])[0] == '[]'
+
+
+@pytest.mark.parametrize('status', [401, 403, 429, 500])
+def test_any_other_robots_failure_stays_closed(reader, status):
+    with pytest.raises(requests.HTTPError):
+        reader(SOURCE, Reply(status)).get(SOURCE['url'])
+
+
+def test_other_hosts_keep_failing_closed_without_robots(reader):
+    other = {'url': 'https://example.org/liste', 'research_enabled': True}
+    with pytest.raises(requests.HTTPError):
+        reader(other, Reply(404)).get(other['url'])
+
+
+def test_a_robots_file_published_later_is_obeyed(reader):
+    with pytest.raises(FetchError, match='robots_disallowed'):
+        reader(SOURCE, Reply(200, b'User-agent: *\nDisallow: /GetItemsData\n')).get(SOURCE['url'])

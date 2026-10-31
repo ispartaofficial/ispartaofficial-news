@@ -202,7 +202,7 @@
       "target": "news_engine/render.py",
       "upstream_sha256": "2aaaa085e699412cce639b703cc72973680bb9e0de0074f9b1e7bcb253a19b39",
       "adapted": true,
-      "target_sha256": "3edda2a8a93ece69e5d9cebf945691b75491d5360bb77a88d642eec184b26b52"
+      "target_sha256": "b0bcedcf591b0486707d0c978f7aefa750f56faf35d874ea5553315b07f46da2"
     },
     {
       "upstream": "seferihisar/schedule.py",

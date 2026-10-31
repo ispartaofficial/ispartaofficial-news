@@ -13,8 +13,8 @@ Isparta verisi yok.
 | `biletinial-isparta` | Biletinial müzik, Isparta | Konser; fiyat, organizatör, yaş sınırı |
 | `etkinlik-isparta` | etkinlik.io Isparta | Konser, festival, tiyatro; fiyat ve organizatör yok |
 
-Biletinial Seferihisar'da aynı alan adından bulutta okunuyor. etkinlik.io'nun bulut
-erişimi ilk koşuda görülecek. Okunamazsa diğer kaynakları durdurmaz, panelde görünür.
+Biletinial bulutta okunuyor. etkinlik.io okunamazsa diğer kaynakları durdurmaz,
+panelde görünür.
 
 ## `listed_sessions` okuyucusu
 
@@ -43,4 +43,4 @@ sayılır; önce yazılan Biletinial kalır, çünkü fiyatı ve organizatörü 
 - Yerel haberlerde başlığı veya metni konser, festival, kermes gibi sözcükler içeren
   kayıtlar `event_or_notice_validity_requires_review` ile bekler. Bu koruma değişmedi;
   festival duyurusu bu yüzden haberden değil etkinlik kaynağından gelmelidir.
-- Kesinti kaynağı yok; ayrıntı [motor aktarımı](engine-port.md) belgesindedir.
+- etkinlik.io ilk bulut koşusunda okunamadı. Site Cloudflare arkasında; neden doğrulanmadı.
