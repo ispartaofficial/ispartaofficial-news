@@ -29,6 +29,14 @@ kaynağın kendi kaydından gelir: Biletinial sayfası konser, etkinlik.io'da et
 kendi kırıntı yolu. Konser ve festival genel yayın kapılarından geçer: açık başlangıç
 saati, en fazla 30 gün sonrası, Isparta'daki mekân.
 
+Biletinial'ın yapılandırılmış saati bazı yanıtlarda üç saat ileri kayar: 31 Ekim'de
+aynı seans bir koşuda 20:30, sonrakinde 23:30 geldi. Saat bu yüzden sayfada görünen
+seans satırından doğrulanır (`04 Kasım Çarşamba · 21:30 Isparta Holly Stone`). Satırla
+eşleşmeyen kayıt `session_clock_unconfirmed` ile bekler. Aynı kayma kaydı iki kimliğe
+bölüp ilk kartı "Etkinlik bilgisi güncellendi" başlığıyla çıkarıyordu. Artık yayımlanmış
+bir kaydı olmayan etkinlik ilk duyuru sayılır; kaldırılan okuma bekletmesi de değişiklik
+değildir.
+
 Bir şehir listesi kısadır; `LISTED_SESSION_CAP` 14 sayfanın tamamını okur. Döndürerek
 okumak, o turda görülmeyen etkinliği `not_reobserved_current_run` ile düşürürdü.
 

@@ -26,7 +26,10 @@ def session(region='Isparta', start='2026-11-04T21:30:00+03:00', **values):
             'organizer': {'@type': 'Organization', 'name': 'İyi Yapım'}, **values}
 
 
-def page(*records, title='Ozbi Konseri', extra=''):
+SHOWN = '<p>04 Kasım Çarşamba · 21:30 Isparta Holly Stone · Isparta</p>'
+
+
+def page(*records, title='Ozbi Konseri', extra=SHOWN):
     return ('<html><body><h1>' + title + '</h1><dl><dt>Yaş Sınırı</dt><dd>18+</dd></dl>'
             '<script type="application/ld+json">' + json.dumps(list(records), ensure_ascii=False) + '</script>'
             + extra + '</body></html>')
@@ -67,6 +70,39 @@ def test_show_without_an_isparta_session_yields_nothing():
 ])
 def test_unsold_or_cancelled_session_is_held(values, hold):
     assert hold in listed_sessions(page(session(**values)), TICKETS, SOURCES['biletinial-isparta'])[0]['parser_holds']
+
+
+@pytest.mark.parametrize('offset', ['+03:00', '+00:00'])
+def test_the_printed_clock_survives_the_offset_a_server_appends(offset):
+    row = listed_sessions(page(session(start='2026-11-04T21:30:00' + offset)), TICKETS, SOURCES['biletinial-isparta'])[0]
+    assert row['start'] == '2026-11-04T21:30:00+03:00' and row['parser_holds'] == []
+
+
+def test_a_record_three_hours_ahead_takes_the_visible_row():
+    row = listed_sessions(page(session(start='2026-11-05T00:30:00+03:00', endDate='2026-11-05T02:00:00+03:00')), TICKETS,
+                          SOURCES['biletinial-isparta'])[0]
+    assert row['start'] == '2026-11-04T21:30:00+03:00' and row['end'] == '2026-11-04T23:00:00+03:00'
+    assert row['parser_holds'] == []
+
+
+def test_two_sessions_at_one_venue_keep_their_own_rows():
+    rows = '<p>14 Kasım Cumartesi · 13:00 Isparta Holly Stone</p><p>14 Kasım Cumartesi · 15:00 Isparta Holly Stone</p>'
+    found = listed_sessions(page(session(start='2026-11-14T16:00:00+03:00'), session(start='2026-11-14T15:00:00+03:00'), extra=rows),
+                            TICKETS, SOURCES['biletinial-isparta'])
+    assert sorted(r['start'][11:16] for r in found) == ['13:00', '15:00']
+
+
+def test_both_server_answers_are_one_stored_session():
+    first, second = (listed_sessions(page(session(start='2026-11-04T21:30:00' + offset)), TICKETS,
+                                     SOURCES['biletinial-isparta'])[0] for offset in ('+03:00', '+00:00'))
+    shifted = listed_sessions(page(session(start='2026-11-05T00:30:00+03:00')), TICKETS, SOURCES['biletinial-isparta'])[0]
+    assert first['id'] == second['id'] == shifted['id']
+
+
+@pytest.mark.parametrize('extra', ['', '<p>04 Kasım Çarşamba · 20:30 Isparta Holly Stone · Isparta</p>'])
+def test_a_clock_the_visible_page_does_not_show_is_held(extra):
+    row = listed_sessions(page(session(), extra=extra), TICKETS, SOURCES['biletinial-isparta'])[0]
+    assert row['parser_holds'] == ['session_clock_unconfirmed']
 
 
 def test_records_of_another_show_are_not_borrowed():

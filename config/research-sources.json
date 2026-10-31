@@ -184,7 +184,8 @@
       "detail_path": "/tr-tr/muzik/(?!isparta$)[a-z0-9-]+",
       "max_details": 14,
       "event_category": "concert",
-      "ticket_platform": "Biletinial"
+      "ticket_platform": "Biletinial",
+      "session_text": true
     },
     {
       "id": "etkinlik-isparta",

@@ -126,8 +126,9 @@ class Store:
             fingerprint = old[0]["fingerprint"]
         payload = json.dumps(item, ensure_ascii=False, sort_keys=True)
         previous = json.loads(old[0]["payload"]) if old else None
-        # Provenance additions do not regenerate cards; factual edits do.
-        factual = lambda x: {k: v for k, v in x.items() if k != "sources"}
+        # Provenance additions do not regenerate cards; factual edits do. A hold
+        # lifted after one unread run is not news about the event.
+        factual = lambda x: {k: v for k, v in x.items() if k not in ("sources", "verification_holds")}
         changed = not previous or factual(previous) != factual(item)
         revision = (old[0]["revision"] + int(changed)) if old else 1
         with self.db:

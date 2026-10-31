@@ -69,7 +69,7 @@
       "target": "news_engine/editor.py",
       "upstream_sha256": "7df17644f9fa19e2a3ae0364485298feb1b2e461f916c8889e03cb672a7e8be5",
       "adapted": true,
-      "target_sha256": "90c91a1620d0107228ea0749064ee2b1a8cf09268caa8e58e2f418d7cccdf416"
+      "target_sha256": "85e48f55f8695380cb0fba5804e14d2773f7ffa0859d7bacc8385127e48e5a11"
     },
     {
       "upstream": "seferihisar/editorial_render.py",
@@ -209,7 +209,7 @@
       "target": "news_engine/schedule.py",
       "upstream_sha256": "4594549139d3a51b7af864d13c3924a14a4a51dfd0164a83a1dc58dc5ddf7940",
       "adapted": true,
-      "target_sha256": "c428812eee0a5509134b674235dd2754586e6c3ab83820bd43d784e85dae2605"
+      "target_sha256": "33776f48873518193f468f14293a6bb109db2e7cbbca462a1567ace75e36af07"
     },
     {
       "upstream": "seferihisar/security.py",
@@ -272,7 +272,7 @@
       "target": "news_engine/store.py",
       "upstream_sha256": "3ef5b4e6867af8d8a4cce5a42283daac718c7d6d4a92e26940479a1893b412f0",
       "adapted": false,
-      "target_sha256": "c6f06245d79df63ad2536aefc814029f42b6fd36345236f593c26a49a602ff32"
+      "target_sha256": "41b91321f0cd374010de29eb97a05054f27733ce2906dfae5de4b851edbd910e"
     },
     {
       "upstream": "seferihisar/story_identity.py",
