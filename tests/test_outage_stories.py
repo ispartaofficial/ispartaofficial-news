@@ -9,6 +9,7 @@ from news_engine.domain import digest, parse_date
 from news_engine.instagram import publish_automatic, publish_one, publish_outage_story, publish_requested
 from news_engine.operations import failed, safe_result, validate_result
 from news_engine.publication_policy import OUTAGE_STORY_LIMIT, day_claims, story_only
+from news_engine.render import render_post
 from news_engine.schedule import prepare
 from news_engine.store import Store
 
@@ -195,3 +196,12 @@ def test_check_log_keeps_outage_results_and_flags_failures():
     validate_result(value)
     assert value=={'status':'empty','outage_story':'uncertain'}
     assert failed(value) and not failed({'status':'empty','outage_story':'empty'})
+
+def test_story_card_does_not_point_to_a_caption_it_does_not_have(store,tmp_path,monkeypatch):
+    outage(store,AT)
+    post=next(p for p in store.posts() if not p.get('publish_format'))
+    seen={}
+    monkeypatch.setattr('news_engine.render.inline_note',lambda post:True)
+    monkeypatch.setattr('news_engine.render.card',lambda title,body,category,target,story=False,*a,**k:seen.update({story:k['caption_note']}))
+    render_post(post,tmp_path)
+    assert seen=={False:True,True:False}
