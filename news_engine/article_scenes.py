@@ -18,7 +18,9 @@ TEXT_MODEL = '@cf/meta/llama-3.1-8b-instruct'
 # Yiğit). The brief names story objects; a second call rates its relevance.
 # v13: both first v12 scenes failed unseen. Wording copied from the rules ("no
 # people or text") is dropped, a longer scene fits, and a draft gets one retry.
-VERSION = 'editorial-article-scene-v13'
+# v14: the first v13 run ended in `no_score` and `unsafe`. The verdict is read
+# however it is wrapped, and `unsafe` now names the rule that fired.
+VERSION = 'editorial-article-scene-v14'
 MAX_RESPONSE_BYTES = 64 * 1024
 RETRY_TEMPERATURE = 0.4
 SYSTEM = (
@@ -42,6 +44,8 @@ GENERIC = re.compile(
     r'\b(?:living ?rooms?|lounges?|sofas?|couch(?:es)?|armchairs?|bedrooms?|cushions?|pillows?|curtains?|'
     r'drapes?|windows?|windowsills?|views?|balcon(?:y|ies)|apartments?|cityscapes?)\b', re.I)
 MIN_RELEVANCE = 7
+# The model may wrap the verdict in prose or cut its JSON at the token limit.
+SCORE = re.compile(r'\bscore\b\W{0,5}(\d{1,2})(?!\d)|^\s*(\d{1,2})(?:\s*/\s*10)?\s*\.?\s*$', re.I)
 JUDGE = (
     'You check whether an image brief fits a Turkish local news story. Reply with only a JSON object: '
     '{"score": N} where N is an integer from 0 to 10. Score how clearly a reader who sees only the image '
@@ -112,11 +116,15 @@ def parse(answer, item: dict) -> dict:
     if not isinstance(scene, str) or not isinstance(description, str):
         raise SceneRejected('No safe scene for this story', 'declined')
     scene, description = affirmative(scene), affirmative(description).rstrip('.')
-    if (not 40 <= len(scene) <= 420 or not 20 <= len(description) <= 120
-            or not description.lower().startswith('a photograph of ')
-            or not ALLOWED.fullmatch(scene) or not ALLOWED.fullmatch(description)
-            or FORBIDDEN.search(scene) or FORBIDDEN.search(description)):
-        raise SceneRejected('Unsafe scene brief', 'unsafe')
+    if not 40 <= len(scene) <= 420 or not 20 <= len(description) <= 120:
+        raise SceneRejected('Unsafe scene brief', 'unsafe_length')
+    if not description.lower().startswith('a photograph of '):
+        raise SceneRejected('Unsafe scene brief', 'unsafe_description')
+    if not ALLOWED.fullmatch(scene) or not ALLOWED.fullmatch(description):
+        raise SceneRejected('Unsafe scene brief', 'unsafe_characters')
+    if found := FORBIDDEN.search(scene) or FORBIDDEN.search(description):
+        # ALLOWED has passed and FORBIDDEN is a closed list, so this is no free model text.
+        raise SceneRejected('Unsafe scene brief', 'unsafe_word_' + found[0].lower()[:16])
     if (not isinstance(objects, list) or not 2 <= len(objects) <= 4
             or not all(isinstance(o, str) and 3 <= len(o) <= 40 and ALLOWED.fullmatch(o) for o in objects)
             or any(FORBIDDEN.search(o) for o in objects)):
@@ -137,18 +145,13 @@ def judge_request(item: dict, brief: dict) -> dict:
     data = json.dumps({'headline': str(item.get('title', ''))[:180], 'summary': summary,
                        'image_brief': brief['scene']}, ensure_ascii=False)
     return {'messages': [{'role': 'system', 'content': JUDGE}, {'role': 'user', 'content': data}],
-            'max_tokens': 20, 'temperature': 0}
+            'max_tokens': 60, 'temperature': 0}
 
 
 def relevance(answer) -> int:
-    match = re.search(r'\{[^{}]*\}', str(answer))
-    try:
-        score = json.loads(match.group())['score'] if match else None
-    except (ValueError, KeyError, TypeError):
-        score = None
-    if isinstance(score, str) and score.isdigit():
-        score = int(score)
-    if type(score) is not int or not 0 <= score <= 10:
+    match = SCORE.search(str(answer))
+    score = int(match[1] or match[2]) if match else None
+    if score is None or score > 10:
         raise SceneRejected('No relevance score', 'no_score')
     return score
 
