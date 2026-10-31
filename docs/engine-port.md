@@ -75,6 +75,18 @@ Hazırlık görevi Meta anahtarı almaz ve eski içerikleri topluca yayınlamaz;
 ayrı `publish` işindedir. Hazır kart, yeşil iş, kalıcı Meta yanıt kaydı ve platform
 ekranında görülme ayrı kanıtlardır.
 
+## Elektrik kesintisi yalnız story
+
+31 Ekim kullanıcı kararı iki şehirde aynıdır: başlığında elektrik geçen `outage`
+kayıtları feed'e çıkmaz. `publish_outage_story` 08:30–21:00 arasında her yayın
+kontrolünde en fazla bir story dener, günde en fazla 2 tane, bugünkü ve yarınki
+kesintiler için. Haberin 3 story hakkını tüketmez ve haberi geciktirmez.
+
+Isparta'da bugün kesinti kaydı yok, kural kayıt gelince işler. Resmî dağıtım şirketi
+AEDAŞ planlı çalışmaları `www.akdenizedas.com.tr/elektrik-kesintisi-sorgulama`
+sayfasında duyuruyor, ama sitede `robots.txt` yok. `isparta/fetch.py` eksik robots
+dosyasında kapalı kalır; bu sınır kullanıcı kararı olmadan açılmaz.
+
 ## Doğrulama
 
 Mevcut Isparta okuyucu testleri korunur. Üretim motorunun 15 regresyon dosyası

@@ -63,7 +63,7 @@ def seed(store, at, cases):
     ([{'title': 'Isparta kurum toplantısı', 'age': 36, 'waiting': 20},
       {'title': 'Isparta yeni hizmet duyurusu', 'age': 1}], 1),
     ([{'title': 'Isparta güncel haber', 'age': .5, 'waiting': 20},
-      {'title': 'Isparta elektrik kesintisi', 'kind': 'event', 'category': 'outage', 'starts': 3}], 1),
+      {'title': 'Isparta su kesintisi', 'kind': 'event', 'category': 'outage', 'starts': 3}], 1),
     ([{'title': 'Yalvaç konseri uzaktaki tarih', 'kind': 'event', 'category': 'concert', 'starts': 360, 'waiting': 20},
       {'title': 'Yalvaç yarınki tiyatro', 'kind': 'event', 'category': 'theatre', 'starts': 24}], 1),
     ([{'title': 'Yalvaç güncel festival haberi', 'age': .5, 'waiting': 20},
