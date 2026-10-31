@@ -83,6 +83,26 @@ def test_bundled_typeface_draws_turkish_text(name):
     assert face.getname()[0] == 'DejaVu Sans'
     editorial_render.ensure_glyphs('ISPARTA ığüşöçİĞÜŞÖÇ', face)
 
+
+def test_text_past_the_right_edge_moves_back_into_its_field():
+    from PIL import Image, ImageDraw
+    fields = TextFields(ImageDraw.Draw(Image.new('RGB', (300, 60))))
+    fields.line('10/10', 150, 10, 23, '#000000', 'page', (0, 0, 180, 60))
+    assert fields.bounds[0][0][2] <= 180
+
+
+def test_ten_page_calendar_renders_on_every_page(tmp_path):
+    # Seferihisar's 1 Nov calendar failed on the "10/10" page number on Linux.
+    slides = [{'title': 'Isparta ve Çevresi Etkinlik Takvimi', 'body': '01.11.2026 – 01.12.2026\n\n9 etkinlikten seçki'}]
+    slides += [{'title': f'Isparta Konseri {index}', 'body': f'{index:02}.11.2026 · 20:00\n\nIsparta Kültür Merkezi',
+                'category': 'concert'} for index in range(1, 10)]
+    post = {'id': 'b'*24, 'kind': 'monthly', 'status': 'prepared', 'category': 'event', 'card_layout': VERSION,
+            'title': slides[0]['title'], 'slides': slides}
+    image = photo(tmp_path)
+    assets = render_post(post, tmp_path, {index: image for index in range(len(slides))})
+    assert len(assets['feed']) == len(assets['story']) == 10
+
+
 def test_long_essential_facts_step_down_once_instead_of_blocking_the_card(tmp_path, monkeypatch):
     seen = roles(monkeypatch)
     body = ('26.11.2026 · 10:00\n\nSütçüler Prof. Dr. Hasan Gürbüz Meslek Yüksekokulu Abdullah Tayyip Olçok Konferans Salonu'
