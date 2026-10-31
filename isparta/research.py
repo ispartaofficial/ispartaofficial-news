@@ -141,7 +141,7 @@ def deduplicate(items):
             kept.append(item)
 
 
-def collect_sources(config_path, *, at=None, fetcher=None):
+def collect_sources(config_path, *, at=None, fetcher=None, pending=None):
     at = at or datetime.now(TZ)
     if at.tzinfo is None:
         raise ValueError('Timezone-aware run timestamp required')
@@ -164,7 +164,11 @@ def collect_sources(config_path, *, at=None, fetcher=None):
                 links = news_links(body, source, limit=min(ARTICLE_LINK_CAP, source.get('max_details', 4)))
                 if not links:
                     raise ValueError('reviewed_article_links_missing')
-                for url in links:
+                # A news list rolls within hours; leaving it does not withdraw a
+                # story. A page that no longer opens stays unobserved, and only
+                # that story is held rather than every card from this source.
+                rereads = [url for url in (pending or {}).get(source['id'], []) if url not in links]
+                for url in links + rereads:
                     try:
                         page, detail_url = fetcher.get(url)
                         row['read_pages'] += 1
@@ -173,7 +177,8 @@ def collect_sources(config_path, *, at=None, fetcher=None):
                         items.append(assess(item, at, config['venues']))
                         row['parsed_items'] += 1
                     except Exception as exc:
-                        row['errors'].append({'stage': 'detail', 'url': url, 'code': error_code(exc)})
+                        if url not in rereads:
+                            row['errors'].append({'stage': 'detail', 'url': url, 'code': error_code(exc)})
             elif source['reader'] in ('archive_article','campus_notice','ticketing','listed_sessions','culture_archive','official_portal','campus_portal'):
                 listing_source=source
                 if source['reader']=='culture_archive':
