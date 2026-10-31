@@ -47,7 +47,7 @@ def test_news_and_event_body_text_match(tmp_path, monkeypatch):
     seen = roles(monkeypatch)
     editorial_card('Isparta’da yeni park açıldı', 'Yeni park mahalle sakinlerinin kullanımına açıldı.', 'news',
                    tmp_path/'news.jpg', illustration=photo(tmp_path))
-    assert seen['summary'] == set(SCALE['summary']) == set(SCALE['details'])
+    assert seen['summary'] == {SCALE['summary'][0]} == {SCALE['details'][0]}
 
 
 def test_only_a_headline_that_cannot_fit_steps_down_once(tmp_path, monkeypatch):
@@ -85,8 +85,10 @@ def test_bundled_typeface_draws_turkish_text(name):
 
 def test_long_essential_facts_step_down_once_instead_of_blocking_the_card(tmp_path, monkeypatch):
     seen = roles(monkeypatch)
-    venue = 'Sütçüler Prof. Dr. Hasan Gürbüz Meslek Yüksekokulu Abdullah Tayyip Olçok Konferans Salonu'
-    body = f'26.11.2026 · 10:00\n\n{venue}\n\nDüzenleyen: {venue}\n\nKatılım: Öğrenciler ve mezunlar için kayıtla açık etkinlik'
+    body = ('26.11.2026 · 10:00\n\nSütçüler Prof. Dr. Hasan Gürbüz Meslek Yüksekokulu Abdullah Tayyip Olçok Konferans Salonu'
+            '\n\nDüzenleyen: Sütçüler Prof. Dr. Hasan Gürbüz Meslek Yüksekokulu Müdürlüğü\n\nKatılım: Sevgili Öğrencilerimiz, '
+            'Üniversitemiz Kariyer Geliştirme Uygulama ve Araştırma Merkezi ile İŞKUR iş birliğinde düzenlenecek “Geleceğim Meslekte” '
+            'kariyer danışmanlığı programına başta son sınıf öğrencilerimiz olmak üzere tüm öğrencilerimizi davet ediyoruz.')
     editorial_card('Geleceğim Meslekte', body, 'event', tmp_path/'long.jpg', event_details=True, caption_note=True,
                    illustration=photo(tmp_path))
     assert seen['details'] == {28}
