@@ -206,6 +206,9 @@
       "research_enabled": true,
       "reader": "aedas_outages",
       "allow_missing_robots": true,
+      "connect_timeout_seconds": 15,
+      "read_timeout_seconds": 45,
+      "timeout_retries": 1,
       "province": "ISPARTA",
       "counties": {
         "MERKEZ": "Isparta Merkez’de",

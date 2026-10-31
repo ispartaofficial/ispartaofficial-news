@@ -95,6 +95,11 @@ Ekim'de yalnız bu kaynak için izin verdi: `allow_missing_robots` tek bu kayıt
 vardır ve yalnız 404 veya 410 yanıtını kabul eder. 403, 429 ve 5xx kapalı kalır.
 Site ileride robots dosyası yayımlarsa ona uyulur.
 
+31 Ekim'de üç bulut koşusu zaman aşımına düştü, aynı istek yerelde 2 saniye sürdü.
+Kaynağa okuyucunun izin verdiği en uzun süreler (bağlantı 15, okuma 45 saniye) ve bir
+yeniden deneme verildi. Hata sürerse site bulut bağlantılarını ağ düzeyinde kesiyor
+demektir; o zaman süre artırımı çözüm değildir.
+
 ## Doğrulama
 
 Mevcut Isparta okuyucu testleri korunur. Üretim motorunun 15 regresyon dosyası
