@@ -153,7 +153,7 @@ def test_expanded_registry_keeps_discovery_separate_and_all_failures_visible(tmp
     class Offline:
         def get(self,url):raise ValueError('offline')
     report=run(path,at=AT,fetcher=Offline())
-    assert len(report['source_health'])==31 and len(report['discovery_health'])==1
+    assert len(report['source_health'])==32 and len(report['discovery_health'])==1
     assert len(report['items'])==0 and len(report['discovered_clubs'])==0
     assert all(s['status']=='failed' for s in report['source_health'])
     assert report['discovery_health'][0]['status']=='failed'

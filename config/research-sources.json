@@ -198,6 +198,31 @@
       "ticket_link": "/redirect-ticket-url/"
     },
     {
+      "id": "aedas-planli",
+      "name": "AEDAŞ planlı kesintileri",
+      "url": "https://www.akdenizedas.com.tr/GetItemsData",
+      "display_url": "https://www.akdenizedas.com.tr/elektrik-kesintisi-sorgulama",
+      "research_enabled": true,
+      "reader": "aedas_outages",
+      "allow_missing_robots": true,
+      "province": "ISPARTA",
+      "counties": {
+        "MERKEZ": "Isparta Merkez’de",
+        "AKSU": "Isparta Aksu’da",
+        "ATABEY": "Atabey’de",
+        "EĞİRDİR": "Eğirdir’de",
+        "GELENDOST": "Gelendost’ta",
+        "GÖNEN": "Isparta Gönen’de",
+        "KEÇİBORLU": "Keçiborlu’da",
+        "SENİRKENT": "Senirkent’te",
+        "SÜTÇÜLER": "Sütçüler’de",
+        "ŞARKİKARAAĞAÇ": "Şarkikaraağaç’ta",
+        "ULUBORLU": "Uluborlu’da",
+        "YALVAÇ": "Yalvaç’ta",
+        "YENİŞARBADEMLİ": "Yenişarbademli’de"
+      }
+    },
+    {
       "id": "aksu-kaymakamlik",
       "name": "Aksu Kaymakamlığı",
       "url": "https://www.aksu.gov.tr/",
