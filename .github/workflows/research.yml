@@ -21,7 +21,7 @@ concurrency:
 jobs:
   research:
     if: github.repository == 'ispartaofficial/ispartaofficial-news' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     permissions:
       contents: write # Only the isolated automation-state branch is written.
@@ -94,7 +94,7 @@ jobs:
   deploy:
     needs: research
     if: github.repository == 'ispartaofficial/ispartaofficial-news' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       pages: write
       id-token: write
@@ -110,7 +110,7 @@ jobs:
   publish:
     needs: deploy
     if: github.repository == 'ispartaofficial/ispartaofficial-news' && github.ref == 'refs/heads/main' && vars.INSTAGRAM_PUBLISH_ENABLED == 'true' && vars.META_TESTS_COMPLETED == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 8
     permissions:
       contents: write

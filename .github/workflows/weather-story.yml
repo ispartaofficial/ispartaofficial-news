@@ -10,13 +10,13 @@ on:
     branches: [main]
 permissions:
   contents: read
-concurrency:
-  group: ${{ github.event_name == 'workflow_dispatch' && 'isparta-weather-preview' || 'isparta-production' }}
-  cancel-in-progress: false
 jobs:
   preview:
     if: github.event_name == 'workflow_dispatch' && github.repository == 'ispartaofficial/ispartaofficial-news' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    concurrency:
+      group: isparta-weather-preview
+      cancel-in-progress: false
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: read
@@ -45,7 +45,12 @@ jobs:
         github.event.workflow_run.head_branch == 'main' &&
         github.event.workflow_run.head_repository.full_name == github.repository &&
         (contains(github.event.workflow_run.created_at, 'T04:') || contains(github.event.workflow_run.created_at, 'T05:'))))
-    runs-on: ubuntu-latest
+    # Job-level lock: a skipped run never enters the queue, so it cannot evict
+    # the one pending real job (Seferihisar lost its 31 Oct weather story this way).
+    concurrency:
+      group: isparta-production
+      cancel-in-progress: false
+    runs-on: ubuntu-24.04
     timeout-minutes: 35
     environment: instagram-production
     permissions:

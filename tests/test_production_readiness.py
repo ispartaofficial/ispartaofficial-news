@@ -160,7 +160,9 @@ def test_production_workflows_keep_secrets_out_of_research_and_share_serial_stat
     assert publish['environment']=='instagram-production'
     assert 'vars.INSTAGRAM_PUBLISH_ENABLED' in publish['if'] and 'vars.META_TESTS_COMPLETED' in publish['if']
     assert 'isparta.production publish' in json.dumps(publish)
-    assert 'isparta-production' in research['concurrency']['group'] and 'isparta-production' in pharmacy['concurrency']['group']
+    assert research['concurrency']['group']=='isparta-production'
+    # Research keeps the run-wide lock; a skipped story run must not evict a pending job.
+    assert 'concurrency' not in pharmacy and pharmacy['jobs']['pharmacy']['concurrency']['group']=='isparta-production'
     assert 'isparta.production pharmacy --wait-for-target' in json.dumps(pharmacy)
     assert 'isparta.production check' in json.dumps(connection)
     assert connection['permissions']=={'contents':'read'}

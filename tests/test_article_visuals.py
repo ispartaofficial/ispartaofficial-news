@@ -151,10 +151,38 @@ def test_living_room_brief_is_rejected_before_any_relevance_call():
     # The 30 Oct cards for Ethem amca and Yiğit were both this empty room.
     room = ('{"objects": ["sofa", "coffee table"], "scene": "A cozy living room with a sofa, a coffee table, a vase '
             'of pink flowers and sunlight through tall windows.", "description": "a photograph of a cozy living room"}')
-    session, _ = model_session(room, '{"score": 9}')
+    session, _ = model_session(room, room, '{"score": 9}')
     with pytest.raises(article_scenes.SceneRejected, match='Generic interior'):
         article_scenes.describe(session, ACCOUNT, 'test-token', news(title='Isparta’nın gururu Yiğit matematik olimpiyatında'))
-    assert session.post.call_count == 1
+    assert session.post.call_count == 2  # One varied retry, then no relevance call.
+
+
+@pytest.mark.parametrize('clause', [', with no people or text', '. No people, text or logos are visible',
+                                    ' without any signs', '; never a crowd'])
+def test_wording_copied_from_the_rules_is_dropped_not_rendered(clause):
+    # v12 counted "no people" as depicting people.
+    brief = article_scenes.parse(GOOD.replace(' in soft daylight.', ' in soft daylight' + clause + '.'), news())
+    assert brief['scene'] == json.loads(GOOD)['scene']
+    with pytest.raises(article_scenes.SceneRejected):
+        article_scenes.parse(GOOD.replace('in soft daylight', 'beside a crowd, with no text'), news())
+
+
+def test_a_scene_over_the_old_length_limit_still_fits():
+    long_scene = GOOD.replace('in soft daylight', 'in soft daylight ' + 'with warm morning tones ' * 11)
+    assert len(json.loads(long_scene)['scene']) > 320
+    article_scenes.parse(long_scene, news())
+
+
+def test_rejected_draft_gets_one_varied_retry_but_a_refusal_does_not():
+    bad = GOOD.replace('An open old notebook', 'An old man reading a notebook')
+    session, _ = model_session(bad, GOOD, '{"score": 8}')
+    assert article_scenes.describe(session, ACCOUNT, 'test-token', news())['relevance'] == 8
+    temperatures = [call.kwargs['json']['temperature'] for call in session.post.call_args_list]
+    assert temperatures == [0, article_scenes.RETRY_TEMPERATURE, 0]
+    session, _ = model_session('{"scene": null}', GOOD, '{"score": 8}')
+    with pytest.raises(article_scenes.SceneRejected) as rejected:
+        article_scenes.describe(session, ACCOUNT, 'test-token', news())
+    assert rejected.value.code == 'declined' and session.post.call_count == 1
 
 
 def illustrator(store, tmp_path, monkeypatch):
@@ -291,7 +319,7 @@ def test_scene_decorations_must_suit_a_turkish_setting():
         with pytest.raises(article_scenes.SceneRejected):
             article_scenes.parse(bad, item)
     # A new brief version: cached v11 scenes are not reused for prepared posts.
-    assert article_scenes.VERSION == 'editorial-article-scene-v12'
+    assert article_scenes.VERSION == 'editorial-article-scene-v13'
 
 
 def test_article_bound_photo_is_saved_as_article_photo_evidence(tmp_path, monkeypatch):

@@ -159,6 +159,32 @@ def test_only_current_same_brief_donor_can_be_reused(tmp_path,monkeypatch,change
         generator.session.post.assert_not_called()
 
 
+def test_updated_event_keeps_the_picture_of_its_earlier_revision(tmp_path,monkeypatch):
+    # 31 Oct: a changed detail left a published event waiting for a new scene.
+    with closing(Store(tmp_path/'state.sqlite')) as store:
+        generator=manager(store,tmp_path,monkeypatch)
+        first=item(12); updated={**first,'revision':2}
+        pixels=(editorial_stock.DIRECTORY/'theatre.jpg').read_bytes()
+        store.db.execute('INSERT INTO items VALUES(?,?,?,?,?,?,?)',
+            (first['id'],'event',digest('updated'),json.dumps(first),2,AT.isoformat(),AT.isoformat()))
+        store.db.execute('INSERT INTO illustrations VALUES(?,?,?,?,?,?,?)',
+            (image_key(first),first['id'],'ready',pixels,1,AT.isoformat(),AT.isoformat()))
+        # The new revision's own scene already failed; that must not end the reuse.
+        store.db.execute('INSERT INTO illustrations VALUES(?,?,?,?,?,?,?)',
+            (image_key(updated),first['id'],'failed',None,2,AT.isoformat(),AT.isoformat()))
+        store.db.commit()
+        monkeypatch.setattr(editorial_stock,'stock_image',lambda *args:None)
+        assert generator.image(updated,True)
+        assert generator.stats['scene_reused']==1
+        assert not store.rows('SELECT * FROM illustration_days')
+        generator.session.post.assert_not_called()
+
+
+@pytest.mark.parametrize('title,expected',[('Geleceğim Meslekte','education'),('Kariyer Günleri','education'),
+                                           ('Akademik Seminer','education'),('Bahar Şenliği',None)])
+def test_career_days_in_the_broad_event_category_can_get_a_visual(title,expected):
+    assert subject({'kind':'event','category':'event','title':title})==expected
+
 
 def test_rebetiko_uses_music_scene_without_guessing_unknown_events():
     row=item(category='event',title="Rebetiko Kordelio Yunan Yemekleri ve Gecesi")

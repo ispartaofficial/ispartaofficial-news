@@ -15,7 +15,7 @@ concurrency:
 jobs:
   check:
     if: github.repository == 'ispartaofficial/ispartaofficial-news' && github.ref == 'refs/heads/main' && vars.META_CONNECTION_CHECK_ENABLED == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     environment: instagram-production
     steps:
