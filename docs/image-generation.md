@@ -75,6 +75,17 @@ olmalı, alakasız görsel olmamalı. Sürüm v12:
 Canlı modelin yeni kurallara yanıtı yerel olarak denenemedi (Workers AI anahtarı
 yalnız GitHub'da); ilk gerçek sonuç paneldeki sayaçlardır.
 
+31 Ekim öğlen, v13'ün ilk turları: üç haber denendi, ikisi `unsafe`, biri `no_score`
+ile bitti. Sürüm v14:
+
+- Puan yanıtı 20 belirteçle sınırlıydı ve yalnız kapalı JSON okunuyordu. Sınır 60
+  oldu; puan JSON, düz metin veya kesilmiş yanıttan okunur. Açık bir puan yoksa
+  yine `no_score` sayılır, %70 eşiği değişmedi.
+- `unsafe` hangi kuralın çalıştığını söylemiyordu. Artık `unsafe_length`,
+  `unsafe_description`, `unsafe_characters` ve `unsafe_word_<kelime>` yazılır.
+  Kelime kapalı yasak listesinden gelir, modelin serbest metni panele çıkmaz.
+- Sürüm anahtarı, deneme hakkı biten haberlere bir deneme daha verir.
+
 Mevcut sınırlar korunur: tur başına en fazla iki, UTC günü başına en fazla
 yirmi üretim girişimi; öğe ve revizyona bağlı kalıcı önbellek; OCR ile yazı/tarih
 kontrolü ve gerçek kart kırpmalarında konu denetimi. Bu girişim sınırları servis

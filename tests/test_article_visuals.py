@@ -122,6 +122,33 @@ def test_brief_that_does_not_clearly_fit_the_story_is_rejected(verdict):
     assert article_scenes.relevance('{"score": "7"}') == 7 == article_scenes.MIN_RELEVANCE
 
 
+@pytest.mark.parametrize('answer', ['{"score": 8}', 'Here is the JSON object:\n\n{"score": 8}', '{"score": 8, "reason": "the medal cl',
+                                    'Score: 8', '**score** = 8', '8', '8/10', ' 8. '])
+def test_relevance_reads_the_score_however_the_model_wraps_it(answer):
+    # 31 Oct: a valid v13 brief ended in `no_score`; the reply limit was 20 tokens.
+    assert article_scenes.relevance(answer) == 8
+    assert article_scenes.judge_request(news(), {'scene': 'x'})['max_tokens'] >= 60
+
+
+@pytest.mark.parametrize('answer', ['{"score": 100}', 'On a score of 0 to 10 this is fine', '{"score": null}', '8 or 9'])
+def test_relevance_refuses_anything_that_is_not_a_clear_score(answer):
+    with pytest.raises(article_scenes.SceneRejected) as rejected:
+        article_scenes.relevance(answer)
+    assert rejected.value.code == 'no_score'
+
+
+@pytest.mark.parametrize('change,code', [
+    (('in soft daylight.', 'in soft daylight ' + 'with warm morning tones ' * 16 + '.'), 'unsafe_length'),
+    (('a photograph of an open', 'an open'), 'unsafe_description'),
+    (('in soft daylight', 'in soft daylight in 1923'), 'unsafe_characters'),
+    (('An open old notebook', 'An old man reading a notebook'), 'unsafe_word_man'),
+    (('a fountain pen and a small red flag"', 'a fountain pen and a small red sign"'), 'unsafe_word_sign')])
+def test_unsafe_rejection_names_the_rule_that_fired(change, code):
+    with pytest.raises(article_scenes.SceneRejected) as rejected:
+        article_scenes.parse(GOOD.replace(*change), news())
+    assert rejected.value.code == code
+
+
 def test_rejection_reason_and_score_reach_the_panel_stats(tmp_path, monkeypatch):
     # 30 Oct: two v12 scenes were rejected and nothing said why.
     verdicts = iter([article_scenes.SceneRejected('Generic interior scene', 'generic_interior'),
@@ -319,7 +346,7 @@ def test_scene_decorations_must_suit_a_turkish_setting():
         with pytest.raises(article_scenes.SceneRejected):
             article_scenes.parse(bad, item)
     # A new brief version: cached v11 scenes are not reused for prepared posts.
-    assert article_scenes.VERSION == 'editorial-article-scene-v13'
+    assert article_scenes.VERSION == 'editorial-article-scene-v14'
 
 
 def test_article_bound_photo_is_saved_as_article_photo_evidence(tmp_path, monkeypatch):
