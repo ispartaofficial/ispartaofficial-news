@@ -22,6 +22,8 @@ ROOT = Path(__file__).resolve().parents[1]
 REPOSITORY = 'ispartaofficial/ispartaofficial-news'
 SITE = 'https://ispartaofficial.github.io/ispartaofficial-news'
 TICKET_SOURCES = ('bubilet-isparta', 'biletinial-isparta', 'etkinlik-isparta')
+PENDING_NEWS_AGE = timedelta(hours=48)
+PENDING_NEWS_CAP = 6
 
 
 def sources_for_engine(config):
@@ -158,17 +160,35 @@ def ingest(store, collection, sources, at):
     return accepted
 
 
+def pending_news(store, at):
+    """Unpublished stories to read again by address, newest first per source."""
+    waiting = {p['item_id'] for p in store.posts() if p['kind'] == 'news' and not p.get('publish_format')
+               and p['status'] in ('prepared', 'blocked_source')}
+    recent = []
+    for item in store.items('news'):
+        published = parse_date(item.get('published_at'))
+        if item['id'] in waiting and published and at - PENDING_NEWS_AGE <= published <= at:
+            recent.append((published, item))
+    pending = {}
+    for _, item in sorted(recent, key=lambda row: row[0], reverse=True):
+        urls = pending.setdefault(item['source_id'], [])
+        if len(urls) < PENDING_NEWS_CAP:
+            urls.append(item['url'])
+    return pending
+
+
 def run(db_path, public_dir, config_path, *, at=None, fetcher=None, collection=None):
     at = at or now()
     if at.tzinfo is None:
         raise ValueError('Timezone-aware timestamp required')
     config = json.loads(Path(config_path).read_text(encoding='utf-8'))
     live_collection = collection is None
-    collection = collection if collection is not None else collect_sources(config_path, at=at, fetcher=fetcher)
-    if parse_date(collection['checked_at']) != at:
-        raise ValueError('Collection must belong to this run')
     store = Store(db_path)
     try:
+        if live_collection:
+            collection = collect_sources(config_path, at=at, fetcher=fetcher, pending=pending_news(store, at))
+        if parse_date(collection['checked_at']) != at:
+            raise ValueError('Collection must belong to this run')
         sources = sources_for_engine(config)
         accepted = ingest(store, collection, sources, at)
         from news_engine.schedule import prepare
