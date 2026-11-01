@@ -307,7 +307,7 @@
       "target": "news_engine/visual_match.py",
       "upstream_sha256": "3302cbe4d921059094ccebe5a9d321cab240173c9afce090602920de829559eb",
       "adapted": true,
-      "target_sha256": "ebfabe9adfe4092016c51d1d69629bf649232eace748823beaa74b64847207f3"
+      "target_sha256": "68b8f6e586d31af806e2893664c8047aab33dd108925211b24d10e2ff6dab7a2"
     },
     {
       "upstream": "seferihisar/visual_policy.py",
