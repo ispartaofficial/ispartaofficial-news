@@ -93,6 +93,23 @@ def test_removed_page_holds_only_that_story(tmp_path):
         assert statuses(store) == {'prepared', 'blocked_source'}
 
 
+def test_one_unreadable_page_holds_only_that_story_in_a_partial_read(tmp_path):
+    path, sources = pipeline(tmp_path)
+    site = Site()
+    site.publish('yol-calismasi', 'Isparta’da yol çalışması sürüyor')
+    site.publish('baska-haber', 'Isparta’da kaldırım çalışması başladı')
+    site.listing('yol-calismasi', 'baska-haber')
+    with closing(Store(tmp_path/'state.sqlite')) as store:
+        turn(store, path, sources, site, AT)
+        site.pages['https://www.bomba32.com/yol-calismasi'] = '<h1>Kısa</h1>'
+        report = turn(store, path, sources, site, AT + timedelta(hours=2))
+        assert report['source_health'][0]['status'] == 'partial'
+        waiting = {i['title']: i['verification_holds'] for i in store.items()}
+        assert waiting['Isparta’da yol çalışması sürüyor'] == ['not_reobserved_current_run']
+        assert waiting['Isparta’da kaldırım çalışması başladı'] == []
+        assert statuses(store) == {'prepared', 'blocked_source'}
+
+
 def test_only_recent_waiting_stories_are_read_again_within_the_cap(tmp_path):
     with closing(Store(tmp_path/'state.sqlite')) as store:
         def add(key, hours, status='prepared'):

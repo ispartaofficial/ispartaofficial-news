@@ -94,8 +94,10 @@ def adapt(row):
 
 def ingest(store, collection, sources, at):
     source_map = {s['id']: s for s in sources}
+    # A partial read still confirms what it read. An unread story loses its
+    # reobservation below, so one bad page cannot hold the rest of its source.
     errors = [{'source_id': h['id'], 'code': 'source_not_current'} for h in collection['source_health']
-              if h['status'] in ('failed', 'partial', 'empty')]
+              if h['status'] in ('failed', 'empty')]
     with store.db:
         run_id = store.db.execute('INSERT INTO runs(started_at) VALUES(?)', (at.isoformat(),)).lastrowid
     accepted = 0
