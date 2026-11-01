@@ -308,11 +308,13 @@ def test_article_photo_allows_incidental_text_but_not_headline_graphics(monkeypa
         with pytest.raises(IllustrationTextRejected):
             image_safety.validate_photo_not_text_graphic(data)
     scans['words'] = []
-    monkeypatch.setattr(visual_match, 'described_scores',
-                        lambda images, labels: [[.25] + [.20] * (len(labels) - 1)] * 3)
-    assert visual_match.validate_news_photo(data, 'article_photo')['subject'] == visual_match.ARTICLE_PHOTO_DESCRIPTION
-    monkeypatch.setattr(visual_match, 'described_scores',
-                        lambda images, labels: [[.22, .24] + [.10] * (len(labels) - 2)] * 3)
+    plain = {label: .1 for label in visual_match.PHOTO_LABELS}
+    monkeypatch.setattr(visual_match, 'photo_scores', lambda images: [{**plain, 'people_together': .25}] * 3)
+    assert visual_match.validate_news_photo(data, 'article_photo')['subject'] == 'article_photo'
+    monkeypatch.setattr(visual_match, 'photo_scores', lambda images: [{**plain, 'real_scene': .25, 'flyer': .24}] * 3)
+    with pytest.raises(MatchRejected):
+        visual_match.validate_news_photo(data, 'article_photo')
+    scans['words'] = [word('KUTLAMA', width=400, height=60)]
     with pytest.raises(MatchRejected):
         visual_match.validate_news_photo(data, 'article_photo')
 

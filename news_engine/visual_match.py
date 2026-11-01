@@ -51,6 +51,38 @@ LABELS.update(NEWS_LABELS)
 LABELS.setdefault('roadworks', 'a news photograph of a street or sidewalk being renovated with bare ground and road maintenance equipment')
 LABELS['event_calendar'] = 'a photograph of a desk calendar with blank pages and colourful blank admission tickets beside a pen'
 
+# A real article photograph shows people and places, which the empty scenes
+# above were never written to describe. Scored apart, so generated images and
+# every threshold above stay exactly as they were.
+OCCASION_LABELS = {
+    'public_event': 'a news photograph of people at a public event, ceremony or festival',
+    'community_event': 'a photograph of people at a local community event',
+    'people_together': 'a press photograph of people standing together',
+    'people_indoors': 'a photograph of people sitting in a room',
+}
+SCENE_LABELS = {
+    'real_scene': 'a news photograph of a real scene',
+    'real_place': 'a photograph of a real place or street',
+}
+NON_PHOTO_LABELS = {
+    'graphic': 'a graphic design poster with large printed text and logos',
+    'flyer': 'an advertisement flyer with colourful text and icons',
+    'screenshot': 'a screenshot of a document or web page with text',
+    'logo': 'a logo on a plain background',
+    'illustration': 'a digital illustration or computer generated image',
+    'blank': LABELS['blank'],
+    'empty_hall': LABELS['empty_hall'],
+}
+PHOTO_LABELS = {**OCCASION_LABELS, **SCENE_LABELS, **NON_PHOTO_LABELS}
+# Stories told through people need people in the picture: a street or an empty
+# hall on a meeting story is the wrong photograph. Stories about a place or thing
+# may show it without anyone. Incident subjects keep their own evidence: a crowd
+# beside a road is not a photograph of that road's flood or repair.
+SCENE_SUBJECTS = frozenset(('article_photo', 'bus', 'parking', 'landscape', 'land_planning', 'public_park',
+                            'citrus_processing', 'animal_care'))
+OCCASION_SUBJECTS = SCENE_SUBJECTS | frozenset(('festival', 'public_service', 'concert', 'theatre', 'cinema', 'culture',
+                                                'education', 'health_workspace', 'market', 'food', 'meeting'))
+
 
 class MatchUnavailable(ValueError):
     pass
@@ -128,6 +160,28 @@ def scores(images: list[Image.Image]) -> list[dict[str, float]]:
         raise MatchUnavailable('Visual match unavailable') from None
 
 
+@lru_cache(maxsize=1)
+def photo_text():
+    torch, processor, model, _ = runtime()
+    with torch.inference_mode():
+        features = model.get_text_features(**processor(text=list(PHOTO_LABELS.values()),
+                                                       padding=True, return_tensors='pt'))
+        return features / features.norm(dim=-1, keepdim=True)
+
+
+def photo_scores(images: list[Image.Image]) -> list[dict[str, float]]:
+    try:
+        torch, processor, model, _ = runtime()
+        text = photo_text()
+        with torch.inference_mode():
+            features = model.get_image_features(**processor(images=images, return_tensors='pt'))
+            features = features / features.norm(dim=-1, keepdim=True)
+            values = (features @ text.T).tolist()
+        return [dict(zip(PHOTO_LABELS, row)) for row in values]
+    except Exception:
+        raise MatchUnavailable('Visual match unavailable') from None
+
+
 def accepted(result: dict[str, float], expected: str) -> bool:
     import math
     if expected not in LABELS or set(result) != set(LABELS) or not all(
@@ -137,6 +191,18 @@ def accepted(result: dict[str, float], expected: str) -> bool:
     # Conservative abstention: explicit subject evidence AND a margin over
     # every alternative. These are cosine thresholds, never confidence %.
     return positive >= 0.24 and positive - max(v for k, v in result.items() if k != expected) >= 0.015
+
+
+def occasion_accepted(result: dict[str, float], expected: str = '') -> bool:
+    import math
+    if set(result) != set(PHOTO_LABELS) or not all(
+            type(value) in (int, float) and math.isfinite(value) for value in result.values()):
+        return False
+    labels = {**OCCASION_LABELS, **SCENE_LABELS} if expected in SCENE_SUBJECTS else OCCASION_LABELS
+    positive = max(result[label] for label in labels)
+    # Calibrated 1 Nov on 42 real article images: every headline banner fell
+    # below .19 or inside the margin. Also a rejection heuristic, never a fact check.
+    return positive >= 0.19 and positive - max(result[label] for label in NON_PHOTO_LABELS) >= 0.015
 
 
 def validate_match(data: bytes, expected: str) -> dict:
@@ -153,7 +219,12 @@ def validate_news_photo(data: bytes, expected: str) -> dict:
         return validate_article_photo(data)
     if expected not in SUBJECTS:
         raise MatchRejected('Unsupported news photograph')
-    return _validate_crops(data,expected,source_photo=True)
+    try:
+        return _validate_crops(data,expected,source_photo=True)
+    except MatchRejected:
+        if expected not in OCCASION_SUBJECTS:
+            raise
+        return _validate_occasion(data,expected)
 
 
 def validate_headline_photo(data: bytes, expected: str, title: str) -> dict:
@@ -228,7 +299,6 @@ SCENE_DISTRACTORS = GRAPHIC_LABELS + ('a portrait photograph of a person', 'a cr
                                       'a photograph of hanging red paper lanterns',
                                       'a photograph of an empty living room with a sofa',
                                       'a view of a city through a window')
-ARTICLE_PHOTO_DESCRIPTION = 'a news photograph of a real scene'
 
 
 def described_scores(images: list[Image.Image], labels: tuple[str, ...]) -> list[list[float]]:
@@ -272,14 +342,35 @@ def validate_described(data: bytes, description: str, distractors=SCENE_DISTRACT
 
 
 def validate_article_photo(data: bytes) -> dict:
-    """The publisher bound this photo to the exact article; it must be a photo.
+    from .source_photo_data import ARTICLE_PHOTO
+    return _validate_occasion(data, ARTICLE_PHOTO)
 
-    No topic label exists for these stories, so the model only rejects
-    headline graphics, logos, screenshots and blank frames.
-    """
-    from .image_safety import validate_photo_not_text_graphic
-    validate_photo_not_text_graphic(data)
-    return validate_described(data, ARTICLE_PHOTO_DESCRIPTION, GRAPHIC_LABELS, source_photo=True, minimum=0.0)
+
+def _validate_occasion(data: bytes, expected: str) -> dict:
+    """The publisher bound this file to the exact article; it must be a photograph."""
+    from .image_safety import IllustrationCheckUnavailable, IllustrationTextRejected, validate_photo_not_text_graphic
+    try:
+        validate_photo_not_text_graphic(data)
+    except IllustrationTextRejected:
+        raise MatchRejected('Headline graphic') from None
+    except IllustrationCheckUnavailable:
+        raise
+    except ValueError:
+        raise MatchRejected('Unsupported photograph') from None
+    try:
+        with Image.open(io.BytesIO(data)) as image:
+            image.load()
+            crops = [ImageOps.pad(image.convert('RGB'),size,Image.Resampling.LANCZOS,color='#06244a')
+                     for size in ((1080, 436), (1080, 506), (1080, 586))]
+        results = photo_scores(crops)
+        if len(results) != 3 or not all(occasion_accepted(result, expected) for result in results):
+            raise MatchRejected('Visual subject mismatch')
+        return {'subject': expected, 'version': VERSION,
+                'image_sha256': hashlib.sha256(data).hexdigest()}
+    except (MatchRejected, MatchUnavailable):
+        raise
+    except Exception:
+        raise MatchUnavailable('Visual match unavailable') from None
 
 
 def _validate_crops(data: bytes, expected: str, *, source_photo=False) -> dict:
