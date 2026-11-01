@@ -105,6 +105,31 @@ def test_reworded_harvest_start_is_held_after_other_source_claim_but_later_devel
     assert not repeat(store,{**pending,'title':'Isparta’da mandalina üreticisine yeni alım desteği'})
 
 
+def test_reworded_headline_of_the_same_ranking_is_held_after_other_source_claim(store):
+    titles=['Isparta, Türkiye’nin Havası Temiz 10 İli Arasında',"Türkiye'nin havası en temiz 10 ili arasında Isparta da yer aldı"]
+    for n,title in enumerate(titles):
+        store.upsert({'kind':'news','title':title,'description':'Isparta hava kalitesi listesinde yer aldı ve dikkat çekti.',
+                      'url':f'https://example.org/{n}','source_id':'example','source_name':'Yerel kaynak',
+                      'sources':[f'https://example.org/{n}'],'category':'news','published_at':AT.isoformat()},AT.isoformat())
+    prepare(store,AT)
+    old,pending=store.posts()
+    claim(store,old,AT)
+    assert repeat(store,pending)
+    assert not repeat(store,{**pending,'title':"Türkiye'nin havası en temiz 20 ili arasında Isparta da yer aldı"})
+    assert not repeat(store,{**pending,'title':"Türkiye'nin havası en kirli 10 ili arasında Isparta da yer aldı"})
+
+
+def test_category_label_does_not_separate_one_headline(store):
+    title='Isparta Gülü hasat sezonu yoğun ilgiyle açıldı'
+    store.upsert({'kind':'news','title':title,'description':'Isparta’da gül hasadı için tören düzenlendi ve üreticiler katıldı.',
+                  'url':'https://example.org/0','source_id':'example','source_name':'Yerel kaynak',
+                  'sources':['https://example.org/0'],'category':'news','published_at':AT.isoformat()},AT.isoformat())
+    prepare(store,AT)
+    old=store.posts()[0]
+    claim(store,old,AT)
+    assert repeat(store,{**old,'id':'other','title':'Gastronomi: '+title})
+
+
 def test_requested_facebook_delivery_does_not_choose_another_recent_parent(store,at):
     from test_facebook_publication import setup_content,api as facebook_api
     from news_engine.facebook import publish_recent

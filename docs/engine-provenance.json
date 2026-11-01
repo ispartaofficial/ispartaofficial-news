@@ -279,7 +279,7 @@
       "target": "news_engine/story_identity.py",
       "upstream_sha256": "9c67716cf1bb67cee97f4db577105e10975d32e0decb81dc301f2082d6f397bd",
       "adapted": true,
-      "target_sha256": "8a390bda2426908945c2d2e92262faa6abce52c17746896a71e143d541233a94"
+      "target_sha256": "74d725e950e09c05268191cd61aef57d8ed4e54d4feca275c7487dd519a59044"
     },
     {
       "upstream": "seferihisar/text_quality.py",
