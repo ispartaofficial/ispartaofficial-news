@@ -139,7 +139,7 @@
       "target": "news_engine/instagram.py",
       "upstream_sha256": "ef994d34d9a853f86a08810b6ad6d4bf4e57cca83543d3b03400d5293a2c8a07",
       "adapted": false,
-      "target_sha256": "0ab60ecda4df29f3394414c4707c860c29ee4d6af2fe3f38297f01359cef7a89"
+      "target_sha256": "245f6670b5f78d4a27938bf0b25e540e51d662288a82b9dd061a9563d4825d6c"
     },
     {
       "upstream": "seferihisar/instagram_source_photos.py",
@@ -223,7 +223,7 @@
       "target": "news_engine/selection.py",
       "upstream_sha256": "50a636451543e3686a32b584f60be3c1c7d45e5073c216a5d5461be5cf902ce0",
       "adapted": false,
-      "target_sha256": "b55a404d685e85cfe6bfeb17520e783c79c5d10bad4014e7313f0500e963afd0"
+      "target_sha256": "458e3a40d52150ac081ea64625b19645014cce94028a97b6b9442a8107fa6734"
     },
     {
       "upstream": "seferihisar/source_catalog.py",
