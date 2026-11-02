@@ -100,6 +100,7 @@ def test_tiny_extreme_aspect_or_oversized_news_photos_remain_rejected(size):
 
 def setup(tmp_path,monkeypatch,*,failure=None):
     monkeypatch.setenv('SOURCE_PHOTOS_ENABLED','true')
+    monkeypatch.setattr('news_engine.source_photos.MAX_READS',2)
     source,item,html=context();store=Store(tmp_path/'state.sqlite')
     key,_=store.upsert(item,AT.isoformat());item=store.items()[0]
     fetcher=Mock();fetcher.get.return_value=(html,item['url'])
@@ -143,7 +144,8 @@ def test_missing_model_or_both_mismatches_never_save_a_picture(tmp_path,monkeypa
     store,item,photos,fetcher,checks=setup(tmp_path,monkeypatch,failure=failure)
     with closing(store):
         assert photos.image(item) is None
-        assert fetcher.image.call_count==reads and len(checks)==reads
+        # Both files are then tried as plain photographs, without a further read.
+        assert fetcher.image.call_count==reads and len(checks)==(4 if failure=='all_rejected' else reads)
         assert photos.stats[counter]==reads
         assert store.rows('SELECT * FROM source_photos')==[]
         assert photos.stats['rejection_stages']=={'visual_subject':reads}

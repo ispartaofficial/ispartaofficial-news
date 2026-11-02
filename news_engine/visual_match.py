@@ -360,7 +360,11 @@ def _validate_occasion(data: bytes, expected: str) -> dict:
     try:
         with Image.open(io.BytesIO(data)) as image:
             image.load()
-            crops = [ImageOps.pad(image.convert('RGB'),size,Image.Resampling.LANCZOS,color='#06244a')
+            # A portrait frame padded to a wide card scores as a blank colour band:
+            # real road photos failed this way on 1 Nov (Rampaya Bariyer). OCR
+            # has already read the whole file, so a crop hides no lettering.
+            crops = [ImageOps.fit(image.convert('RGB'),size,Image.Resampling.LANCZOS) if image.height > image.width
+                     else ImageOps.pad(image.convert('RGB'),size,Image.Resampling.LANCZOS,color='#06244a')
                      for size in ((1080, 436), (1080, 506), (1080, 586))]
         results = photo_scores(crops)
         if len(results) != 3 or not all(occasion_accepted(result, expected) for result in results):

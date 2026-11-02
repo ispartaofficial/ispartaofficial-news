@@ -65,8 +65,6 @@ NEWS_SCENES = {
     'transport': 'An ordinary roadway with clear lane markings and generic traffic seen from a distance. The road is the focal point. No collision, damage, police response or readable plates.',
     'outage': 'A close view of ordinary utility pipes, a valve and maintenance tools. No burst pipe, flood or invented damage.',
     'weather': 'A natural sky with clouds over a generic open landscape. No destruction, emergency or recognizable landmark.',
-    'municipality': 'A public-service workspace with ordinary maintenance tools and a blank clipboard. Do not depict a municipal building or official seal.',
-    'public': 'A neutral public-service desk with a blank clipboard and ordinary office objects. No official seal or invented written notice.',
     'health': 'A neutral clinic workspace with a stethoscope and unlabelled equipment. No patients, diagnosis or treatment claim.',
     'tourism': 'A generic natural coastal view with realistic sea and vegetation. No recognizable landmark or invented attraction.',
 }
