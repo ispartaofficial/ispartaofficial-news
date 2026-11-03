@@ -4,6 +4,8 @@ from datetime import timedelta
 import json
 from pathlib import Path
 
+import requests
+
 from isparta.research import collect_sources
 from isparta.runtime import PENDING_NEWS_CAP, ingest, pending_news, sources_for_engine
 from news_engine.domain import parse_date
@@ -108,6 +110,24 @@ def test_one_unreadable_page_holds_only_that_story_in_a_partial_read(tmp_path):
         assert waiting['Isparta’da yol çalışması sürüyor'] == ['not_reobserved_current_run']
         assert waiting['Isparta’da kaldırım çalışması başladı'] == []
         assert statuses(store) == {'prepared', 'blocked_source'}
+
+
+def test_failed_reader_keeps_its_listing_error_code(tmp_path):
+    path, sources = pipeline(tmp_path)
+    blocked = requests.Response()
+    blocked.status_code = 403
+
+    class Blocked(Site):
+        def get(self, url):
+            raise requests.HTTPError(response=blocked)
+    with closing(Store(tmp_path/'state.sqlite')) as store:
+        turn(store, path, sources, Blocked(), AT)
+        site = Site()
+        site.listing()
+        turn(store, path, sources, site, AT + timedelta(hours=1))
+        codes = [json.loads(r['errors']) for r in store.rows('SELECT errors FROM runs ORDER BY id')]
+    assert codes == [[{'source_id': 'bomba32', 'code': 'source_http_403'}],
+                     [{'source_id': 'bomba32', 'code': 'source_reader_failed'}]]
 
 
 def test_only_recent_waiting_stories_are_read_again_within_the_cap(tmp_path):

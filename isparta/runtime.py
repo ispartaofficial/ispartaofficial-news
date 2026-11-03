@@ -96,8 +96,11 @@ def ingest(store, collection, sources, at):
     source_map = {s['id']: s for s in sources}
     # A partial read still confirms what it read. An unread story loses its
     # reobservation below, so one bad page cannot hold the rest of its source.
-    errors = [{'source_id': h['id'], 'code': 'source_not_current'} for h in collection['source_health']
-              if h['status'] in ('failed', 'empty')]
+    # A failed reader keeps its listing error code (fixed identifiers, no URL),
+    # so a cloud-only block can be told apart from a broken reader.
+    errors = [{'source_id': h['id'], 'code': next((f"source_{e['code']}" for e in h['errors']
+                                                   if e.get('stage') == 'listing_or_calendar'), 'source_not_current')}
+              for h in collection['source_health'] if h['status'] in ('failed', 'empty')]
     with store.db:
         run_id = store.db.execute('INSERT INTO runs(started_at) VALUES(?)', (at.isoformat(),)).lastrowid
     accepted = 0
