@@ -118,3 +118,7 @@ def test_optional_quiet_settings_in_the_reviewed_registry_are_well_formed():
         assert isinstance(source.get('quiet_acknowledged', ''), str)
     bubilet = next(s for s in config['sources'] if s['id'] == 'bubilet-isparta')
     assert '403' in bubilet['quiet_acknowledged']
+    blocked = {s['id']: s for s in config['sources'] if s['id'] in ('etkinlik-isparta', 'aedas-planli')}
+    assert '403' in blocked['etkinlik-isparta']['quiet_acknowledged']
+    assert 'zaman aşımı' in blocked['aedas-planli']['quiet_acknowledged']
+    assert all(s['research_enabled'] for s in blocked.values())

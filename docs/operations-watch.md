@@ -56,6 +56,8 @@ taşır (`source_http_403`, `source_timeout`, `source_reader_failed` gibi sabit
 kimlikler; adres yok); `empty` kaynak `source_not_current` kalır. Gerekçe:
 31 Ekim'de eklenen Etkinlik.io ve AEDAŞ okuyucuları bulutta hiç okunamadı,
 yerelde ikisi de okunuyor (13 ve 14 kayıt); engel mi okuyucu hatası mı ayrılamıyordu.
+Merge sonrası ilk tur (3 Kasım 19:55) Etkinlik.io için `source_http_403`, AEDAŞ için
+`source_timeout` yazdı; ikisi de `quiet_acknowledged` aldı ve açık kaldı.
 
 ## Yedek (`state-backup.yml`)
 
