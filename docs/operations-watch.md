@@ -51,6 +51,11 @@ yorum yazar. `bubilet-isparta` aynı gün `quiet_acknowledged` aldı: Seferihisa
 aynı alan adı 27 Ekim'den beri bulut sunucularına HTTP 403 dönüyor; Isparta
 okuyucusu aynı dönemden beri okunamıyor, proje kimliğiyle yerel okuma 200. Isparta
 motoru bulut hata kodunu ayrıca saklamadığı için kod doğrudan görülmedi.
+3 Kasım'dan beri `failed` kaynak `runs.errors` içinde liste okumasının kodunu
+taşır (`source_http_403`, `source_timeout`, `source_reader_failed` gibi sabit
+kimlikler; adres yok); `empty` kaynak `source_not_current` kalır. Gerekçe:
+31 Ekim'de eklenen Etkinlik.io ve AEDAŞ okuyucuları bulutta hiç okunamadı,
+yerelde ikisi de okunuyor (13 ve 14 kayıt); engel mi okuyucu hatası mı ayrılamıyordu.
 
 ## Yedek (`state-backup.yml`)
 
