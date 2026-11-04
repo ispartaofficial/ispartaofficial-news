@@ -196,7 +196,8 @@
       "link_selector": "a[href*=\"/etkinlik/\"]",
       "detail_path": "/etkinlik/\\d+/[a-z0-9-]+",
       "max_details": 14,
-      "ticket_link": "/redirect-ticket-url/"
+      "ticket_link": "/redirect-ticket-url/",
+      "quiet_acknowledged": "31 Ekim 2026'da eklendiğinden beri bulut sunucularına HTTP 403 (3 Kasım kaydı); yerel okuma 200, 13 kayıt. Engel aşılmaz."
     },
     {
       "id": "aedas-planli",
@@ -224,7 +225,8 @@
         "ULUBORLU": "Uluborlu’da",
         "YALVAÇ": "Yalvaç’ta",
         "YENİŞARBADEMLİ": "Yenişarbademli’de"
-      }
+      },
+      "quiet_acknowledged": "31 Ekim 2026'da eklendiğinden beri buluttan 15/45 saniyelik sınırla da zaman aşımı (3 Kasım kaydı); yerel okuma 200, 14 kesinti. Engel aşılmaz."
     },
     {
       "id": "aksu-kaymakamlik",
