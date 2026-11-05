@@ -252,6 +252,8 @@ def publish(db_path, public_dir):
     store = Store(db_path)
     try:
         assets = {p['id']: p['assets'] for p in manifest['posts']}
+        from news_engine.instagram import settle_expired
+        settle_expired(store, api, now())
         # Real publication always checkpoints remotely before contacting Meta.
         target = os.getenv('INITIAL_POST_ID', '')
         if target:

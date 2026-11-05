@@ -19,7 +19,7 @@ geçince kapatır. Kullanıcının kendi issue'larına dokunmaz.
 | `source_coverage_drop` | Kaynakların en az %40'ı `failed` veya `partial`. `empty` hata sayılmaz. |
 | `weather_missing` | 09:20'den sonra üretilmiş panelde bugünün hava story'si yayımlanmış değil. |
 | `pharmacy_missing` | 18:20'den sonra üretilmiş panelde bugünün eczane story'si yayımlanmış değil. |
-| `unresolved_delivery` | Sonucu belirsiz Instagram/Facebook teslimi var. |
+| `unresolved_delivery` | Sonucu belirsiz Instagram/Facebook teslimi var. Gönderilmediği kesin olan iddia (`not_sent`) sayılmaz; aşağıya bakın. |
 | `delivery_audit_failed` | Son 24 saatte yayın sonrası okuma kontrolü başarısız. |
 | `backup_missing` | Son iki günde başarılı yedek işi yok. |
 | `source_silent` | Daha önce kayıt vermiş bir kaynak şu an `empty`/`failed` ve en yeni kendi kaydı (`first_seen`) 72 saatten eski. Issue kaynak kimliğini, durumunu ve son yeni kayıt tarihini listeler. |
@@ -58,6 +58,31 @@ kimlikler; adres yok); `empty` kaynak `source_not_current` kalır. Gerekçe:
 yerelde ikisi de okunuyor (13 ve 14 kayıt); engel mi okuyucu hatası mı ayrılamıyordu.
 Merge sonrası ilk tur (3 Kasım 19:55) Etkinlik.io için `source_http_403`, AEDAŞ için
 `source_timeout` yazdı; ikisi de `quiet_acknowledged` aldı ve açık kaldı.
+
+### Durum dalına yazma ve gönderilmemiş iddia
+
+4 Kasım 2026, 12:30–14:20 TR: GitHub iki şehir deposunda da `automation-state`
+yazmalarını reddetti; kira (`--force-with-lease`) başı değişmemişti, yani
+eşzamanlı yazan yoktu. Tek denemeli yazma, `Isparta Yollarında Güvenlik Önlemi`
+iddiasını Meta konteyneri oluşturulduktan sonra, `media_publish` çağrılmadan
+`publishing` durumunda bıraktı. İddia o günün bir haber hakkını aldı ve
+`unresolved_delivery` uyarısı kendiliğinden kapanamaz oldu.
+
+- `state_git.persist` yazmayı 3, 10 ve 30 saniye arayla en çok dört kez dener.
+  Her ret sonrası uzak baş okunur: bizim commit oradaysa önceki deneme yazılmış
+  demektir ve tekrar edilmez; baş değişmişse eşzamanlı yazan vardır ve iş durur.
+  `ls-remote` ve `fetch` okumaları da aynı aralıklarla tekrarlanır.
+- `media_publish` öncesindeki bir kayıt yazılamazsa iddia `uncertain` ve
+  `delivery_error: state_unsaved` olur, iş yine kırmızı biter; son
+  `persist` adımı bu durumu saklar.
+- Yayın işi her turda 25 saatten eski, `media_id` almamış konteynerli iddialar
+  için Meta'dan yalnız `status_code` okur. Meta kullanılmamış konteyneri 24
+  saatte `EXPIRED` yapar; bu yanıt gönderinin çıkmadığını kanıtlar ve iddia
+  `delivery_error: container_expired` olur. `PUBLISHED`, `FINISHED` veya hata
+  yanıtında hiçbir şey değişmez.
+- Konteyneri olmayan, `state_unsaved` veya `container_expired` iddia panelde
+  `not_sent` sayılır, `unresolved` sayılmaz. Hakkını korur, asla yeniden
+  gönderilmez. Seferihisar'daki `never_sent` kuralı genişletilerek uyarlandı.
 
 ## Yedek (`state-backup.yml`)
 
