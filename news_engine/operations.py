@@ -65,6 +65,19 @@ def record_check(store, result, at, mode):
     return clean
 
 
+def never_sent(post):
+    """An uncertain claim known never to have reached `media_publish`.
+
+    No container means container creation failed; `state_unsaved` means the
+    run stopped on a failed state save before publishing; `container_expired`
+    means Meta reports the container expired unused. The claim still holds
+    its slot and is never resent, but it is no longer an open question.
+    """
+    from .instagram import EXPIRED, UNSAVED
+    return post.get('status') == 'uncertain' and (
+        not post.get('container_id') or post.get('delivery_error') in (UNSAVED, EXPIRED))
+
+
 def summary(store, at):
     from .schedule import SLOTS
     at = at.astimezone(TZ)
@@ -105,8 +118,9 @@ def summary(store, at):
                   'instagram_story': sum(p.get('publish_format') == 'story' for p in today_claims),
                   'facebook_feed': sum(r['format'] == 'feed' and today(r['claimed_at']) for r in deliveries),
                   'facebook_story': sum(r['format'] == 'story' and today(r['claimed_at']) for r in deliveries)},
-        'unresolved': {'instagram': sum(p['status'] != 'published' for p in claims),
+        'unresolved': {'instagram': sum(p['status'] != 'published' and not never_sent(p) for p in claims),
                        'facebook': sum(r['status'] != 'published' for r in deliveries)},
+        'not_sent': {'instagram': sum(never_sent(p) for p in claims)},
         'delivery_errors': dict(Counter(p['delivery_error'] for p in claims if p.get('delivery_error'))),
         'daily_feed_limit': NEWS_DAILY_LIMIT, 'daily_story_limit': NEWS_DAILY_LIMIT,
         'service_stories_extra': ['weather', 'pharmacy'],
