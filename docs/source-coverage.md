@@ -6,7 +6,7 @@
 
 | Grup | Kaynaklar |
 |---|---|
-| Yerel basın | Bomba32, Haber32, Kanal32, Ajans32 |
+| Yerel basın | Bomba32, Demokrat32, Uyan32, Haber32, Kanal32, Ajans32 |
 | İl kaynakları | Isparta Belediyesi, Isparta Valiliği, Isparta İl Kültür ve Turizm Müdürlüğü |
 | Üniversite | SDÜ takvimi, SDÜ SKS duyuruları; ISUBÜ takvimi, SKS, Toplumsal Katkı ve resmî etkinlik duyuru arşivi |
 | Biletli etkinlik | Bubilet Isparta |
@@ -14,6 +14,8 @@
 | İlçe belediyesi | Isparta Gönen Belediyesi, Keçiborlu Belediyesi, Senirkent Belediyesi |
 
 Yerel basın listelerinde her turda en yeni 12 haber bağlantısı okunur (genel üst sınır 12). 29 Ekim 2026 durum verisinde Bomba32 haberleri en yeni dört bağlantı içinde çoğunlukla 0–2 saat kalıyor, ardından `not_reobserved_current_run` ile bekliyordu. Aynı haberi başka incelenmiş kaynak o turda gösterirse ilk kayıt yeniden görülmüş sayılır; yalnız bu bekletme kalkar, içerik ve doğrulama bekletmeleri korunur.
+
+5 Kasım 2026'da Demokrat32 ve Uyan32 eklendi; `config/research-sources.json` bununla 34 okuyucu içerir. İkisi de Bomba32 ile aynı yayın altyapısını kullanır. Bomba32 okuyucusu değiştirilmeden ikisinden de 12'şer güncel haber hatasız okudu; yayıma uygun olmayanları yerellik, hassasiyet ve geçerlilik kuralları bekletti. Uyan32 ilçe ve spor haberi de verir. İkisi de yerel basın gibi her haberde Isparta yerelliğini kanıtlamak zorundadır (`isparta/runtime.py` `PRESS`). Kaynak fotoğrafları yalnız kendi `<site>com.teimg.com/<site>-com/uploads/` yolundan kabul edilir; bu sunucuların robots.txt dosyası okumaya izin verir.
 
 26-31 Ekim 2026'da 20 haber yalnız listeden düştüğü için yayımlanamadı. Artık yayımlanmamış, son 48 saatteki haberler kaynak başına en çok 6 tanesiyle kendi adresinden aynı okuyucu ve aynı kurallarla yeniden okunur. Sayfa açılmazsa yalnız o haber `not_reobserved_current_run` ile bekler; kaynağın diğer kartları etkilenmez.
 

@@ -234,6 +234,48 @@
       ]
     },
     {
+      "id": "demokrat32",
+      "name": "Demokrat32",
+      "url": "https://www.demokrat32.com/sondakika-haberleri",
+      "priority": "local_news",
+      "listing_readable": true,
+      "checked_at": "2026-11-05T14:00:00+03:00",
+      "reader_verified": true,
+      "production_enabled": false,
+      "research_enabled": true,
+      "reader_verification": "Same publisher platform as Bomba32. The unchanged Bomba32 reader parsed 12 current articles on 2026-11-05 with no errors; locality, sensitivity and validity rules held the rest. Photo origin demokrat32com.teimg.com allows robots.",
+      "reader_kind": "article",
+      "publication_gates": [
+        "original article publication time and update time kept separate",
+        "article body and neutral headline",
+        "Isparta and district locality",
+        "source photo linkage and usage",
+        "same-story deduplication",
+        "sensitive claims held for review"
+      ]
+    },
+    {
+      "id": "uyan32",
+      "name": "Uyan32",
+      "url": "https://www.uyan32.com/sondakika-haberleri",
+      "priority": "local_news",
+      "listing_readable": true,
+      "checked_at": "2026-11-05T14:00:00+03:00",
+      "reader_verified": true,
+      "production_enabled": false,
+      "research_enabled": true,
+      "reader_verification": "Same publisher platform as Bomba32. The unchanged Bomba32 reader parsed 12 current articles on 2026-11-05 with no errors, including district and sports news; locality, sensitivity and validity rules held the rest. Photo origin uyan32com.teimg.com allows robots.",
+      "reader_kind": "article",
+      "publication_gates": [
+        "original article publication time and update time kept separate",
+        "article body and neutral headline",
+        "Isparta and district locality",
+        "source photo linkage and usage",
+        "same-story deduplication",
+        "sensitive claims held for review"
+      ]
+    },
+    {
       "id": "kanal32",
       "name": "Kanal32",
       "url": "https://www.kanal32.com.tr/gundem-haberleri",

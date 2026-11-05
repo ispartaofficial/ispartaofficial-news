@@ -244,7 +244,7 @@
       "target": "news_engine/source_photo_data.py",
       "upstream_sha256": "80c781a8c9bc5fb4baa10d44bc9ab1191e5055fe8c6e1f45d5f9323572fd552e",
       "adapted": false,
-      "target_sha256": "782186e72fbea62494030e110cb4fa8647ff9cc3d49b64068b6d4c5b7e2137a8"
+      "target_sha256": "7a04d1e8bc224085f8f8297c79519a71b2ac0d3f7b04ae107374b418a0eafde5"
     },
     {
       "upstream": "seferihisar/source_photos.py",

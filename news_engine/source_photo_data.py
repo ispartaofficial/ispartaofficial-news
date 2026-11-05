@@ -32,6 +32,11 @@ IMAGE_ORIGINS = {
                 r'/(?:crop/\d{2,4}x\d{2,4}/)?haber32-com-tr/uploads/[A-Za-z0-9_./-]+\.(?:jpe?g|png|webp)'),
     'bomba32': ('www.bomba32.com', 'bomba32com.teimg.com',
                 r'/(?:crop/\d{2,4}x\d{2,4}/)?bomba32-com/uploads/[A-Za-z0-9_./-]+\.(?:jpe?g|png|webp)'),
+    # Same publisher platform as Bomba32 (5 Nov 2026 check: og:image and hero).
+    'demokrat32': ('www.demokrat32.com', 'demokrat32com.teimg.com',
+                r'/(?:crop/\d{2,4}x\d{2,4}/)?demokrat32-com/uploads/[A-Za-z0-9_./-]+\.(?:jpe?g|png|webp)'),
+    'uyan32': ('www.uyan32.com', 'uyan32com.teimg.com',
+                r'/(?:crop/\d{2,4}x\d{2,4}/)?uyan32-com/uploads/[A-Za-z0-9_./-]+\.(?:jpe?g|png|webp)'),
     'ajans32': ('www.ajans32.com', 'cdn.ajans32.com',
                 r'/news(?:_t|_ts)?/\d+\.(?:jpe?g|png|webp)'),
 }
