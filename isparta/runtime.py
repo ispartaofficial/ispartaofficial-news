@@ -26,6 +26,11 @@ PENDING_NEWS_AGE = timedelta(hours=48)
 PENDING_NEWS_CAP = 6
 
 
+# Local press covers the whole region, so each article must prove its own
+# Isparta locality; institutional sources are local by reviewed scope.
+PRESS = ('bomba32', 'demokrat32', 'uyan32', 'haber32', 'kanal32', 'ajans32')
+
+
 def sources_for_engine(config):
     """Reviewed registry only; campus feed origins don't grant arbitrary trust."""
     result = []
@@ -35,7 +40,7 @@ def sources_for_engine(config):
         from .source_images import profile as photo_profile
         result.append({**source, **photo_profile(source), 'enabled': True, 'trusted': True, 'access': 'robots',
                        'kind': 'html', 'article_selector': source.get('body_selector', 'article'),
-                       'reviewed_local_scope': source['id'] not in ('bomba32', 'haber32', 'kanal32', 'ajans32')})
+                       'reviewed_local_scope': source['id'] not in PRESS})
     return result
 
 

@@ -13,13 +13,15 @@ VERSION = 'isparta-source-images-v1'
 ARTICLE_SCOPES = {
     # The hero is outside .article-text and uses the publisher's own CDN.
     'bomba32': '.news-section .inner',
+    'demokrat32': '.news-section .inner',
+    'uyan32': '.news-section .inner',
     'haber32': '.news-section .inner',
     # The lazy hero has srcset only, outside the text-content child article.
     'ajans32': '.article-detail.news-detail',
 }
 # These publishers supply natural originals as direct body paragraphs; their
 # OpenGraph hero is often a headline collage (30 Oct: Ethem amca, Yiğit).
-INLINE = {'haber32': '.article-text > p > img[src]', 'bomba32': '.article-text > p > img[src]'}
+INLINE = {sid: '.article-text > p > img[src]' for sid in ('haber32', 'bomba32', 'demokrat32', 'uyan32')}
 # Municipal and district portals put their own event photos in the body.
 PAGE_READERS = {'archive_article': archive_article, 'official_portal': official_article}
 

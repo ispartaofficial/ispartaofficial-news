@@ -8,7 +8,8 @@ from news_engine.visual_match import LABELS, MatchRejected, validate_match, vali
 
 
 def article_case(source_id='ajans32'):
-    host = 'www.ajans32.com' if source_id == 'ajans32' else 'www.bomba32.com'
+    # Bomba32, Demokrat32 and Uyan32 share one publisher platform and layout.
+    host = 'www.ajans32.com' if source_id == 'ajans32' else f'www.{source_id}.com'
     url = f'https://{host}/isparta-kaynak-haberi'
     title = 'Isparta caddesinde yol yenileme çalışması başladı'
     source = {'id': source_id, 'name': source_id, 'url': f'https://{host}/',
@@ -19,7 +20,7 @@ def article_case(source_id='ajans32'):
     item = {'source_id': source_id, 'kind': 'news', 'url': url, 'title': title,
             'published_at': '2026-10-24T10:00:00+03:00'}
     image = ('https://cdn.ajans32.com/news/72523.jpg' if source_id == 'ajans32' else
-             'https://bomba32com.teimg.com/crop/1280x720/bomba32-com/uploads/2026/10/road.jpg')
+             f'https://{source_id}com.teimg.com/crop/1280x720/{source_id}-com/uploads/2026/10/road.jpg')
     metadata = f'<meta name="datePublished" content="{item["published_at"]}"><meta property="og:image" content="{image}">'
     body = f'<h1>{title}</h1><div class="article-text"><p>Isparta Belediyesi cadde yenileme çalışmasını bu sabah başlattı.</p></div>'
     hero = (f'<div class="article-image"><img srcset="https://cdn.ajans32.com/news_t/72523.jpg 702w, {image} 1280w" alt="{title}"></div>'
@@ -29,11 +30,20 @@ def article_case(source_id='ajans32'):
     return source, item, image, html
 
 
-@pytest.mark.parametrize('source_id', ['ajans32', 'bomba32'])
+@pytest.mark.parametrize('source_id', ['ajans32', 'bomba32', 'demokrat32', 'uyan32'])
 def test_publisher_hero_outside_body_and_exact_cdn_origin(source_id):
     source, item, image, html = article_case(source_id)
     assert candidate(html, item['url'], item, source) == image
     assert news_subject(item) == 'roadworks'
+
+
+@pytest.mark.parametrize('source_id', ['demokrat32', 'uyan32'])
+def test_new_press_sources_prove_locality_and_read_body_photos_first(source_id):
+    # 5 Nov 2026: both run on Bomba32's platform and cover the whole region.
+    source = article_case(source_id)[0]
+    assert source['reviewed_local_scope'] is False
+    assert source['photo_inline_selector'] == '.article-text > p > img[src]'
+    assert source['photo_article_selector'] == '.news-section .inner'
 
 
 @pytest.mark.parametrize('change', ['title', 'date', 'final_url', 'canonical', 'archive'])
@@ -52,6 +62,9 @@ def test_new_layout_does_not_skip_exact_article_identity(change):
     ('bomba32', 'https://www.bomba32.com/haber', 'https://bomba32com.teimg.com/foreign/uploads/a.jpg'),
     ('bomba32', 'https://www.bomba32.com/haber', 'https://bomba32com.teimg.com/bomba32-com/uploads/../../foreign.jpg'),
     ('bomba32', 'https://evil.example/haber', 'https://bomba32com.teimg.com/bomba32-com/uploads/a.jpg'),
+    ('demokrat32', 'https://www.demokrat32.com/haber', 'https://uyan32com.teimg.com/uyan32-com/uploads/a.jpg'),
+    ('uyan32', 'https://www.uyan32.com/haber', 'https://uyan32com.teimg.com/bomba32-com/uploads/a.jpg'),
+    ('uyan32', 'https://www.bomba32.com/haber', 'https://uyan32com.teimg.com/uyan32-com/uploads/a.jpg'),
     ('ajans32', 'https://www.ajans32.com/haber', 'https://cdn.ajans32.com/ads/72523.jpg'),
     ('ajans32', 'https://www.ajans32.com/haber', 'https://cdn.ajans32.com/news/72523.jpg?redirect=1'),
     ('ajans32', 'https://www.ajans32.com/haber', 'https://cdn.evil.example/news/72523.jpg'),

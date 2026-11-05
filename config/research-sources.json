@@ -16,6 +16,32 @@
       "max_details": 12
     },
     {
+      "id": "demokrat32",
+      "name": "Demokrat32",
+      "url": "https://www.demokrat32.com/sondakika-haberleri",
+      "research_enabled": true,
+      "reader": "article",
+      "link_selector": ".last-minutes-box a[href]",
+      "detail_path": "/[a-z0-9-]{20,}",
+      "title_selector": "h1[itemprop=headline]",
+      "body_selector": ".article-text",
+      "date_selector": "meta[name=datePublished]",
+      "max_details": 12
+    },
+    {
+      "id": "uyan32",
+      "name": "Uyan32",
+      "url": "https://www.uyan32.com/sondakika-haberleri",
+      "research_enabled": true,
+      "reader": "article",
+      "link_selector": ".last-minutes-box a[href]",
+      "detail_path": "/[a-z0-9-]{20,}",
+      "title_selector": "h1[itemprop=headline]",
+      "body_selector": ".article-text",
+      "date_selector": "meta[name=datePublished]",
+      "max_details": 12
+    },
+    {
       "id": "haber32",
       "name": "Haber32",
       "url": "https://www.haber32.com.tr/",
