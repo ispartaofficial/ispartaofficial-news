@@ -66,6 +66,8 @@ def test_weather_is_enabled_but_existing_daily_news_and_pharmacy_limits_stay_ind
     ({'status':'published'}, None), ({'status':'already_published'}, None),
     ({'status':'outside_window'}, None), ({'status':'uncertain'}, 1),
     ({'status':'forecast_stale'}, 1),
+    # A card still deploying is retried by the next run; ops_watch reports a missed day.
+    ({'status':'media_not_deployed'}, None),
 ])
 def test_weather_entry_uses_same_durable_credential_and_restores_environment(tmp_path, monkeypatch, capsys, result, exit_code):
     from isparta import production
