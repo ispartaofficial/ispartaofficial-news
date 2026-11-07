@@ -26,13 +26,13 @@ def main():
         with active(token):
             if args.action == 'publish':
                 from .runtime import publish
-                from news_engine.operations import write_job_summary, failed
+                from news_engine.operations import write_job_summary, alarming
                 result = publish(path, Path('dist'))
                 write_job_summary(result)
                 from news_engine.delivery_audit import refresh
                 observations = refresh(store)
                 print(json.dumps({'publication': result, 'observation': observations}))
-                if failed(result):
+                if alarming(store, result, now()):
                     raise SystemExit(1)
             elif args.action == 'weather':
                 from news_engine.weather import record_result, run_weather
@@ -46,7 +46,9 @@ def main():
                 if target := os.getenv('GITHUB_STEP_SUMMARY'):
                     with Path(target).open('a', encoding='utf-8') as out:
                         out.write('### Günlük hava durumu story\n\n```json\n' + json.dumps(result, indent=2) + '\n```\n')
-                if result['status'] not in ('published', 'already_published', 'outside_window'):
+                # A card still deploying is retried by the next run in the window; a
+                # day that ends unpublished is reported once by ops_watch (weather_missing).
+                if result['status'] not in ('published', 'already_published', 'outside_window', 'media_not_deployed'):
                     raise SystemExit(1)
             elif args.action == 'check':
                 from news_engine.connection_health import main as check
@@ -60,7 +62,8 @@ def main():
                 if target := os.getenv('GITHUB_STEP_SUMMARY'):
                     with Path(target).open('a', encoding='utf-8') as out:
                         out.write('### Nöbetçi eczane story\n\n```json\n' + json.dumps(result, indent=2) + '\n```\n')
-                if args.action == 'pharmacy' and result['status'] not in ('published', 'already_published', 'outside_window'):
+                # Same for the 17:00 list; ops_watch reports a missed day (pharmacy_missing).
+                if args.action == 'pharmacy' and result['status'] not in ('published', 'already_published', 'outside_window', 'media_not_deployed'):
                     raise SystemExit(1)
     except CredentialError as exc:
         raise SystemExit(str(exc)) from None

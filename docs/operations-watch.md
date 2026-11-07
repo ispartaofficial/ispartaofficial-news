@@ -84,6 +84,22 @@ iddiasını Meta konteyneri oluşturulduktan sonra, `media_publish` çağrılmad
   `not_sent` sayılır, `unresolved` sayılmaz. Hakkını korur, asla yeniden
   gönderilmez. Seferihisar'daki `never_sent` kuralı genişletilerek uyarlandı.
 
+### Kart dağıtımını beklemek hata değildir
+
+6 Kasım 2026, 17:08–20:58 TR: üç yayın turu `visual_review_stale`, 17:08 eczane
+turu `media_not_deployed` ile kırmızı bitti ve her biri sahibine e-posta attı.
+Hepsinde araştırma turu kartı yeniden üretmiş, Pages yeni kartı henüz
+sunmuyordu; sonraki tur yayımladı (eczane 17:31). Bu yüzden:
+
+- Yayın işi (`production publish`) yalnız `media_not_deployed`,
+  `visual_review_missing` veya `visual_review_stale` bekliyorsa yeşil biter
+  (`operations.alarming`). Aynı bekleme, arada temiz bir kontrol olmadan 2 saat
+  sürerse iş yine kırmızı biter. Diğer bütün başarısız durumlar ilk turda
+  kırmızıdır.
+- Hava ve eczane işleri `media_not_deployed` için kırmızı bitmez; pencere
+  içindeki sonraki tur yeniden dener. Gün kaçarsa `weather_missing` /
+  `pharmacy_missing` uyarısı bir kez açılır.
+
 ## Yedek (`state-backup.yml`)
 
 Her gün 03:43 TR'de ve bu dosyalar değiştiğinde çalışır. `automation-state`
