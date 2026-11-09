@@ -41,8 +41,19 @@ olarak kullanılmaz. Isparta Oda sayfası normal robots denetimiyle okunabildi.
 
 Normal bulut araştırması 16:00–17:59 arasında listeyi yeniler, gerçek yazı
 sınırlarıyla 1080×1920 JPEG'leri üretir ve Pages'e dağıtır. Kaynak kontrolü en
-fazla 90 dakika eskidir; başarısız yeni kontrol eski önizlemeyi geri çekerek
-yayını engeller. En fazla 15 dakikalık aynı başarılı hazırlık tekrar okunmaz.
+fazla 120 dakika eskidir; liste yalnız 16:00'dan sonra okunduğu için aynı günün
+tek başarılı okuması 17:00 penceresinin tamamını kapsar. Kaynak başka bir tarih
+veya okunamayan bir liste döndürürse eski önizleme geri çekilir ve yayın
+engellenir. En fazla 15 dakikalık aynı başarılı hazırlık tekrar okunmaz.
+
+7 Kasım 2026: 16:17'de doğrulanan liste, 17:02 turu Oda sayfasına ulaşamayınca
+geri çekildi; 17:10–17:38 işleri `source_unavailable` buldu, liste ancak 18:02'de
+yeniden okundu ve gün kaçtı (`pharmacy_missing`). Bu yüzden kaynağa hiç
+ulaşılamaması (zaman aşımı, bağlantı/DNS, HTTP hatası) listeyi geri çekmez: o
+günün taze, hazırlanmış listesi kalır, yalnız `last_result` `source_unavailable`
+olur ve sonraki tur kaynağı yeniden okur. Yeni başarılı okuma listeyi her zaman
+yeniler; başlamış/yayımlanmış/belirsiz iddiaya dokunulmaz. Taze liste yoksa
+davranış değişmez.
 
 Seferihisar stok fonu 3D mandalina kabuklu salyangoz, lacivert/turkuaz ve
 kırmızı E tabelası kullanır. Isparta açık gri/beyaz, koyu lacivert metin,
