@@ -41,6 +41,15 @@ içeriği ve görsel bağları da denetlenir. Donmuş gönderi/story/Meta kimlik
 değiştirilmez. Gerçek değişiklik veya iptal duyurusu ile aynı kartın yeni
 revizyonu ayrılır.
 
+9 Kasım 2026: Seferihisar'da kaynak, bir gün önce paylaşılan haberin başlığını
+değiştirdi; revizyon 2 yeni kart metni aldı ve aynı haber ertesi sabah ikinci
+kez akışa ve story'ye çıktı. Kart metni farklı olduğu için yukarıdaki koruma
+yakalamadı. Haberin "güncelleme" gönderisi yoktur: bir revizyonu yayımlanan
+haber (`kind=news`) sonraki revizyonlarla yeniden paylaşılmaz
+(`duplicate_reason`). Yayımlanmamış kart yeni revizyonla yenilenmeye devam
+eder; elektrik kesintisi story'lerinin gerçek değişiklik kuralı değişmez.
+Isparta geçmişinde bu durum görülmedi; koruma önceden eklendi.
+
 Görsel tercih sırası kaynağın o habere/etkinliğe ait doğrulanmış gerçek
 fotoğrafı veya afişi, konuya uygun denetlenmiş etkinlik sahnesi ve logolu
 bilgi kartıdır. Başlık, tarih ve makale bağlantısı doğrulanmadan resim
