@@ -116,7 +116,7 @@ def setup(tmp_path,monkeypatch,*,failure=None):
     return store,item,photos,fetcher,checks
 
 
-def test_second_original_must_pass_same_model_within_existing_two_read_budget(tmp_path,monkeypatch):
+def test_second_original_that_passes_the_model_is_preferred_within_the_two_read_budget(tmp_path,monkeypatch):
     store,item,photos,fetcher,checks=setup(tmp_path,monkeypatch)
     with closing(store):
         # A prior claim and all of its SQL columns stay untouched.
@@ -131,21 +131,27 @@ def test_second_original_must_pass_same_model_within_existing_two_read_budget(tm
         row=store.rows('SELECT * FROM source_photos')[0]
         value=validate_record(row['id'],row['item_id'],row['revision'],row['payload'],row['image'])
         assert value['image_url']==CDN+'meeting.jpg'
-        assert photos.stats['downloaded']==1 and photos.stats['rejected']==1
-        assert photos.stats['rejection_stages']=={'visual_subject':1}
+        # The first file is only ranked below the second; nothing was refused.
+        assert photos.stats['downloaded']==1 and photos.stats['rejected']==0
+        assert photos.stats['rejection_stages']=={}
         assert store.rows("SELECT * FROM posts WHERE status='published'")==before
         assert photos.image({**item,'id':'e'*24}) is None
         assert fetcher.image.call_count==2 and photos.stats['deferred']==1
         assert 'private' not in json.dumps(photos.stats)
 
 
-@pytest.mark.parametrize('failure,reads,counter',[('unavailable',1,'unavailable'),('all_rejected',2,'rejected')])
-def test_missing_model_or_both_mismatches_never_save_a_picture(tmp_path,monkeypatch,failure,reads,counter):
+@pytest.mark.parametrize('failure',['unavailable','all_rejected'])
+def test_missing_model_or_both_mismatches_still_show_the_articles_first_picture(tmp_path,monkeypatch,failure):
+    # Owner's rule, 12 Nov: these stories went out with a generated scene instead.
     store,item,photos,fetcher,checks=setup(tmp_path,monkeypatch,failure=failure)
+    monkeypatch.setattr('news_engine.visual_match.validate_headline_photo',
+                        lambda *args:(_ for _ in ()).throw(MatchRejected('private diagnostic must not escape')))
     with closing(store):
-        assert photos.image(item) is None
-        # Both files are then tried as plain photographs, without a further read.
-        assert fetcher.image.call_count==reads and len(checks)==(4 if failure=='all_rejected' else reads)
-        assert photos.stats[counter]==reads
-        assert store.rows('SELECT * FROM source_photos')==[]
-        assert photos.stats['rejection_stages']=={'visual_subject':reads}
+        assert photos.image(item)
+        # Both files are read and ranked once; neither is refused.
+        assert fetcher.image.call_count==len(checks)==2
+        assert photos.stats['rejected']==photos.stats['unavailable']==0
+        row=store.rows('SELECT * FROM source_photos')[0]
+        assert validate_record(row['id'],row['item_id'],row['revision'],row['payload'],row['image'])['image_url']==CDN+'outdoors.jpg'
+        assert 'private' not in json.dumps(photos.stats)
+        assert photos.stats['rejection_stages']=={}

@@ -29,7 +29,8 @@ def test_unknown_article_has_no_manual_exemption():
 
 @pytest.mark.parametrize('index,name',[(0,'official-visit-exif-zero.jpg'),(1,'thyme-article.jpg')])
 @pytest.mark.parametrize('failure',['model_reject','checker_unavailable','identity_reject','wrong_pixels'])
-def test_reviewed_photo_still_requires_live_identity_checker_and_exact_pixels(tmp_path,monkeypatch,index,name,failure):
+def test_the_articles_own_picture_needs_only_its_live_identity(tmp_path,monkeypatch,index,name,failure):
+    # Owner's rule, 12 Nov: a failed or missing model check no longer leaves the story to a scene.
     from contextlib import closing
     from unittest.mock import Mock
     from news_engine import source_photos,visual_match
@@ -56,9 +57,9 @@ def test_reviewed_photo_still_requires_live_identity_checker_and_exact_pixels(tm
     with closing(Store(tmp_path/'state.sqlite')) as store:
         reader=source_photos.SourcePhotos(store,at,tmp_path/'photos',[source],fetcher=fetcher)
         result=reader.image(item)
-        if failure=='model_reject':
-            assert result and result[1].read_bytes()==cleaned_photo(raw)
-            assert len(store.rows('SELECT * FROM source_photos'))==1
-        else:
+        if failure=='identity_reject':
             assert result is None
             assert store.rows('SELECT * FROM source_photos')==[]
+        else:
+            assert result and result[1].read_bytes()==cleaned_photo(raw)
+            assert len(store.rows('SELECT * FROM source_photos'))==1
