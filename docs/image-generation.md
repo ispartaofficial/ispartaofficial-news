@@ -17,6 +17,18 @@ Bu bağlantı Instagram yayın kapılarını açmaz.
 Önce aynı kaynağa bağlı ve denetlenmiş fotoğraf/afiş değerlendirilir. Haber
 olayları, gerçek kişiler veya gerçek mekânlar yeniden canlandırılmaz.
 
+12 Kasım 2026 kullanıcı kararı: sahne yalnızca haberin kaynağında hiç görsel yoksa
+üretilir. 5–11 Kasım arasında 14 haber, sayfasında okunabilir bir görsel olduğu
+hâlde sahneyle hazırlanmıştı; çoğu başlık bantlı haber görseli ya da tek kişilik
+portreydi ve "fotoğraf mı" kontrolünde eleniyordu. Artık haberin tam kimliği
+doğrulanmış sayfasındaki kendi görseli, biçimi uygunsa her zaman kullanılır;
+CLIP/OCR kontrolü yalnızca birden çok aday arasında sıralama yapar
+(`SourcePhotos.article_image`). Sahne, sayfa okunup görsel bulunmadığında üretilir
+(`NoArticleImage`, bekleme aşaması `no_image`). Sayfa ya da görsel okunamadıysa
+gönderi sahnesiz bekler (`SourcePhotos.awaits_original`) ve sonraki turlarda yeniden
+denenir. Gövdesi bulunmayan video düzeninde sayfanın kendi OpenGraph görseli alınır.
+Etkinlik afişleri ve başka kaynaktan alınan fotoğraflar eski kontrollerine bağlıdır.
+
 30 Ekim 2026 kullanıcı kararı: gözden geçirilmiş konu listesi dışındaki güncel
 haberin kendi uygun fotoğrafı yoksa habere uygun genel bir sahne üretilir.
 Aynı Workers AI hesabındaki `@cf/meta/llama-3.1-8b-instruct` metin modeli, başlık
