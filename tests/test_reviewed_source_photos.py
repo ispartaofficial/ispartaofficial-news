@@ -54,6 +54,9 @@ def test_the_articles_own_picture_needs_only_its_live_identity(tmp_path,monkeypa
     monkeypatch.setattr(source_photos,'candidate_urls',candidates)
     monkeypatch.setattr(source_photos,'validate_news_photo',model)
     monkeypatch.setattr(visual_match,'validate_headline_photo',model)
+    # This test is about identity. Where the text reader is installed the visit
+    # graphic loses its headline band, which test_headline_band covers.
+    monkeypatch.setattr('news_engine.headline_band.without_band',lambda data:data)
     with closing(Store(tmp_path/'state.sqlite')) as store:
         reader=source_photos.SourcePhotos(store,at,tmp_path/'photos',[source],fetcher=fetcher)
         result=reader.image(item)
