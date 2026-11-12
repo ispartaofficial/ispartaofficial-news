@@ -28,6 +28,8 @@ MAX_ARTICLE_IMAGES=2
 ARCHIVE=re.compile(r'\b(?:ar[şs]iv\w*|temsili\w*|illustration\w*|ill[uü]strasyon\w*|stok|stock|yapay zek[aâ]\w*|ai generated)\b')
 CHROME=re.compile(r'logo|avatar|banner|reklam|placeholder|no-image',re.I)
 RASTER=re.compile(r'\.(?:jpe?g|png|webp)$',re.I)
+# Ticket platforms name each session's own artwork in that session's schema.
+PROVIDER_ARTWORK=('ticketing','listed_sessions')
 
 
 class NoArticleImage(ValueError):
@@ -81,16 +83,17 @@ def candidate_urls(html,final_url,item,source):
     canonical_node=soup.select_one('link[rel="canonical"][href]')
     if canonical_node and canonical(urljoin(final_url,canonical_node['href']))!=canonical(final_url if session_parent else item['url']):
         raise ValueError('Article canonical mismatch')
-    if source.get('photo_identity_reader') == 'isparta-source-images-v1' and source.get('reader') in ('sdu','isubu','ticketing'):
+    if source.get('photo_identity_reader') == 'isparta-source-images-v1' and source.get('reader') in ('sdu','isubu',*PROVIDER_ARTWORK):
         # Each calendar reader scopes image_candidate to this exact session,
         # and rejects shared placeholders before it reaches the photo gate.
         url = matches[0].get('image_candidate')
-        if not url or not approved_image_url(item['source_id'], item['url'], url):
+        if not url:raise NoArticleImage('No session-bound source image')
+        if not approved_image_url(item['source_id'], item['url'], url):
             raise ValueError('No session-bound source image')
-        if source.get('reader') == 'ticketing':
+        if source.get('reader') in PROVIDER_ARTWORK:
             # This exact scheduled session supplies the image in its own
             # schema. Provider posters use transformed CDN URLs, not a body
-            # photograph selector. OCR still checks the actual poster below.
+            # photograph selector.
             return [url]
         nodes = [node for node in soup.select('img[src]') if urljoin(final_url,node['src'])==url]
         if not nodes or any(ARCHIVE.search(normalized(' '.join(str(node.get(k,'')) for k in ('alt','title')))) for node in nodes):
@@ -374,10 +377,12 @@ class SourcePhotos:
                 self.results[item['id']]=(row['id'],self.materialize(row))
                 return self.results[item['id']]
         from .source_photo_retry import active,remember,stage as waiting_stage
-        news=item.get('kind')=='news'
-        # The model check no longer refuses a publisher's own news picture.
-        obsolete = ('image_read',) if reviewed_ticket_source(source) else ('visual_subject',) if news else ()
-        if news:self.unsettled.add(item['id'])
+        # A news article's own picture and a ticket session's own artwork are the
+        # original image: the checks below rank them and no longer refuse one.
+        artwork=item.get('kind')=='event' and source.get('reader') in PROVIDER_ARTWORK
+        own=item.get('kind')=='news' or artwork
+        obsolete = (('image_read',) if reviewed_ticket_source(source) else ()) + (('visual_subject','event_text') if own else ())
+        if own:self.unsettled.add(item['id'])
         if active(self.store,item,self.at,obsolete=obsolete):
             if waiting_stage(self.store,item)=='no_image':self.unsettled.discard(item['id'])
             self.stats['cooldown']+=1;return None
@@ -421,14 +426,18 @@ class SourcePhotos:
                 stage='image_format'
                 image=cleaned_photo(raw,poster=item.get('kind')=='event')
                 if item.get('kind')=='event':
-                    stage='event_text'
-                    from .event_image_text import validate as validate_event_text
-                    with Image.open(io.BytesIO(image)) as pixels:portrait=pixels.width<pixels.height
-                    promotional = validate_event_text(image,item,poster=portrait)
-                    stage='visual_subject'
-                    from .visual_match import validate_event_photo
-                    if not promotional:
-                        validate_event_photo(image,expected)
+                    try:
+                        stage='event_text'
+                        from .event_image_text import validate as validate_event_text
+                        with Image.open(io.BytesIO(image)) as pixels:portrait=pixels.width<pixels.height
+                        promotional = validate_event_text(image,item,poster=portrait)
+                        stage='visual_subject'
+                        from .visual_match import validate_event_photo
+                        if not promotional:
+                            validate_event_photo(image,expected)
+                    except (ValueError,IllustrationCheckUnavailable):
+                        if not artwork:raise
+                        held.append((url,image));continue
                 else:
                     try:
                         try:

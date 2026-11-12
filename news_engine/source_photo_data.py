@@ -40,6 +40,10 @@ IMAGE_ORIGINS = {
     'ajans32': ('www.ajans32.com', 'cdn.ajans32.com',
                 r'/news(?:_t|_ts)?/\d+\.(?:jpe?g|png|webp)'),
 }
+# Biletinial names each session's poster on its own image host (12 Nov 2026 check).
+BILETINIAL = ('biletinial-isparta', 'biletinial-isparta-sahne')
+IMAGE_ORIGINS.update({sid: ('biletinial.com', 'b6s54eznn8xq.merlincdn.net',
+                            r'/Uploads/Films/[A-Za-z0-9_.-]+\.(?:jpe?g|png|webp)') for sid in BILETINIAL})
 
 
 def approved_image_url(source_id, source_url, image_url):
@@ -75,7 +79,8 @@ def validate_evidence(value):
     assert_no_secrets(value)
     if (not public_url(value['source_url']) or len(value['source_url'])>2048
             or not isinstance(value['source_id'],str) or not re.fullmatch(r'[a-z0-9-]{1,80}',value['source_id'])
-            or not isinstance(value['title'],str) or not 8<=len(value['title'])<=240
+            # A show can have a one-word name ("Perde", "Kadın"); a headline cannot.
+            or not isinstance(value['title'],str) or not (2 if event else 8)<=len(value['title'])<=240
             or not all(isinstance(value[k],str) and datetime.fromisoformat(value[k]).tzinfo is not None
                        for k in (('checked_at','start','end') if event else ('checked_at','published_at')))
             or not isinstance(value['sha256'],str) or not re.fullmatch(r'(?:[a-f0-9]{2}:){31}[a-f0-9]{2}',value['sha256'])):
@@ -138,11 +143,14 @@ def same_event_artwork(evidence,item):
     from .domain import normalized
     if (evidence.get('version')!=EVENT_VERSION or item.get('kind')!='event'
             or evidence.get('source_id')!=item.get('source_id')
-            or item.get('source_id') not in ('bubilet','bubilet-bademler','bubilet-isparta')
+            or item.get('source_id') not in ('bubilet','bubilet-bademler','bubilet-isparta',*BILETINIAL)
             or evidence.get('subject')!=photo_subject_for_reuse(item)
             or normalized(evidence.get('title',''))!=normalized(item.get('title',''))):
         return False
     a,b=urlsplit(evidence.get('source_url','')),urlsplit(item.get('url',''))
+    if item['source_id'] in BILETINIAL:
+        # Every session of one show lives on that show's single page.
+        return a.hostname==b.hostname=='biletinial.com' and not a.query and not b.query and a.path==b.path
     pattern=r'/[^/]+/etkinlik/[a-z0-9-]+/seans/\d+'
     return (a.hostname==b.hostname=='www.bubilet.com.tr' and not a.query and not b.query
             and re.fullmatch(pattern,a.path) and re.fullmatch(pattern,b.path)

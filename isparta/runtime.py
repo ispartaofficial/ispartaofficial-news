@@ -21,7 +21,7 @@ from .research import collect_sources, public_report
 ROOT = Path(__file__).resolve().parents[1]
 REPOSITORY = 'ispartaofficial/ispartaofficial-news'
 SITE = 'https://ispartaofficial.github.io/ispartaofficial-news'
-TICKET_SOURCES = ('bubilet-isparta', 'biletinial-isparta', 'etkinlik-isparta')
+TICKET_SOURCES = ('bubilet-isparta', 'biletinial-isparta', 'biletinial-isparta-sahne', 'etkinlik-isparta')
 PENDING_NEWS_AGE = timedelta(hours=48)
 PENDING_NEWS_CAP = 6
 

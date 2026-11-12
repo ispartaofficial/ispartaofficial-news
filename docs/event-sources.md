@@ -44,9 +44,33 @@ Aynı seans iki listede farklı yazılır (`Ozbi` / `Ozbi Konseri`, `Holly Stone
 `Isparta Holly Stone`). Saat aynıysa ve başlıklardan biri diğerini içeriyorsa tek kayıt
 sayılır; önce yazılan Biletinial kalır, çünkü fiyatı ve organizatörü vardır.
 
+## 12 Kasım: tiyatro listesi, seans afişi ve yeni etkinlik story'si
+
+Kullanıcı isteği: bilet sitelerindeki tiyatro ve konserler her gün taransın, her yeni
+etkinlik kendi görseliyle story olarak çıksın.
+
+- `biletinial-isparta-sahne` eklendi (`/tr-tr/tiyatro/isparta`). 12 Kasım'da bu liste
+  13 gösteri veriyordu (tiyatro, çocuk oyunu, stand-up) ve hiç okunmuyordu. Tür
+  listeden gelir: `theatre`.
+- Bilet sitesindeki yeni etkinliğin duyurusu (`publication_policy.event_story`:
+  Biletinial, Bubilet, etkinlik.io) artık akış sırası beklemez; bulunduğu turda
+  yalnızca story olarak çıkar, akışta yer tutmaz. Günde en fazla 3 etkinlik story'si
+  (`EVENT_STORY_LIMIT`), elektrik kesintisi ve güncelleme story'lerinden ayrı sayılır,
+  yakın tarihli olan önce gelir. "3 gün kaldı" ve "bugün" hatırlatmaları akışta kalır.
+  Ezginin Günlüğü duyurusu 9–12 Kasım arasında haberlerin arkasında beklemişti.
+- Seansın kendi `Event` kaydındaki afiş kullanılır (`source_images` artık
+  `listed_sessions` okuyucusunu da tanır). Afiş Biletinial'ın görsel sunucusundadır
+  (`IMAGE_ORIGINS`). OCR ve konu kontrolü bu afişi artık reddetmez, yalnızca sıralar;
+  bir gösterinin bütün seansları aynı afişi kullanabilir (`same_event_artwork`).
+- Afişi olan etkinliğe sahne üretilmez: afiş okunamıyorsa kart bekler. Seans kaydında
+  hiç görsel yoksa sahne üretilebilir.
+
 ## Sınırlar
 
-- Afiş henüz kullanılmıyor. Kartlar konser ve tiyatro için incelenmiş stok sahneyle çıkar.
+- Bubilet ve etkinlik.io bulut sunucularına hâlâ HTTP 403 dönüyor; engel aşılmaz.
+- Aynı gün iki seansı olan gösteri (Kübik Prens 13:00 ve 15:00) iki ayrı story olur.
+- "İçimizdeki Şeytan" ve "Yarım Kalan Aşklar" gibi adlar haberler için yazılmış hassas
+  içerik kuralına takılıp `sensitive_claim_requires_review` ile bekliyor.
 - etkinlik.io'nun festival listesi şu an boş. Isparta festivalleri mevsimlik.
 - Yerel haberlerde başlığı veya metni konser, festival, kermes gibi sözcükler içeren
   kayıtlar `event_or_notice_validity_requires_review` ile bekler. Bu koruma değişmedi;
