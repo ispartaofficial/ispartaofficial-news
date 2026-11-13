@@ -83,3 +83,20 @@ def test_pending_category_refresh_preserves_all_frozen_claims(tmp_path):
             assert store.rows('SELECT * FROM posts')==before
 
 
+def test_native_reader_finds_and_crops_a_real_headline_band():
+    from PIL import ImageDraw
+    from news_engine.headline_band import without_band
+    from news_engine.image_safety import ocr_available
+    from news_engine.render import font
+    from test_headline_band import BAND, HEIGHT, WIDTH, picture
+    if not ocr_available():pytest.skip('Native OCR/language runtime unavailable')
+    with Image.open(io.BytesIO(picture())) as source:graphic=source.convert('RGB')
+    draw=ImageDraw.Draw(graphic)
+    draw.text((40,BAND+14),'SÜRÜCÜLER ŞAŞKINLIKLA İZLEDİ',font=font(38,True),fill='#ffd400')
+    draw.text((40,BAND+62),'ELMA YÜKÜ YOLA SAÇILDI',font=font(38,True),fill='white')
+    out=io.BytesIO();graphic.save(out,format='JPEG',quality=90)
+    with Image.open(io.BytesIO(without_band(out.getvalue()))) as cropped:
+        assert cropped.width==WIDTH and abs(cropped.height-BAND)<=4
+    # The same photograph without lettering keeps every row.
+    plain=picture(band=HEIGHT)
+    assert without_band(plain) is plain
