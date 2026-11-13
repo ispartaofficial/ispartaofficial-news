@@ -64,6 +64,13 @@ etkinlik kendi görseliyle story olarak çıksın.
   bir gösterinin bütün seansları aynı afişi kullanabilir (`same_event_artwork`).
 - Afişi olan etkinliğe sahne üretilmez: afiş okunamıyorsa kart bekler. Seans kaydında
   hiç görsel yoksa sahne üretilebilir.
+- Kullanıcı kararı (12 Kasım): Biletinial'ın görsel sunucusu
+  `b6s54eznn8xq.merlincdn.net` her afişi herkese açık verir, ama sahip olmadığı
+  `robots.txt` için HTTP 403 döner (nesne deposu davranışı). Yalnızca bu incelenmiş
+  sunucu için 403 "robots dosyası yok" sayılır (`robots_absent_as_403`,
+  `delivery_sources`). Başka her sunucuda ve 401/429/5xx yanıtlarında kural
+  değişmedi: okuma durur. Sayfaları 403 dönen kaynaklar (Bubilet, etkinlik.io) bu
+  istisnanın dışındadır.
 
 ## Sınırlar
 

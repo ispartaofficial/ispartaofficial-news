@@ -131,8 +131,11 @@ def delivery_sources(sources):
     # A reviewed CDN with HTTP 404/410 robots has no published robot rules.
     # Existing disallow rules, 403/429/5xx, redirects, TLS and MIME checks stay
     # closed. This opt-in does not apply to any other publisher/CDN.
+    # Biletinial's poster host (owner decision, 12 Nov 2026) is an object store:
+    # it serves every poster publicly and answers 403 for the robots.txt it lacks.
     return [{'enabled':True,'url':'https://'+origin[1]+'/',
-             'allow_missing_robots': origin[1]=='cdn.bubilet.com.tr' and reviewed_ticket_source(sources[sid])}
+             'allow_missing_robots': origin[1]=='cdn.bubilet.com.tr' and reviewed_ticket_source(sources[sid]),
+             'robots_absent_as_403': origin[1]=='b6s54eznn8xq.merlincdn.net' and sid in BILETINIAL}
             for sid,origin in IMAGE_ORIGINS.items() if sid in sources
             and urlsplit(sources[sid]['url']).hostname==origin[0]]
 
