@@ -29,11 +29,14 @@ gönderi sahnesiz bekler (`SourcePhotos.awaits_original`) ve sonraki turlarda ye
 denenir. Gövdesi bulunmayan video düzeninde sayfanın kendi OpenGraph görseli alınır.
 Etkinlik afişleri ve başka kaynaktan alınan fotoğraflar eski kontrollerine bağlıdır.
 
-Yayıncının fotoğrafın altına bastığı başlık bandı kırpılır (`headline_band.py`): OCR
-alt kısımda çerçeveyi kapatan büyük yazı bulursa görsel bandın başladığı satırdan
-kesilir. Yalnızca kırpmadır, hiçbir piksel yeniden çizilmez; üstte ya da ortada yazısı
-olan kolaj, köşe logosu ve kırpınca karta küçük kalacak görsel olduğu gibi kullanılır.
-OCR yoksa görsel bekletilmez, kırpılmadan kullanılır.
+Yayıncının fotoğrafın üstüne ve altına bastığı manşet bantları kırpılır
+(`headline_band.py`). OCR (renkli ve siyah-beyaz görünüm) üstte ya da altta çerçeveyi
+kapatan büyük yazı bulursa görsel bandın bittiği satırdan kesilir; üst bandın hemen
+altındaki site adı (ör. HABER32) da gider. OCR'nin okuyamadığı kenarlıklı renkli
+başlıklar (Ajans32) piksellerinden tanınır: altta siyah adres şeridi, hemen üstünde hem
+doygun renkli hem beyaz kenarlıklı satırlar. Yalnızca kırpmadır, hiçbir piksel yeniden
+çizilmez; fotoğrafın ortasındaki yazılar ve kırpınca karta küçük kalacak görsel olduğu
+gibi kullanılır. OCR yoksa görsel bekletilmez.
 
 30 Ekim 2026 kullanıcı kararı: gözden geçirilmiş konu listesi dışındaki güncel
 haberin kendi uygun fotoğrafı yoksa habere uygun genel bir sahne üretilir.
