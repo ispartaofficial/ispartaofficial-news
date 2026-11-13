@@ -15,8 +15,52 @@ from PIL import Image
 
 MIN_KEEP = 0.5    # the photograph between the bands stays at least half the frame
 MIN_HEIGHT = 200
-MAX_ASPECT = 3.2  # wider than this and the card would show a thin strip
+MAX_ASPECT = 3.6  # wider than this and the card would show a thin strip
 EDGE = 0.5        # a band lies wholly in its own half of the frame
+
+
+def footer_band(image):
+    """Top of an outlined headline standing on a black address strip, or None.
+
+    Ajans32 prints its headline in coloured letters with a white outline over
+    the photograph, above a black strip with the site's address. OCR cannot
+    read those letters (13 Nov), so this template is found from its pixels: a
+    near-black strip closes the frame, and the rows just above it hold both
+    strongly coloured fill and white outline. Natural photographs rarely do.
+    """
+    import colorsys
+    rgb = image.convert('RGB')
+    width, height = rgb.size
+    pixels = rgb.load()
+    step = 2
+
+    def share(row, test):
+        return sum(test(pixels[x, row]) for x in range(0, width, step)) * step / width
+
+    dark = lambda p: max(p) < 40
+    white = lambda p: min(p) > 225
+    def coloured(p):
+        if min(p) > 225:
+            return False
+        _, s, v = colorsys.rgb_to_hsv(*(c / 255 for c in p))
+        return s > .6 and v > .45
+    # The strip may carry a thin coloured rule along its edges.
+    strip = [y for y in range(height - 1, int(height * .86), -1) if share(y, dark) > .6]
+    if len(strip) < height * .05:
+        return None
+    row = min(strip) - 1
+    lettering, gap, top = 0, 0, None
+    while row >= 0 and gap <= 20:
+        if share(row, white) >= .03 and share(row, lambda p: white(p) or coloured(p)) >= .25:
+            lettering, gap, top = lettering + 1, 0, row
+        else:
+            gap += 1
+            if top is None and gap > 16:
+                return None
+        row -= 1
+    if top is None or lettering < height * .12:
+        return None
+    return max(0, top - 6)
 
 
 def lettering(scans, height):
@@ -89,10 +133,13 @@ def crop(data, scans):
     words = lettering(scans, height)
     small = [w for ws in scans for w in ws if w['confidence'] >= 50 and len(w['letters']) >= 3]
     low, high = bottom_band(words, width, height), top_band(words, small, width, height)
-    if low is None and high is None:
+    footer = footer_band(image)
+    if low is None and high is None and footer is None:
         return data
     top = top_edge(image, high) if high is not None else 0
     bottom = band_edge(image, low) if low is not None else height
+    if footer is not None:
+        bottom = min(bottom, footer)
     kept = bottom - top
     if kept < height * MIN_KEEP or kept < MIN_HEIGHT or width / kept > MAX_ASPECT:
         return data

@@ -139,3 +139,19 @@ def test_an_articles_banner_graphic_is_bound_without_its_band(tmp_path, monkeypa
         assert photos.image(row)
         with Image.open(io.BytesIO(store.rows('SELECT image FROM source_photos')[0]['image'])) as image:
             assert image.width == WIDTH and abs(image.height - BAND) <= 3
+
+
+def test_an_outlined_headline_on_a_black_address_strip_is_found_from_its_pixels():
+    # Ajans32, 13 Nov: OCR read none of these letters; the template is in the pixels.
+    from pathlib import Path
+    from news_engine.headline_band import footer_band
+    folder = Path('tests/fixtures/headline-bands')
+    with Image.open(folder / 'ajans32-bottom-band.jpg') as image:
+        assert 250 <= footer_band(image.convert('RGB')) <= 275
+    with Image.open(io.BytesIO(crop((folder / 'ajans32-bottom-band.jpg').read_bytes(), [[], []]))) as image:
+        assert image.width == 768 and 250 <= image.height <= 275
+    # A photograph without the strip, and one with headline boxes above it, are left alone here.
+    with Image.open(folder / 'haber32-top-band.jpg') as image:
+        assert footer_band(image.convert('RGB')) is None
+    with Image.open(io.BytesIO(picture())) as image:
+        assert footer_band(image.convert('RGB')) is None

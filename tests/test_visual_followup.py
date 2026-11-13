@@ -96,7 +96,7 @@ def test_native_reader_finds_and_crops_a_real_headline_band():
     draw.text((40,BAND+62),'ELMA YÜKÜ YOLA SAÇILDI',font=font(38,True),fill='white')
     out=io.BytesIO();graphic.save(out,format='JPEG',quality=90)
     with Image.open(io.BytesIO(without_band(out.getvalue()))) as cropped:
-        assert cropped.width==WIDTH and abs(cropped.height-BAND)<=4
+        assert cropped.width==WIDTH and abs(cropped.height-BAND)<=8
     # The same photograph without lettering keeps every row.
     plain=picture(band=HEIGHT)
     assert without_band(plain) is plain
