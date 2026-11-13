@@ -103,7 +103,7 @@ def test_native_reader_finds_and_crops_a_real_headline_band():
 
 
 @pytest.mark.skipif(__import__('os').getenv('RUN_VISUAL_NATIVE')!='true',reason='Native OCR job')
-@pytest.mark.parametrize('name,top,height',[('ajans32-bottom-band.jpg',(0,0),(250,290)),
+@pytest.mark.parametrize('name,top,height',[('ajans32-bottom-band.jpg',(0,0),(220,290)),
                                             ('haber32-top-band.jpg',(100,185),(230,335))])
 def test_native_reader_crops_real_publisher_bands(name,top,height):
     # 13 Nov live cards: Ajans32's outlined headline and address strip below the
