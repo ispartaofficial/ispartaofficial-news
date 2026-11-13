@@ -214,6 +214,19 @@
       "session_text": true
     },
     {
+      "id": "biletinial-isparta-sahne",
+      "name": "Biletinial Isparta tiyatro ve sahne",
+      "url": "https://biletinial.com/tr-tr/tiyatro/isparta",
+      "research_enabled": true,
+      "reader": "listed_sessions",
+      "link_selector": "a[href]",
+      "detail_path": "/tr-tr/tiyatro/(?!isparta$)[a-z0-9-]+",
+      "max_details": 14,
+      "event_category": "theatre",
+      "ticket_platform": "Biletinial",
+      "session_text": true
+    },
+    {
       "id": "etkinlik-isparta",
       "name": "Etkinlik.io Isparta takvimi",
       "url": "https://etkinlik.io/isparta",

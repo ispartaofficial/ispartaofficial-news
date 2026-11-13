@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 
 from .district_readers import official_article
 from .readers import article, isubu, sdu, text
-from .scope_readers import archive_article, ticket_sessions
+from .scope_readers import archive_article, listed_sessions, ticket_sessions
 
 VERSION = 'isparta-source-images-v1'
 ARTICLE_SCOPES = {
@@ -28,7 +28,7 @@ PAGE_READERS = {'archive_article': archive_article, 'official_portal': official_
 
 def profile(source):
     reader = source.get('reader')
-    if reader not in ('article', 'sdu', 'isubu', 'ticketing', *PAGE_READERS):
+    if reader not in ('article', 'sdu', 'isubu', 'ticketing', 'listed_sessions', *PAGE_READERS):
         return {}
     inline = INLINE.get(source['id']) or ('img[src]' if reader in PAGE_READERS else None)
     return {'photo_identity_reader': VERSION,
@@ -56,6 +56,7 @@ def identity_rows(html, url, source):
     rows = ([article(html, url, source)] if reader == 'article' else
             page_rows(html, url, source) if reader in PAGE_READERS else
             ticket_sessions(html, url, source) if reader == 'ticketing' else
+            listed_sessions(html, url, source) if reader == 'listed_sessions' else
             {'sdu': sdu, 'isubu': isubu}[reader](html, source))
     for row in rows:
         if row['kind'] == 'event':

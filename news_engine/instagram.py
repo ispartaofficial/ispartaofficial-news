@@ -374,7 +374,11 @@ def publish_outage_story(store: Store, at: datetime, site_url: str, assets: dict
     prepare(store, at, refresh_digests=False)
     prepare_story_jobs(store, assets)
     prepare(store, at, refresh_digests=False)  # Newly created frames also need fresh source evidence.
-    parents = outage_story_parents(store, at)
+    waiting = outage_story_parents(store, at)
+    # A kind that has used its stories for today must not hold the other back.
+    parents = [p for p in waiting if daily_limit_reason(store, at, p, story=True) is None]
+    if waiting and not parents:
+        return {'status':'daily_limit'}
     if require_visual_review or isinstance(api, Instagram):
         from .visual_policy import image_reason
         parents = [p for p in parents if image_reason(p) is None]

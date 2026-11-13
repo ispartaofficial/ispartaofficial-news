@@ -95,7 +95,11 @@ def prepare(store: Store, at: datetime, *, refresh_digests: bool = True):
         if item["revision"] > 1 and item["id"] in announced:
             queue_item(store, item, "update", at, at)
         elif start <= at + timedelta(days=30):
-            queue_item(store, item, "announcement", min(next_slot(at, event=True), start) if item.get("time_known") else at, at)
+            from .publication_policy import event_story
+            # A new ticketed show is a story of its own and waits for no feed slot.
+            prompt = event_story({'kind': 'announcement', 'category': item['category'], 'source_urls': item['sources']})
+            queue_item(store, item, "announcement",
+                       min(next_slot(at, event=True), start) if item.get("time_known") and not prompt else at, at)
         days = (start.date() - at.date()).days
         # A delayed run catches the 3-day reminder on days 2/1; never posts it after the event.
         if 0 < days <= 3:

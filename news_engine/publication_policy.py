@@ -11,16 +11,27 @@ from .domain import TZ, normalized, parse_date
 NEWS_DAILY_LIMIT = 3
 NEWS_EVENING_LIMIT = 4
 OUTAGE_STORY_LIMIT = 2
+# New shows are counted apart, so a day of power cuts cannot hold them back.
+EVENT_STORY_LIMIT = 3
+TICKET_HOSTS = frozenset(('biletinial.com', 'www.bubilet.com.tr', 'etkinlik.io'))
 OUTAGE_STORY_HOURS = (time(8, 30), time(21))
 EVENING_EFFECTIVE_FROM = date(2026, 10, 25)
 CLAIMED = frozenset(('publishing', 'published', 'uncertain'))
 
 
+def event_story(value):
+    """Owner decision (12 Nov): each new show on a ticket platform gets its own story."""
+    from urllib.parse import urlsplit
+    return (value.get('kind') == 'announcement' and value.get('category') != 'outage'
+            and any(urlsplit(url).hostname in TICKET_HOSTS for url in value.get('source_urls') or ()))
+
+
 def story_only(value):
-    """Owner decisions: a power cut (31 Oct) and a revised event card (1 Nov) never take a feed slot."""
+    """Owner decisions: a power cut (31 Oct), a revised event card (1 Nov) and a
+    new ticketed show (12 Nov) go out as a story and never wait for a feed slot."""
     if value.get('category') == 'outage':
         return 'elektrik' in normalized(value.get('title', ''))
-    return value.get('kind') == 'update'
+    return value.get('kind') == 'update' or event_story(value)
 
 
 def evening_enabled(at):
@@ -141,7 +152,9 @@ def owner_exclusion(value):
 
 def daily_limit_reason(store, at, post=None, *, story=False):
     if story and post and story_only(post):
-        return 'daily_limit' if len(outage_story_claims(store, at)) >= OUTAGE_STORY_LIMIT else None
+        shows = event_story(post)
+        taken = sum(event_story(p) == shows for p in outage_story_claims(store, at))
+        return 'daily_limit' if taken >= (EVENT_STORY_LIMIT if shows else OUTAGE_STORY_LIMIT) else None
     count = len(day_claims(store, at, story=story))
     if count < NEWS_DAILY_LIMIT:
         return None
