@@ -71,6 +71,10 @@ etkinlik kendi görseliyle story olarak çıksın.
   `delivery_sources`). Başka her sunucuda ve 401/429/5xx yanıtlarında kural
   değişmedi: okuma durur. Sayfaları 403 dönen kaynaklar (Bubilet, etkinlik.io) bu
   istisnanın dışındadır.
+- 13 Kasım: merge sonrası ilk iki turda turdaki altı görsel okuma hakkının hepsi haber
+  görsellerine gitti, hiçbir gösteri afiş alamadı. Afişlerin artık haberlerden ayrı,
+  tur başına 4 okuma hakkı var (`MAX_ARTWORK_READS`, `MAX_ARTWORK_CHECKS`). Bubilet'in
+  görsel adreslerine eklenen `format=auto` seçeneği de tanındı.
 
 ## Sınırlar
 

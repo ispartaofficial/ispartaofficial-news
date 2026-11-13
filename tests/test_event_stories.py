@@ -202,3 +202,17 @@ def test_a_show_without_any_poster_may_get_a_scene(store, tmp_path, monkeypatch)
     item = session()
     post = {'id': 'a' * 24, 'item_id': item['id'], 'revision': 1, 'status': 'prepared'}
     assert reader.for_post(post, {item['id']: item}) == {} and not reader.awaits_original(post, {item['id']: item})
+
+
+def test_a_poster_has_reads_of_its_own_when_news_used_them_all(store, tmp_path, monkeypatch):
+    # 13 Nov: six news photographs took every read of each run; no show got its poster.
+    from news_engine.source_photos import MAX_ARTWORK_READS, MAX_READS
+    monkeypatch.setattr('news_engine.event_image_text.validate', lambda *args, **kwargs: True)
+    reader, _ = photos(store, tmp_path, monkeypatch, page())
+    reader.reads = MAX_READS
+    assert reader.image(session()) and reader.artwork_reads == 1 and reader.reads == MAX_READS
+    # The poster budget is bounded too: a full one defers the next show to a later run.
+    later, fetcher = photos(store, tmp_path, monkeypatch, page(start='2026-11-27T20:30:00+03:00'))
+    later.artwork_reads = MAX_ARTWORK_READS
+    assert later.image(session('2026-11-27T20:30:00+03:00')) is None and later.stats['deferred'] == 1
+    fetcher.image.assert_not_called()

@@ -23,6 +23,9 @@ from .image_safety import IllustrationCheckUnavailable
 # generated scene, and the same-story search needs its own reads.
 MAX_READS=6
 MAX_SOURCE_CHECKS=12
+# Session posters on a ticket platform: stable files, read apart from news.
+MAX_ARTWORK_READS=4
+MAX_ARTWORK_CHECKS=6
 MAX_STORY_REPORTS=3
 MAX_ARTICLE_IMAGES=2
 ARCHIVE=re.compile(r'\b(?:ar[şs]iv\w*|temsili\w*|illustration\w*|ill[uü]strasyon\w*|stok|stock|yapay zek[aâ]\w*|ai generated)\b')
@@ -245,6 +248,20 @@ class SourcePhotos:
         self.story_checked=set()
         # News whose own article may still show a picture this run did not bind.
         self.unsettled=set()
+        # Ticket posters have their own small budget: news photographs re-read
+        # every run used all six reads, and no show got its poster (13 Nov).
+        self.artwork_reads=0
+        self.artwork_checks=0
+
+    def room(self,artwork,*,image=False):
+        if artwork:
+            return (self.artwork_reads<MAX_ARTWORK_READS if image else
+                    self.artwork_reads<MAX_ARTWORK_READS and self.artwork_checks<MAX_ARTWORK_CHECKS)
+        return self.reads<MAX_READS
+
+    def spend(self,artwork):
+        if artwork:self.artwork_reads+=1
+        else:self.reads+=1
 
     def awaits_original(self,post,items):
         """Owner's rule, 12 Nov: a generated cover only when the article shows no picture."""
@@ -386,10 +403,11 @@ class SourcePhotos:
         if active(self.store,item,self.at,obsolete=obsolete):
             if waiting_stage(self.store,item)=='no_image':self.unsettled.discard(item['id'])
             self.stats['cooldown']+=1;return None
-        if self.reads>=MAX_READS or self.stats['source_checks']>=MAX_SOURCE_CHECKS:
+        if not self.room(artwork) or (self.stats['source_checks']>=MAX_SOURCE_CHECKS and not artwork):
             self.stats['deferred']+=1;return None
         # Missing images consume bounded page checks, not binary-image slots.
         self.stats['source_checks']+=1
+        if artwork:self.artwork_checks+=1
         stage='source_read'
         try:
             if self.fetcher is None:
@@ -415,10 +433,10 @@ class SourcePhotos:
         held=[]
         for url in urls:
             # Every attempted image, including network/quality failures,
-            # consumes one of the existing two image slots for this run.
-            if self.reads>=MAX_READS:
+            # consumes one of this run's image slots.
+            if not self.room(artwork,image=True):
                 self.stats['deferred']+=1;last_failure=None;break
-            self.reads+=1
+            self.spend(artwork)
             stage='image_read'
             try:
                 raw,final_image=self.fetcher.image(url)

@@ -26,8 +26,9 @@ EVENT_SUBJECTS=('theatre','concert','cinema','festival','culture','family','spor
 # Reviewed publisher-owned delivery origins. Exact source host, CDN host and
 # path namespace are mandatory; this never grants arbitrary subdomain trust.
 IMAGE_ORIGINS = {
+    # 12 Nov 2026: Bubilet added `format=auto` to its transform options.
     'bubilet-isparta': ('www.bubilet.com.tr', 'cdn.bubilet.com.tr',
-                r'/cdn-cgi/image/width=\d{2,4},quality=\d{2,3}/files/Etkinlik/[A-Za-z0-9_.-]+\.(?:jpe?g|png|webp)'),
+                r'/cdn-cgi/image/width=\d{2,4},quality=\d{2,3}(?:,format=auto)?/files/Etkinlik/[A-Za-z0-9_.-]+\.(?:jpe?g|png|webp)'),
     'haber32': ('www.haber32.com.tr', 'haber32comtr.teimg.com',
                 r'/(?:crop/\d{2,4}x\d{2,4}/)?haber32-com-tr/uploads/[A-Za-z0-9_./-]+\.(?:jpe?g|png|webp)'),
     'bomba32': ('www.bomba32.com', 'bomba32com.teimg.com',
