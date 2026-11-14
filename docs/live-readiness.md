@@ -50,9 +50,24 @@ değildir. Güncel kapsül kalıcı olarak saklanmadan yeni anahtarla yayın yap
 Araştırma kapsülü çözemeden olduğu gibi korur. Yayın, eczane ve GET kontrolü
 aynı kapsülü kullanır. İlk secret API açısından süresi dolduktan sonra da yalnız
 şifre çözme kökü olarak kalır; API'ye kapsülden çözülen güncel değer gönderilir.
-Secret'ın değiştirilmesi, iptal edilmesi, hesabın izinlerinin kaldırılması veya
-Meta'nın güvenlik kısıtlaması otomatik olarak çözülemez. Okunamayan kapsülde eski
-anahtara sessiz dönüş yapılmaz; bağlantı durur ve kontrollü hata verir.
+Anahtarın iptal edilmesi, hesabın izinlerinin kaldırılması veya Meta'nın güvenlik
+kısıtlaması otomatik olarak çözülemez. Okunamayan kapsülde eski anahtara sessiz dönüş
+yapılmaz; bağlantı durur ve kontrollü hata verir.
+
+14 Kasım 2026: Meta, 13 Kasım akşamı süresi dolmamış anahtarı iptal etti (yayın
+kimlik kontrolünde HTTP 401). Hesap sahibi yeni anahtarı aynı environment secret'a
+koyduğunda kapsül eski secret ile şifreli olduğu için açılamıyordu. Artık yalnız yayın,
+hava ve eczane işleri (bakım yapan çalıştırmalar) şunu yapar: kapsül açılamazsa yeni
+secret'ı Meta'ya sorar; yanıt tam bu hesabın kimliği (`ispartaofficial`, aynı
+`user_id`, Business/Media_Creator) ise eski kapsülün yerine yeni secret'la sıfırdan bir
+kapsül yazar ve 26 saatlik bekleme yeniden başlar. Kimlik doğrulanmazsa kapsüle
+dokunulmaz ve iş durur. Okuma amaçlı kontroller kapsülü hiç değiştirmez. Bozuk biçimli
+kapsül ağa çıkmadan durur.
+
+Anahtar yenileme adımları (hesap sahibi): developers.facebook.com → Isparta uygulaması
+→ Instagram girişli API kurulumu → "Generate access tokens" → `ispartaofficial` ile giriş
+→ anahtarı kopyala → GitHub → Settings → Environments → `instagram-production` →
+`INSTAGRAM_ACCESS_TOKEN` güncelle. Anahtar sohbete, depoya veya loga yazılmaz.
 
 Resmî koşullar: https://developers.facebook.com/documentation/instagram-platform/instagram-api-with-instagram-login/business-login
 

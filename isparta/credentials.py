@@ -116,7 +116,18 @@ def resolve(store, *, maintain=False, checkpoint=None, at=None, environ=None, se
     root = env.get('INSTAGRAM_ACCESS_TOKEN', '')
     cipher(root)
     session = session or requests.Session()
-    value = load(store, root)
+    try:
+        value = load(store, root)
+    except CredentialError as exc:
+        # 14 Nov 2026: Meta revoked the account's credential and the owner put a
+        # new one in the environment secret. The capsule is sealed with the old
+        # secret, so it can no longer be opened. A maintaining run starts again
+        # from the new secret, but only after Meta confirms it belongs to this
+        # exact account; otherwise the run still stops here. The unreadable
+        # capsule is replaced, never decrypted or reused.
+        if str(exc) != 'credential_capsule_unreadable' or not maintain:
+            raise
+        value = None
     if value is None:
         value = dict(credential=root, observed_at=at.isoformat(), refreshed_at=None, expires_at=None,
                      next_attempt_at=(at + timedelta(hours=26)).isoformat(), last_result='waiting_minimum_age')
