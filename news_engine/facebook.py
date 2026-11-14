@@ -17,7 +17,7 @@ from .domain import TZ, digest, parse_date
 from .schedule import blocked_sources, post_references, source_current
 from .security import public_url
 from .store import Store
-from .publication_policy import NEWS_DAILY_LIMIT, NEWS_EVENING_LIMIT, owner_exclusion, evening_post, fourth_parent
+from .publication_policy import NEWS_DAILY_LIMIT, NEWS_EVENING_LIMIT, caps_lifted, owner_exclusion, evening_post, fourth_parent
 
 
 class Facebook:
@@ -89,7 +89,7 @@ def deliver(store, post, at, site_url, paths, story, api, checkpoint, *, require
     # Includes uncertain attempts; a restart cannot restore the daily budget.
     claims = store.rows('SELECT claimed_at FROM facebook_deliveries WHERE page_id=? AND format=?', (api.page, kind))
     count = sum(parse_date(c['claimed_at']).astimezone(TZ).date() == at.date() for c in claims)
-    if (count >= NEWS_EVENING_LIMIT or count >= NEWS_DAILY_LIMIT
+    if not caps_lifted(at) and (count >= NEWS_EVENING_LIMIT or count >= NEWS_DAILY_LIMIT
             and not (fourth_parent(store, post, at) and evening_post(store, post, at))):
         return 'daily_limit'
     parsed = urlsplit(site_url)

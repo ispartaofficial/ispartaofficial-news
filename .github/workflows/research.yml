@@ -111,7 +111,8 @@ jobs:
     needs: deploy
     if: github.repository == 'ispartaofficial/ispartaofficial-news' && github.ref == 'refs/heads/main' && vars.INSTAGRAM_PUBLISH_ENABLED == 'true' && vars.META_TESTS_COMPLETED == 'true'
     runs-on: ubuntu-24.04
-    timeout-minutes: 8
+    # Up to four current-news pairs, 90 seconds apart (owner decision, 14 Nov 2026).
+    timeout-minutes: 15
     permissions:
       contents: write
     environment: instagram-production

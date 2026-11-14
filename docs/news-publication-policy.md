@@ -1,5 +1,28 @@
 # Günlük haber ve görsel kuralı — 24 Ekim 2026
 
+## 15 Kasım 2026'dan itibaren: günlük sınır yok, güncel haber hemen
+
+Kullanıcı 14 Kasım'da iki fabrika için de kuralı değiştirdi: günlük paylaşım sınırı
+yoktur. Güncel bir haber bulunduğu turda, sıraya girmeden ve saat dilimi beklemeden
+kendi story'siyle paylaşılır. Aşağıdaki üç/dört sınırı ve saat dilimleri yalnız
+14 Kasım ve öncesinin kaydıdır.
+
+- **Güncel haber:** Kaynağın tarihi son 24 saat içinde olmalı ve fabrika haberi son
+  8 saatte ilk kez görmüş olmalı. Böylece eski birikmiş haberler topluca
+  paylaşılmaz (`immediate_news_item`).
+- **Saat:** Yayın 07:00–23:30 arasında yapılır. Gece bulunan haber sabah çıkar.
+- **Tur başına:** En fazla 4 haber çifti paylaşılır, çiftler arasında 90 saniye
+  bırakılır. Kalanlar bir sonraki turda çıkar.
+- **Kontroller:** Kaynak, görsel, tekrar ve medya kontrolleri aynen geçerlidir.
+  Kontrolü geçemeyen haber bekler.
+- **Belirsiz teslim:** Sonucu belirsiz bir teslim turu durdurur ve o haber asla
+  yeniden gönderilmez.
+- **Diğer içerikler:** Etkinlik, özet ve eski haberler saat dilimlerinde kalır.
+  Hemen paylaşılan haber bir saat dilimini doldurmaz, ama dilimdeki içerik ondan
+  sonra 45 dakika bekler.
+- **Story sınırları:** Elektrik kesintisi ve etkinlik story'lerinin günlük
+  sınırları da kalktı.
+
 Kullanıcı her iki hesap için günde **en fazla üç haber gönderisi ve üç haber
 story'si** istedi. Sonraki açık yanıtıyla hava durumu ve nöbetçi eczane
 story'lerinin bu üç haber story'sine **ek** kalacağını belirtti. Bu sayı
