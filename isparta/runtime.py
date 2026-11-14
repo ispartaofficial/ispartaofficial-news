@@ -28,7 +28,7 @@ PENDING_NEWS_CAP = 6
 
 # Local press covers the whole region, so each article must prove its own
 # Isparta locality; institutional sources are local by reviewed scope.
-PRESS = ('bomba32', 'demokrat32', 'uyan32', 'haber32', 'kanal32', 'ajans32')
+PRESS = ('bomba32', 'demokrat32', 'uyan32', 'haber32', 'kanal32', 'ajans32', 'davrazhaber')
 
 
 def sources_for_engine(config):
