@@ -72,20 +72,71 @@ def test_first_day_never_calls_refresh_endpoint(tmp_path):
         session.get.assert_not_called(); checkpoint.assert_not_called()
 
 
-@pytest.mark.parametrize('fault', ['wrong_key', 'tamper', 'plain_text'])
-def test_unreadable_capsule_fails_closed_without_falling_back_or_network(tmp_path, fault):
+def damage(store, values, fault):
+    if fault == 'wrong_key':
+        values['INSTAGRAM_ACCESS_TOKEN'] = NEW
+    else:
+        blob = store.db.execute('SELECT sealed FROM credential_capsules').fetchone()[0]
+        blob = blob[:-1] + bytes([blob[-1] ^ 1]) if fault == 'tamper' else ROOT
+        with store.db: store.db.execute('UPDATE credential_capsules SET sealed=?', (blob,))
+
+
+@pytest.mark.parametrize('fault', ['wrong_key', 'tamper'])
+def test_unreadable_capsule_fails_closed_when_the_secret_is_not_this_account(tmp_path, fault):
+    # Meta answers 401 for a revoked secret, or another account answers.
+    for answer in (response({'error': {'code': 190}}, 401),
+                   response({'user_id': '1', 'username': 'someone', 'account_type': 'BUSINESS'})):
+        with closing(Store(tmp_path/f'{fault}-{answer.status_code}')) as store:
+            bootstrap(store); values = env(); damage(store, values, fault)
+            before = store.db.execute('SELECT sealed FROM credential_capsules').fetchone()[0]
+            session = Mock(); session.get.return_value = answer; checkpoint = Mock()
+            with pytest.raises(c.CredentialError, match='identity_failed'):
+                c.resolve(store, maintain=True, checkpoint=checkpoint, at=AT+timedelta(days=2), environ=values, session=session)
+            assert session.get.call_count == 1 and 'refresh_access_token' not in session.get.call_args.args[0]
+            assert store.db.execute('SELECT sealed FROM credential_capsules').fetchone()[0] == before
+            checkpoint.assert_not_called()
+
+
+@pytest.mark.parametrize('fault', ['wrong_key', 'tamper'])
+def test_read_only_runs_never_replace_an_unreadable_capsule(tmp_path, fault):
     with closing(Store(tmp_path/'db')) as store:
-        bootstrap(store); values = env()
-        if fault == 'wrong_key':
-            values['INSTAGRAM_ACCESS_TOKEN'] = NEW
-        else:
-            blob = store.db.execute('SELECT sealed FROM credential_capsules').fetchone()[0]
-            blob = blob[:-1] + bytes([blob[-1] ^ 1]) if fault == 'tamper' else ROOT
-            with store.db: store.db.execute('UPDATE credential_capsules SET sealed=?', (blob,))
+        bootstrap(store); values = env(); damage(store, values, fault)
+        session = Mock()
+        with pytest.raises(c.CredentialError, match='capsule_unreadable'):
+            c.resolve(store, at=AT+timedelta(days=2), environ=values, session=session)
+        session.get.assert_not_called()
+
+
+def test_a_malformed_capsule_still_stops_without_network(tmp_path):
+    with closing(Store(tmp_path/'db')) as store:
+        bootstrap(store); values = env(); damage(store, values, 'plain_text')
         session = Mock()
         with pytest.raises((c.CredentialError, ValueError)):
             c.resolve(store, maintain=True, checkpoint=Mock(), at=AT+timedelta(days=2), environ=values, session=session)
         session.get.assert_not_called()
+
+
+def test_a_replaced_secret_for_this_account_starts_a_new_capsule(tmp_path):
+    # 14 Nov: Meta revoked the stored credential; the owner put a new one in the secret.
+    path = tmp_path / 'db.sqlite'
+    with closing(Store(path)) as store:
+        bootstrap(store); values = env(); damage(store, values, 'wrong_key')
+        session = Mock(); session.get.return_value = identity()
+        checkpoint = Mock(side_effect=lambda: validate_state(path))
+        token, status = c.resolve(store, maintain=True, checkpoint=checkpoint, at=AT+timedelta(days=2), environ=values, session=session)
+        assert token == NEW and status['last_result'] == 'waiting_minimum_age' and status['expires_at'] is None
+        assert parse_date(status['next_attempt_at']) == AT + timedelta(days=2, hours=26)
+        assert session.get.call_count == 1 and session.get.call_args.args[0].endswith('/me')
+        checkpoint.assert_called_once()
+        assert store.db.execute('SELECT count(*) FROM credential_capsules').fetchone()[0] == 1
+    assert NEW.encode() not in path.read_bytes() and ROOT.encode() not in path.read_bytes()
+    with closing(Store(path)) as store:
+        # The new secret opens the new capsule; the old one no longer can.
+        quiet = Mock()
+        assert c.resolve(store, at=AT+timedelta(days=2, hours=1), environ=values, session=quiet)[0] == NEW
+        quiet.get.assert_not_called()
+        with pytest.raises(c.CredentialError, match='capsule_unreadable'):
+            c.resolve(store, at=AT+timedelta(days=2, hours=1), environ=env(), session=quiet)
 
 
 @pytest.mark.parametrize('value', [None, [], {'access_token': NEW, 'expires_in': 0}, {'access_token': NEW, 'token_type': 'bearer', 'expires_in': True}, {'error': {'message': ROOT}}])
