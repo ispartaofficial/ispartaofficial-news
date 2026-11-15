@@ -1,0 +1,412 @@
+{
+ "version": "city-features-v1",
+ "city": "isparta",
+ "photos": {
+  "antiokheia-cadde": {
+   "file": "antiokheia-cadde.jpg",
+   "sha256": "03f31c6c23eadadb1f4b0d012f3da268a3eb07f4c869d46dded8b5880eba178c",
+   "author": "Dosseman",
+   "license": "CC BY-SA 4.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "source": "https://commons.wikimedia.org/wiki/File:Antioch_in_Pisida_Decumanus_Maximus_047.jpg"
+  },
+  "antiokheia-tiyatro": {
+   "file": "antiokheia-tiyatro.jpg",
+   "sha256": "0da9f79ba6836b57ef029cddd9762cf70b6bcd6d9d429842b44c729c0c49d706",
+   "author": "Dosseman",
+   "license": "CC BY-SA 4.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "source": "https://commons.wikimedia.org/wiki/File:Antioch_in_Pisidia_Theatre_2965.jpg"
+  },
+  "cunur-manzara": {
+   "file": "cunur-manzara.jpg",
+   "sha256": "1681f3bd9c317f9d518a2b87c8938d251bea4b8c6ab316cb6fefd5c54557df9d",
+   "author": "Thomas Sabri James Jackson",
+   "license": "CC BY-SA 4.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "source": "https://commons.wikimedia.org/wiki/File:%C4%B0sparta,%C3%87%C3%BCn%C3%BCr_Mahallesi.jpg"
+  },
+  "daglardan-isparta": {
+   "file": "daglardan-isparta.jpg",
+   "sha256": "70b1f58293f61fc9bec7f4aefc7fd97ea41fa3f00c42a048d85cac7bef0a4ff1",
+   "author": "Isparta at Turkish Wikipedia",
+   "license": "Public domain",
+   "license_url": null,
+   "source": "https://commons.wikimedia.org/wiki/File:DaglardanIsparta.jpg"
+  },
+  "davraz-dagi": {
+   "file": "davraz-dagi.jpg",
+   "sha256": "ce31140a1522dde46f963c989eb5fc6f3f1877aa0d750773486e289a8aaff692",
+   "author": "Isparta at Turkish Wikipedia",
+   "license": "Public domain",
+   "license_url": null,
+   "source": "https://commons.wikimedia.org/wiki/File:DavrazDagi.jpg"
+  },
+  "egirdir-golu-adalar": {
+   "file": "egirdir-golu-adalar.jpg",
+   "sha256": "e8aecf7a8786fad70d76e5f945e8e81b8e2b4c86cb1bae15691b76e1f3f3e4fa",
+   "author": "Ingo Mehling",
+   "license": "CC BY-SA 3.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+   "source": "https://commons.wikimedia.org/wiki/File:Lake_Egirdir.jpg"
+  },
+  "egirdir-kalesi": {
+   "file": "egirdir-kalesi.jpg",
+   "sha256": "1b895262f067acb8e6fa28e65bf5edcc1b7b3e86f3b8c3182f11dbef747f4aae",
+   "author": "Nedim Ardoğa",
+   "license": "CC BY-SA 4.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "source": "https://commons.wikimedia.org/wiki/File:E%C4%9Firdir_Castle.jpg"
+  },
+  "egirdir-sahil": {
+   "file": "egirdir-sahil.jpg",
+   "sha256": "7b9e3f7669ea28c5021a37c2c44bdacb31157fb78bb9dcd21511d45ae956e79c",
+   "author": "Calistemon",
+   "license": "CC BY-SA 4.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "source": "https://commons.wikimedia.org/wiki/File:Lake_E%C4%9Firdir_waterfront_in_E%C4%9Firdir,_March_2024_01.jpg"
+  },
+  "golcuk-golu": {
+   "file": "golcuk-golu.jpg",
+   "sha256": "5d2f068ec0eab51300beec7cfa12aff69ab80dc38b34358631387a24d07b88b7",
+   "author": "Ömer Burak Tercan",
+   "license": "CC BY-SA 4.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "source": "https://commons.wikimedia.org/wiki/File:Isparta_G%C3%B6lc%C3%BCk_G%C3%B6l%C3%BC.jpg"
+  },
+  "golcuk-krater": {
+   "file": "golcuk-krater.jpg",
+   "sha256": "dab138d5a9f8ec98af604a16382edb355cd920bd5675556157b14b2d3cd82dd6",
+   "author": "Dragon32121",
+   "license": "CC BY-SA 4.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "source": "https://commons.wikimedia.org/wiki/File:Isparta_G%C3%B6lc%C3%BCk_krater_g%C3%B6l%C3%BC.jpg"
+  },
+  "golcuk-tabiat-parki": {
+   "file": "golcuk-tabiat-parki.jpg",
+   "sha256": "02f2a182264c0f7089fba431dbd9b5f36098f00b926fe79acd94c239cdede069",
+   "author": "Ömer Burak Tercan",
+   "license": "CC BY-SA 4.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "source": "https://commons.wikimedia.org/wiki/File:Isparta_G%C3%B6lc%C3%BCk_Tabiat_Park%C4%B1.jpg"
+  },
+  "gul-lamba-cami": {
+   "file": "gul-lamba-cami.jpg",
+   "sha256": "53cdfa860b80ce8ef024fbee55ef8d3859010b88c639712da44c739be61def75",
+   "author": "Christian1311",
+   "license": "CC BY-SA 4.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "source": "https://commons.wikimedia.org/wiki/File:Isparta;_Rosenlampe_am_Abend_mit_Kutlu_Bey_Cami.jpg",
+   "centering": [
+    0.4,
+    0.3
+   ]
+  },
+  "gul-lamba-gunbatimi": {
+   "file": "gul-lamba-gunbatimi.jpg",
+   "sha256": "b8451d113206a5f37fdf32558f64248dda5fc0c8a2ca91b6281ddb138756b6d2",
+   "author": "Christian1311",
+   "license": "CC BY-SA 4.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "source": "https://commons.wikimedia.org/wiki/File:Isparta;_Rosenlampe_bei_Sonnenuntergang.jpg",
+   "centering": [
+    0.3,
+    0.12
+   ]
+  },
+  "hizir-bey-camii": {
+   "file": "hizir-bey-camii.jpg",
+   "sha256": "98c0a12ff9d53ff46fefeb4576a537335504e99b61fb225707d0b29bdd706513",
+   "author": "Dosseman",
+   "license": "CC BY-SA 4.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "source": "https://commons.wikimedia.org/wiki/File:E%C4%9Firdir_H%C4%B1z%C4%B1r_Bey_Camii_3010.jpg"
+  },
+  "kovada-golu": {
+   "file": "kovada-golu.jpg",
+   "sha256": "1efc78c4d97d540f7a82835bc4e874ac1cae2dc78e2570f66a5df797f43f632f",
+   "author": "Calistemon",
+   "license": "CC BY-SA 4.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "source": "https://commons.wikimedia.org/wiki/File:Southern_end_of_Lake_Kovada_(Kovada_G%C3%B6l%C3%BC),_March_2024_06.jpg"
+  },
+  "yazili-kanyon": {
+   "file": "yazili-kanyon.jpg",
+   "sha256": "f4ab81e7fe2017fd6262bfdc87de753622e5cdb0fc56f9618f4fb4a0ecb69933",
+   "author": "Bahar.y180",
+   "license": "CC BY-SA 4.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "source": "https://commons.wikimedia.org/wiki/File:Yaz%C4%B1l%C4%B1_Kanyon_Park_2024.jpg"
+  }
+ },
+ "entries": [
+  {
+   "id": "isp-gul-baskenti",
+   "format": "feed",
+   "label": "ŞEHİR HAFIZASI",
+   "title": "Gülün şehri Isparta",
+   "body": "Türkiye'de yağ gülü ve güle dayalı ürün üretiminin yüzde 80'inden fazlası Isparta'da yapılıyor. İl genelinde yaklaşık 10 bin aile geçimini yağ gülü yetiştiriciliğinden sağlıyor.",
+   "question": "Gül kokusu size hangi Isparta anısını hatırlatıyor? Yorumlarda paylaşın.",
+   "photo": "gul-lamba-gunbatimi",
+   "hashtags": [
+    "#Isparta",
+    "#IspartaOfficial",
+    "#IspartaGülü",
+    "#GülŞehri"
+   ],
+   "sources": [
+    {
+     "name": "Vikipedi: Isparta gülü",
+     "url": "https://tr.wikipedia.org/wiki/Isparta_g%C3%BCl%C3%BC"
+    }
+   ]
+  },
+  {
+   "id": "isp-golcuk-krater",
+   "format": "feed",
+   "label": "ŞEHİR HAFIZASI",
+   "title": "Şehrin yanı başında bir krater gölü",
+   "body": "Gölcük, Isparta merkezinin yaklaşık 8 km güneybatısında, denizden 1300 metre yükseklikte bir maar (volkanik krater) gölü. Bir dönem şehrin içme suyu buradan karşılandı; göl 1991'de tabiat parkı olarak tescil edildi.",
+   "question": "Gölcük'ü en çok hangi mevsimde seviyorsunuz? Yorumlarda yazın.",
+   "photo": "golcuk-golu",
+   "hashtags": [
+    "#Isparta",
+    "#IspartaOfficial",
+    "#Gölcük",
+    "#GölcükTabiatParkı"
+   ],
+   "sources": [
+    {
+     "name": "Vikipedi: Gölcük Gölü (Isparta)",
+     "url": "https://tr.wikipedia.org/wiki/G%C3%B6lc%C3%BCk_G%C3%B6l%C3%BC_(Isparta)"
+    }
+   ]
+  },
+  {
+   "id": "isp-egirdir-kalesi",
+   "format": "feed",
+   "label": "ŞEHİR HAFIZASI",
+   "title": "Göle uzanan kale: Eğirdir Kalesi",
+   "body": "Eğirdir Kalesi, kentten Eğirdir Gölü'ne doğru uzanan bir kıstak üzerinde yer alıyor. Kaledeki 1307 tarihli kitabe, kalenin Hamitoğulları Beyliği'nin kurucusu Dündar Bey tarafından onarıldığını belirtiyor.",
+   "question": "Eğirdir'de gün batımını en güzel nereden izliyorsunuz? Yorumlarda paylaşın.",
+   "photo": "egirdir-kalesi",
+   "hashtags": [
+    "#Isparta",
+    "#IspartaOfficial",
+    "#Eğirdir",
+    "#EğirdirKalesi"
+   ],
+   "sources": [
+    {
+     "name": "Vikipedi: Eğirdir Kalesi",
+     "url": "https://tr.wikipedia.org/wiki/E%C4%9Firdir_Kalesi"
+    }
+   ]
+  },
+  {
+   "id": "isp-yazili-kanyon",
+   "format": "feed",
+   "label": "ŞEHİR HAFIZASI",
+   "title": "Yazılı Kanyon adını nereden alıyor?",
+   "body": "Sütçüler'deki Yazılı Kanyon 1989'da tabiat parkı olarak tescil edildi. Adını, kanyondaki büyük bir kayanın üzerinde yer alan ve filozof Epiktetos'u anlatan antik şiirden alıyor.",
+   "question": "Yazılı Kanyon'a hiç gittiniz mi? En sevdiğiniz anı yorumlarda olsun.",
+   "photo": "yazili-kanyon",
+   "hashtags": [
+    "#Isparta",
+    "#IspartaOfficial",
+    "#YazılıKanyon",
+    "#Sütçüler"
+   ],
+   "sources": [
+    {
+     "name": "Vikipedi: Yazılı Kanyon Tabiat Parkı",
+     "url": "https://tr.wikipedia.org/wiki/Yaz%C4%B1l%C4%B1_Kanyon_Tabiat_Park%C4%B1"
+    }
+   ]
+  },
+  {
+   "id": "isp-davraz",
+   "format": "feed",
+   "label": "ŞEHİR HAFIZASI",
+   "title": "Kayağın adresi: Davraz",
+   "body": "Davraz Dağı 2637 metre yüksekliğinde; Isparta'ya ve Eğirdir'e yaklaşık 25 km uzaklıkta, Eğirdir ile Kovada gölleri arasında yükseliyor. Kayak tesisleri yaklaşık 2200 metrede kurulu.",
+   "question": "Davraz'daki ilk kayak gününüzü hatırlıyor musunuz? Yorumlarda anlatın.",
+   "photo": "davraz-dagi",
+   "hashtags": [
+    "#Isparta",
+    "#IspartaOfficial",
+    "#Davraz",
+    "#DavrazKayak"
+   ],
+   "sources": [
+    {
+     "name": "Vikipedi: Davraz Dağı",
+     "url": "https://tr.wikipedia.org/wiki/Davraz_Da%C4%9F%C4%B1"
+    }
+   ]
+  },
+  {
+   "id": "isp-hamid-ili",
+   "format": "feed",
+   "label": "ŞEHİR HAFIZASI",
+   "title": "Isparta'nın eski adı: Hamid",
+   "body": "Hamitoğulları Beyliği 1301 dolaylarında bu bölgede kuruldu. Beyliğin ilk merkezi Uluborlu'ydu, daha sonra Eğirdir'e taşındı. Isparta ve çevresi Cumhuriyet'e kadar Hamid adıyla anıldı.",
+   "question": "Büyüklerinizden 'Hamid' adını duymuş muydunuz? Yorumlarda yazın.",
+   "photo": "daglardan-isparta",
+   "hashtags": [
+    "#Isparta",
+    "#IspartaOfficial",
+    "#IspartaTarihi",
+    "#Hamitoğulları"
+   ],
+   "sources": [
+    {
+     "name": "Vikipedi: Hamitoğulları Beyliği",
+     "url": "https://tr.wikipedia.org/wiki/Hamito%C4%9Fullar%C4%B1_Beyli%C4%9Fi"
+    }
+   ]
+  },
+  {
+   "id": "isp-antiokheia",
+   "format": "feed",
+   "label": "ŞEHİR HAFIZASI",
+   "title": "Yalvaç'ın antik komşusu: Pisidia Antiokheiası",
+   "body": "Pisidia Antiokheiası'nın kalıntıları Yalvaç'ın yaklaşık 1 km kuzeydoğusunda. Yalvaç, Türkiye'nin uzun mesafe yürüyüş rotalarından Aziz Paul Yolu'nun bitiş noktasında yer alıyor.",
+   "question": "Antiokheia'yı gezdiniz mi? Yalvaç'ta mutlaka görülmesi gereken yeri yorumlarda yazın.",
+   "photo": "antiokheia-tiyatro",
+   "hashtags": [
+    "#Isparta",
+    "#IspartaOfficial",
+    "#Yalvaç",
+    "#Antiokheia"
+   ],
+   "sources": [
+    {
+     "name": "Vikipedi: Yalvaç",
+     "url": "https://tr.wikipedia.org/wiki/Yalva%C3%A7"
+    },
+    {
+     "name": "Wikipedia: Antioch of Pisidia",
+     "url": "https://en.wikipedia.org/wiki/Antioch_of_Pisidia"
+    }
+   ]
+  },
+  {
+   "id": "isp-hizir-bey-camii",
+   "format": "feed",
+   "label": "ŞEHİR HAFIZASI",
+   "title": "Eğirdir'in Ulu Camii: Hızır Bey Camii",
+   "body": "Eğirdir'deki Hızır Bey Camii halk arasında Ulu Cami olarak da biliniyor. 14. yüzyılın ilk çeyreğinde yaptırıldığı tahmin ediliyor; 1814'teki yangından sonra özgün mimarisine uygun biçimde yeniden inşa edildi.",
+   "question": "Eğirdir'de en sevdiğiniz tarihi yapı hangisi? Yorumlarda paylaşın.",
+   "photo": "hizir-bey-camii",
+   "hashtags": [
+    "#Isparta",
+    "#IspartaOfficial",
+    "#Eğirdir",
+    "#HızırBeyCamii"
+   ],
+   "sources": [
+    {
+     "name": "Vikipedi: Hızır Bey Camii (Eğirdir)",
+     "url": "https://tr.wikipedia.org/wiki/H%C4%B1z%C4%B1r_Bey_Camii_(E%C4%9Firdir)"
+    }
+   ]
+  },
+  {
+   "id": "isp-soru-misafir",
+   "format": "story",
+   "label": "SİZE SORUYORUZ",
+   "title": "Isparta'ya gelen bir misafire ilk neyi tattırırsınız?",
+   "body": "Yanıtınızı bu story'ye yazın. Yanıtlar yalnızca bize ulaşır.",
+   "photo": "gul-lamba-cami"
+  },
+  {
+   "id": "isp-soru-manzara",
+   "format": "story",
+   "label": "SİZE SORUYORUZ",
+   "title": "Isparta'da en sevdiğiniz manzara noktası neresi?",
+   "body": "Yanıtınızı bu story'ye yazın. Yanıtlar yalnızca bize ulaşır.",
+   "photo": "egirdir-golu-adalar"
+  },
+  {
+   "id": "isp-soru-kis",
+   "format": "story",
+   "label": "SİZE SORUYORUZ",
+   "title": "Kış hafta sonu: Davraz'da kayak mı, şehirde sıcak bir çay mı?",
+   "body": "Yanıtınızı bu story'ye yazın. Yanıtlar yalnızca bize ulaşır.",
+   "photo": "davraz-dagi"
+  },
+  {
+   "id": "isp-soru-golcuk",
+   "format": "story",
+   "label": "SİZE SORUYORUZ",
+   "title": "Gölcük'e en son ne zaman gittiniz?",
+   "body": "Yanıtınızı bu story'ye yazın. Yanıtlar yalnızca bize ulaşır.",
+   "photo": "golcuk-tabiat-parki"
+  },
+  {
+   "id": "isp-soru-uc-kelime",
+   "format": "story",
+   "label": "SİZE SORUYORUZ",
+   "title": "Isparta'yı üç kelimeyle anlatır mısınız?",
+   "body": "Yanıtınızı bu story'ye yazın. Yanıtlar yalnızca bize ulaşır.",
+   "photo": "cunur-manzara"
+  },
+  {
+   "id": "isp-soru-egirdir",
+   "format": "story",
+   "label": "SİZE SORUYORUZ",
+   "title": "Eğirdir'e gidince mutlaka uğradığınız bir yer var mı?",
+   "body": "Yanıtınızı bu story'ye yazın. Yanıtlar yalnızca bize ulaşır.",
+   "photo": "egirdir-sahil"
+  },
+  {
+   "id": "isp-soru-gizli-kose",
+   "format": "story",
+   "label": "SİZE SORUYORUZ",
+   "title": "Sizce Isparta'nın en az bilinen güzel köşesi neresi?",
+   "body": "Yanıtınızı bu story'ye yazın. Yanıtlar yalnızca bize ulaşır.",
+   "photo": "kovada-golu"
+  },
+  {
+   "id": "isp-soru-cocukluk",
+   "format": "story",
+   "label": "SİZE SORUYORUZ",
+   "title": "Çocukluğunuzun Isparta'sından en çok neyi özlüyorsunuz?",
+   "body": "Yanıtınızı bu story'ye yazın. Yanıtlar yalnızca bize ulaşır.",
+   "photo": "daglardan-isparta"
+  },
+  {
+   "id": "isp-soru-ilce",
+   "format": "story",
+   "label": "SİZE SORUYORUZ",
+   "title": "Hangi ilçemizi daha çok gezmek istersiniz?",
+   "body": "Yanıtınızı bu story'ye yazın. Yanıtlar yalnızca bize ulaşır.",
+   "photo": "antiokheia-cadde"
+  },
+  {
+   "id": "isp-soru-gul",
+   "format": "story",
+   "label": "SİZE SORUYORUZ",
+   "title": "Gül kokusu size ne hatırlatıyor?",
+   "body": "Yanıtınızı bu story'ye yazın. Yanıtlar yalnızca bize ulaşır.",
+   "photo": "gul-lamba-gunbatimi"
+  },
+  {
+   "id": "isp-soru-hafta-sonu",
+   "format": "story",
+   "label": "SİZE SORUYORUZ",
+   "title": "Hafta sonu için bir öneri: Isparta'da nereye gidelim?",
+   "body": "Yanıtınızı bu story'ye yazın. Yanıtlar yalnızca bize ulaşır.",
+   "photo": "yazili-kanyon"
+  },
+  {
+   "id": "isp-soru-mevsim",
+   "format": "story",
+   "label": "SİZE SORUYORUZ",
+   "title": "Sizce Isparta'nın en güzel mevsimi hangisi?",
+   "body": "Yanıtınızı bu story'ye yazın. Yanıtlar yalnızca bize ulaşır.",
+   "photo": "golcuk-krater"
+  }
+ ]
+}

@@ -29,9 +29,18 @@ def main():
                 from news_engine.operations import write_job_summary, alarming
                 result = publish(path, Path('dist'))
                 write_job_summary(result)
+                # Reviewed city feature of the day; independent of the news result.
+                from news_engine.city_features import publish as publish_city
+                from news_engine.weather_data import SITE
+                city = publish_city(store, now(), SITE, checkpoint=lambda: persist(path))
+                if target := os.getenv('GITHUB_STEP_SUMMARY'):
+                    with Path(target).open('a', encoding='utf-8') as out:
+                        out.write('### Şehir köşesi\n\n```json\n' + json.dumps(city, indent=2) + '\n```\n')
                 from news_engine.delivery_audit import refresh
                 observations = refresh(store)
-                print(json.dumps({'publication': result, 'observation': observations}))
+                print(json.dumps({'publication': result, 'city_feature': city, 'observation': observations}))
+                if city['status'] == 'uncertain':
+                    raise SystemExit(1)
                 if alarming(store, result, now()):
                     raise SystemExit(1)
             elif args.action == 'weather':
