@@ -40,6 +40,10 @@ IMAGE_ORIGINS = {
                 r'/(?:crop/\d{2,4}x\d{2,4}/)?uyan32-com/uploads/[A-Za-z0-9_./-]+\.(?:jpe?g|png|webp)'),
     'ajans32': ('www.ajans32.com', 'cdn.ajans32.com',
                 r'/news(?:_t|_ts)?/\d+\.(?:jpe?g|png|webp)'),
+    # 15 Nov 2026: Davraz Haber's article photos live under its own tenant
+    # folder (1054) on its news platform's shared CDN; other tenants stay out.
+    'davrazhaber': ('www.davrazhaber.com.tr', 'cdn.haberyazilimiai.com',
+                    r'/uploads/1054/images/haber/(?:\d{4}/\d{2}/\d{2}/)?[a-z0-9-]+\.(?:jpe?g|png|webp)'),
 }
 # Biletinial names each session's poster on its own image host (12 Nov 2026 check).
 BILETINIAL = ('biletinial-isparta', 'biletinial-isparta-sahne')

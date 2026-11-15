@@ -81,6 +81,19 @@
       "max_details": 12
     },
     {
+      "id": "davrazhaber",
+      "name": "Davraz Haber",
+      "url": "https://www.davrazhaber.com.tr/isparta-haberleri",
+      "research_enabled": true,
+      "reader": "article",
+      "link_selector": "a[href]:has(img)",
+      "detail_path": "/haber-[a-z0-9-]+-\\d+\\.html",
+      "title_selector": "h1",
+      "body_selector": ".detay",
+      "date_selector": "meta[property='article:published_time']",
+      "max_details": 8
+    },
+    {
       "id": "isparta-valilik",
       "name": "Isparta Valiliği",
       "url": "https://www.isparta.gov.tr/",

@@ -339,6 +339,27 @@
       ]
     },
     {
+      "id": "davrazhaber",
+      "name": "Davraz Haber",
+      "url": "https://www.davrazhaber.com.tr/isparta-haberleri",
+      "priority": "local_news",
+      "listing_readable": true,
+      "checked_at": "2026-11-15T00:00:00+03:00",
+      "reader_verified": true,
+      "production_enabled": false,
+      "research_enabled": true,
+      "reader_verification": "Owner request on 2026-11-14. Same news platform as Kanal32; robots allows all with Crawl-delay 10 (fetcher obeys it). Listing, article reader and tenant-scoped photo CDN checked against live pages on 2026-11-15.",
+      "reader_kind": "article",
+      "publication_gates": [
+        "original article publication time and update time kept separate",
+        "article body and neutral headline",
+        "Isparta and district locality",
+        "source photo linkage and usage",
+        "same-story deduplication",
+        "sensitive claims held for review"
+      ]
+    },
+    {
       "id": "isparta-valilik",
       "name": "Isparta Valiliği",
       "url": "https://www.isparta.gov.tr/",
