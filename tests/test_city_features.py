@@ -201,3 +201,11 @@ def test_runtime_profile_enables_city_features():
     import json
     settings = json.loads((cf.ROOT / 'config/runtime.json').read_text(encoding='utf-8'))
     assert settings['city_features_enabled'] is True
+
+
+def test_state_validation_needs_only_the_standard_library():
+    # The persist job validates state without installing dependencies.
+    import subprocess, sys
+    code = ("import sys; sys.modules['requests'] = None; sys.modules['PIL'] = None; "
+            "import news_engine.security, news_engine.city_features")
+    subprocess.run([sys.executable, '-c', code], check=True, cwd=cf.ROOT)
