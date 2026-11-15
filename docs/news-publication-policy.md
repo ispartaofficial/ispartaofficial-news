@@ -23,6 +23,32 @@ kendi story'siyle paylaşılır. Aşağıdaki üç/dört sınırı ve saat dilim
 - **Story sınırları:** Elektrik kesintisi ve etkinlik story'lerinin günlük
   sınırları da kalktı.
 
+## 16 Kasım 2026'dan itibaren: şehir köşesi
+
+Kullanıcı 14 Kasım'da kaynak haberlerinin yanında etkileşim alacak şehir içerikleri
+de istedi. Bunlar `config/city-features.json` içindeki gözden geçirilmiş metinlerden
+ve `news_engine/assets/city-features/` içindeki lisanslı fotoğraflardan gelir.
+Çalışma sırasında hiçbir metin veya görsel üretilmez.
+
+- **Gönderi (Salı ve Cumartesi, 19:30–22:30):** "Şehir hafızası" kartı. Kaynaklı bir
+  tarih veya şehir bilgisi ve yorum isteyen bir soru içerir. Açıklamada kaynak
+  bağlantısı, fotoğrafçı ve lisans yazar.
+- **Story (Pazartesi, Çarşamba, Cuma, 20:30–23:30):** "Size soruyoruz" kartı.
+  Instagram'ın API'si anket veya soru çıkartması eklemeye izin vermez. Bu yüzden
+  story yanıt ister; yanıtlar hesaba mesaj olarak gelir.
+- **Fotoğraflar:** Wikimedia Commons'tan lisanslı gerçek fotoğraflar kullanılır.
+  Fotoğrafçı ve lisans kartın üzerinde ve açıklamada yazar. Her dosya SHA-256 ile
+  sabitlenir; değişen dosya reddedilir.
+- **Sıra:** Her gün bankadaki sıradaki kullanılmamış giriş paylaşılır. Paylaşılan
+  giriş tekrar edilmez. Banka biterse `bank_empty` görünür ve yeni giriş eklenene
+  kadar paylaşım yapılmaz.
+- **Güvenlik:** Haberlerle aynı kurallar geçerlidir. Kart Pages'te yayınlanıp
+  hash'i doğrulanmadan gönderilmez. Talep Meta'ya gitmeden önce kaydedilir.
+  Belirsiz teslim asla yeniden gönderilmez ve çözülene kadar seriyi durdurur.
+- **Yeni içerik:** Yeni giriş eklerken metin yalnız belirtilen kaynaktaki bilgiyi
+  içermelidir. Fotoğraf yalnız Commons'taki açık lisanslı bir dosya olmalıdır.
+  `tests/test_city_features.py` her kartın sığdığını denetler.
+
 Kullanıcı her iki hesap için günde **en fazla üç haber gönderisi ve üç haber
 story'si** istedi. Sonraki açık yanıtıyla hava durumu ve nöbetçi eczane
 story'lerinin bu üç haber story'sine **ek** kalacağını belirtti. Bu sayı

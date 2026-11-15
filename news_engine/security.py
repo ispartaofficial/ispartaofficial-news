@@ -74,7 +74,7 @@ def validate_state(path: Path):
     db = sqlite3.connect(f"file:{path.resolve()}?mode=ro", uri=True)
     try:
         tables = {r[0] for r in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
-        if not tables <= {"items", "posts", "withheld", "runs", "candidates", "annotations", "illustrations", "illustration_days", "source_photos", "source_photo_retries", "source_health", "facebook_deliveries", "publication_checks", "weather_stories", "learning_profile", "source_checks", "delivery_audits", "learning_samples", "installation", "pharmacy_stories", "credential_capsules"}:
+        if not tables <= {"items", "posts", "withheld", "runs", "candidates", "annotations", "illustrations", "illustration_days", "source_photos", "source_photo_retries", "source_health", "facebook_deliveries", "publication_checks", "weather_stories", "learning_profile", "source_checks", "delivery_audits", "learning_samples", "installation", "pharmacy_stories", "credential_capsules", "city_features"}:
             raise ValueError("Unexpected state tables")
         if 'installation' not in tables or [r[0] for r in db.execute('SELECT repository FROM installation')] != ['ispartaofficial/ispartaofficial-news']:
             raise ValueError('Independent Isparta state identity required')
@@ -88,6 +88,16 @@ def validate_state(path: Path):
                 for slot, sealed in rows:
                     if slot != 'instagram-v1' or not isinstance(sealed, bytes) or not 100 <= len(sealed) <= 8192 or not sealed.startswith(b'IGC1'):
                         raise ValueError('Invalid encrypted credential envelope')
+                continue
+            if table == 'city_features':
+                from .city_features import COLUMNS, validate_row
+                if [r[1] for r in db.execute('PRAGMA table_info(city_features)')] != COLUMNS:
+                    raise ValueError('Unexpected city feature fields')
+                if db.execute('SELECT COUNT(*) FROM city_features').fetchone()[0] > 2000:
+                    raise ValueError('City feature history exceeds limit')
+                for row in db.execute('SELECT * FROM city_features'):
+                    assert_no_secrets(row)
+                    validate_row(row)
                 continue
             if table == 'pharmacy_stories':
                 from .pharmacy_data import validate_record

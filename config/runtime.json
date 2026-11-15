@@ -19,5 +19,6 @@
   "learning_enabled": false,
   "illustration_generation_configured": true,
   "source_photos_enabled": true,
-  "pharmacy_stories_enabled": true
+  "pharmacy_stories_enabled": true,
+  "city_features_enabled": true
 }
