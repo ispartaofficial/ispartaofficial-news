@@ -78,6 +78,8 @@ def test_ticket_caption_avoids_duplicate_link_and_template_description_without_l
     event['description']='Yoga sonrası soru-cevap oturumu yapılacak.'
     value=caption(event,headline(event,'announcement'))
     assert 'Bilet: '+event['ticket_url'] in value and event['description'] in value
+    # The event text stands as written: no "Kaynak duyurusundan:" lead-in or quotes.
+    assert '\n\n'+event['description']+'\n\n' in value and 'Kaynak duyurusu' not in value
 
 
 def test_bademler_card_uses_verified_venue_and_caption_preserves_address(event):
