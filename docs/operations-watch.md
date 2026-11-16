@@ -84,6 +84,29 @@ iddiasını Meta konteyneri oluşturulduktan sonra, `media_publish` çağrılmad
   `not_sent` sayılır, `unresolved` sayılmaz. Hakkını korur, asla yeniden
   gönderilmez. Seferihisar'daki `never_sent` kuralı genişletilerek uyarlandı.
 
+### Belirsiz iddiayı elle kapatmak (`resolve-uncertain.yml`)
+
+16 Kasım 2026: 4 Kasım'daki `publishing` iddiası hâlâ açıktı ve panel
+`unresolved: {"instagram": 1}` gösteriyordu. Otomatik kapanış yalnız `EXPIRED`
+yanıtını kabul ettiği için `PUBLISHED`, `FINISHED`, `ERROR` veya okunamayan
+konteyner sonsuza dek açık kalır. Bu iş akışı yalnız elle (`workflow_dispatch`)
+çalışır ve Meta'ya yalnız `GET /{container}?fields=status_code` yapar.
+
+- `dry_run: true` (varsayılan): açık her iddia için kimlik, biçim (feed/story),
+  `published_at`, `container_id` ve Meta durumu raporlanır; hiçbir şey yazılmaz,
+  durum dalına dokunulmaz ve üretim kilidi alınmaz.
+- `dry_run: false`: `PUBLISHED` → `published` (konteyner durumu medya kimliğini
+  vermez; `media_id` boş kalır, yükte `resolution: container_published`).
+  `EXPIRED`, `ERROR`, `FINISHED` → `not_published` (yükte `resolution:
+  container_expired|container_error|container_finished`). `not_published`
+  sonlandırıcıdır: iddia sayılmaz (`unresolved`, `not_sent`, günlük sayım,
+  tekrar kuralları), kuyruğa geri dönmez, asla yeniden yayımlanmaz.
+- Konteyneri olmayan, `IN_PROGRESS`, tanınmayan, okunamayan veya 48 saatten
+  yeni iddiaya dokunulmaz; rapor nedenini yazar. `post_id` girdisi tek kaydı seçer.
+- Yazma, diğer üretim işleriyle aynı `isparta-production` kilidi altında ve
+  aynı `state_git persist` adımıyla yapılır. İş özeti yalnız sabit kodlar,
+  onaltılık/sayısal kimlikler ve zaman damgaları içerir.
+
 ### Kart dağıtımını beklemek hata değildir
 
 6 Kasım 2026, 17:08–20:58 TR: üç yayın turu `visual_review_stale`, 17:08 eczane

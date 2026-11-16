@@ -12,9 +12,17 @@ from news_engine.store import Store
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('action', choices=('publish', 'pharmacy', 'pharmacy-observe', 'weather', 'check'))
+    parser.add_argument('action', choices=('publish', 'pharmacy', 'pharmacy-observe', 'weather', 'check', 'resolve-uncertain'))
     parser.add_argument('--wait-for-target', action='store_true')
+    parser.add_argument('--apply', action='store_true', help='resolve-uncertain only: write the closures (default: report only)')
+    parser.add_argument('--post-id', default=None, help='resolve-uncertain only: a single claim')
     args = parser.parse_args()
+    if args.action == 'resolve-uncertain':
+        from news_engine.resolve import valid_post_id
+        if args.post_id is not None and not valid_post_id(args.post_id):
+            raise SystemExit('invalid_post_id')
+    elif args.apply or args.post_id is not None:
+        raise SystemExit('--apply/--post-id belong to resolve-uncertain')
     path = Path('state/platform.sqlite')
     store = Store(path)
     try:
@@ -62,6 +70,15 @@ def main():
             elif args.action == 'check':
                 from news_engine.connection_health import main as check
                 check()
+            elif args.action == 'resolve-uncertain':
+                # Owner-run, GET-only. The workflow persists state afterwards,
+                # and only when the owner chose to apply.
+                from news_engine.instagram import Instagram
+                from news_engine.resolve import resolve as resolve_claims, write_summary
+                result = resolve_claims(store, Instagram(), now(), apply=args.apply, post_id=args.post_id)
+                print(json.dumps(result))
+                if target := os.getenv('GITHUB_STEP_SUMMARY'):
+                    write_summary(result, target)
             else:
                 from news_engine.pharmacy import run, observe
                 from news_engine.pharmacy_data import profile
