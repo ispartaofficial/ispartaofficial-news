@@ -1,0 +1,11 @@
+{
+  // Cloudflare Workers free plan: one Worker, one cron trigger. UTC; the code also
+  // refuses to dispatch outside 04:20-20:50 UTC. Minutes avoid GitHub's own :20/:50.
+  "name": "isparta-research-watch",
+  "main": "cron-worker.mjs",
+  "compatibility_date": "2026-11-01",
+  "workers_dev": false,
+  "triggers": {"crons": ["12,27,42,57 4-20 * * *"]},
+  // Secret GITHUB_ACTIONS_TOKEN is entered by the owner in Cloudflare, never here.
+  "vars": {"CRON_DISPATCH_ENABLED": "false"}
+}
