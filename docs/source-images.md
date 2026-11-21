@@ -137,3 +137,21 @@ doğrulanır; kod ve yeşil iş tek başına bir resmin onaylandığı anlamına
 Meta uygulaması bu aşamada yalnız oluşturma özetinde hazırlandı. Son düğme Meta
 Platform Terms ve Developer Policies kabul ettiği için işlem anında kullanıcı
 onayı beklenir. Sosyal yayın, yeni izin/anahtar ve Facebook bağlantısı açılmadı.
+
+## 22 Kasım: dolu önbellek yeni taslakları durduruyordu
+
+Kaynak fotoğraf önbelleği 80 dosyayla sınırlıdır. Yayımlanmış kartların fotoğrafları
+hiç boşaltılmadığı için 17 Kasım'da 80 yerin tamamı yayımlanmış kartlarla doldu;
+18 Kasım'dan itibaren hiçbir yeni taslak kendi haberinin fotoğrafını bağlayamadı
+(`source_photos.deferred`, `downloaded: 0`). Fotoğrafı bağlanamayan haber
+"kendi resmi olabilir" diye beklediğinden temsili sahne de denenmedi
+(`illustrations.attempts: 0`) ve taslaklar `awaiting_content_visual` ile kaldı.
+
+Artık yer gerektiğinde yalnız iki günden eski yayımlanmış kartların fotoğrafları,
+en eskiden başlayarak ve yalnız gerektiği kadar boşaltılır. Taslak, yayın sürecindeki
+ve sonucu belirsiz kartların pikselleri hiç boşaltılmaz; iki gün içinde yayımlanmış
+kartlarınki de (Facebook aynası ve hikâye kontrolü) korunur. Sınırlar artırılmadı.
+Boşaltılan kartın onaylı JPEG özeti kayıtta kaldığından aynı fotoğraf başka bir
+habere yine bağlanamaz. Fotoğrafı boşaltılmış eski kart panelde fotoğrafsız
+yeniden çizilmez; hiç paylaşılmamış bir görüntü göstermek yerine panelden düşer.
+Instagram'daki gönderiye dokunulmaz.

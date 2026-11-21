@@ -28,6 +28,12 @@ MAX_ARTWORK_READS=4
 MAX_ARTWORK_CHECKS=6
 MAX_STORY_REPORTS=3
 MAX_ARTICLE_IMAGES=2
+# A published card keeps its photograph while its Facebook mirror (same day,
+# within the hour) and its story can still be checked against the deployed
+# file. After that the oldest give way: by 17 Nov all 80 cache slots held
+# published cards, and from 18 Nov no new draft could bind its own picture.
+PUBLISHED_RETENTION=timedelta(days=2)
+ACTIVE=('prepared','publishing','uncertain')
 ARCHIVE=re.compile(r'\b(?:ar[şs]iv\w*|temsili\w*|illustration\w*|ill[uü]strasyon\w*|stok|stock|yapay zek[aâ]\w*|ai generated)\b')
 CHROME=re.compile(r'logo|avatar|banner|reklam|placeholder|no-image',re.I)
 RASTER=re.compile(r'\.(?:jpe?g|png|webp)$',re.I)
@@ -240,7 +246,7 @@ class SourcePhotos:
         self.instagram_photos=instagram_photos or {}
         self.fetcher=fetcher
         self.stats={'enabled':self.enabled,'downloaded':0,'reused':0,'rejected':0,'unavailable':0,'deferred':0,
-                    'rejection_stages':{},'source_checks':0,'cooldown':0}
+                    'rejection_stages':{},'source_checks':0,'cooldown':0,'evicted':0}
         if instagram_checks is not None:self.stats['instagram']=instagram_checks
         self.reads=0
         self.results={}
@@ -287,6 +293,44 @@ class SourcePhotos:
     def frozen(self):
         return {key for p in self.store.posts() if p['status'] in ('publishing','published','uncertain')
                 for key in p.get('source_photo_keys',{}).values()}
+
+    def retired(self):
+        """Rows held only by cards published before the retention window, oldest first.
+
+        A draft, an in-flight or an uncertain claim always keeps its pixels.
+        """
+        holders={}
+        for post in self.store.posts():
+            for photo in post.get('source_photo_keys',{}).values():
+                holders.setdefault(photo,[]).append(post)
+        cutoff=self.at-PUBLISHED_RETENTION
+        cached={row['id'] for row in self.store.rows('SELECT id FROM source_photos')}
+        rows=[]
+        for photo,posts in holders.items():
+            if photo not in cached or any(p['status'] in ACTIVE for p in posts):continue
+            stamps=[parse_date(p.get('published_at')) for p in posts if p['status']=='published']
+            if any(stamp is None or stamp>=cutoff for stamp in stamps):continue
+            rows.append((max(stamps,default=cutoff),photo))
+        return [photo for _,photo in sorted(rows)]
+
+    def retired_reuse(self,item,sha):
+        """A published card's photograph stays its own after its cached file is evicted."""
+        items={i['id']:i for i in self.store.items()}
+        cached={row['id'] for row in self.store.rows('SELECT id FROM source_photos')}
+        for post in self.store.posts():
+            if post['status'] not in ('published','publishing','uncertain') or post.get('item_id')==item['id']:
+                continue
+            images=post.get('visual_review',{}).get('images',{})
+            for index,photo in post.get('source_photo_keys',{}).items():
+                if photo in cached or images.get(index)!=sha:continue
+                owner=items.get(post.get('item_id'))
+                # The same show's poster on another of its sessions, as for cached rows.
+                if owner and owner.get('kind')=='event' and same_event_artwork(
+                        {'version':EVENT_VERSION,'source_id':owner['source_id'],'source_url':owner['url'],
+                         'title':owner['title'],'subject':photo_subject(owner)},item):
+                    continue
+                return True
+        return False
 
     def prune(self,allowed_ids):
         from .source_photo_retry import prune
@@ -517,13 +561,26 @@ class SourcePhotos:
                     # One picture never appears on two published cards.
                     and not (previous['item_id'] in shared and previous['id'] not in frozen)):
                 raise ValueError('Photograph reused by another item')
+        # The evidence row of an older card may already be evicted; its
+        # reviewed fingerprint still marks the picture as that card's own.
+        if self.retired_reuse(item,evidence['sha256']):
+            raise ValueError('Photograph reused by another item')
         with self.store.db:
-            # Only unreferenced draft cache rows may be evicted. Frozen
-            # pixels and evidence survive every later research/export.
+            # Unreferenced draft rows go first. Draft, in-flight and uncertain
+            # pixels always stay; a published card's only after the window.
             used={key for p in self.store.posts() for key in p.get('source_photo_keys',{}).values()}
             for row in self.store.rows('SELECT id FROM source_photos'):
                 if row['id'] not in used and row['id']!=photo:self.store.db.execute('DELETE FROM source_photos WHERE id=?',(row['id'],))
-            size,count=self.store.db.execute('SELECT COALESCE(SUM(length(image)),0),COUNT(*) FROM source_photos WHERE id!=?',(photo,)).fetchone()
+            def occupied():
+                return self.store.db.execute('SELECT COALESCE(SUM(length(image)),0),COUNT(*) FROM source_photos WHERE id!=?',(photo,)).fetchone()
+            size,count=occupied()
+            retired=iter([key for key in self.retired() if key!=photo])
+            while size+len(image)>MAX_CACHE_BYTES or count>=MAX_CACHED_IMAGES:
+                old=next(retired,None)
+                if old is None:break
+                self.store.db.execute('DELETE FROM source_photos WHERE id=?',(old,))
+                self.stats['evicted']+=1
+                size,count=occupied()
             if size+len(image)>MAX_CACHE_BYTES or count>=MAX_CACHED_IMAGES:
                 self.stats['deferred']+=1;return None
             if photo not in frozen:

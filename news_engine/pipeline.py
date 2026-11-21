@@ -114,6 +114,10 @@ def _export(store: Store, public_dir: Path, sources: list[dict], at: datetime, d
                 from .brand import prepare as prepare_brand
                 prepare_brand(post)
             source_images = photos.for_post(post,item_map)
+            if post['status'] == 'published' and {int(i) for i in post.get('source_photo_keys', {})} - set(source_images):
+                # An old card whose photograph left the bounded cache is not
+                # redrawn without it: the panel would show a card never posted.
+                continue
             # No scene while the article's own picture may still be bound: the draft waits.
             waiting = {0} if photos.awaits_original(post,item_map) else set()
             illustrations = illustrator.for_post(post,item_map,skip_indices=waiting | set(source_images))
