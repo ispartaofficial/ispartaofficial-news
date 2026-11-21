@@ -33,6 +33,7 @@ Seferihisar `7a862a9b98bf4c63120d550b30406ba961397d7d` motoru PR #6 ile `news_en
 Bağımsız Instagram Login ve bağımsız Cloudflare hesabı. Facebook sayfası/teslimi kurulmadı. `isparta/credentials.py` mevcut anahtarı resmî yenileme yoluyla yeniler; ilk gözlemden sonra 26 saat, başarıdan sonra yedi gün, geçici hatada ertesi gün. `cryptography`, HKDF-SHA256/AES-GCM kapsülü `credential_capsules` içinde tutar. Ana environment secret kapsül şifreleme köküdür; değiştirilirse eski kapsül okunamaz ve bakım yapan ilk iş (yayın/hava/eczane) yeni secret'ı Meta'da tam bu hesap olarak doğrularsa kapsülü sıfırdan yazar (14 Kasım 2026, `docs/live-readiness.md`). Araştırma şifreli BLOB'u çözemeden korur. Sırları diğer şehre kopyalama.
 
 `research.yml` cron `20,50 4-20 * * *` UTC (07:20–23:50 TR), prepare/persist/Pages ve yetkili main publish. `weather-story.yml`: 08:00 hedefi; `pharmacy-story.yml`: 17:00 hedefi; `connection.yml`: GET kontrolü; `ci.yml`: test + gerçek OCR/model. Üretim concurrency `isparta-production`. Kaynak hazırlık işi Instagram secret almaz. Kapsül korunmadan SQLite değiştirilmez.
+`ops/cron-worker.mjs` (21 Kasım 2026): GitHub `schedule` olayları gelmediğinde research'ü `workflow_dispatch` ile başlatan isteğe bağlı Cloudflare Worker yedeği; yalnız Actions okuma/research dispatch, yayın kapılarına dokunmaz. Kurulum `docs/backup-trigger.md`. Worker dağıtımı/secret'ı yalnız kod var diye doğrulanmış sayılmaz.
 
 ## Son tamamlanan ve açık işler
 
