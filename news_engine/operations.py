@@ -138,7 +138,8 @@ def summary(store, at):
     attempts = budget[0]['attempts'] if budget else 0
     from .quality import news_editorial_reason
     from .domain import digest
-    reasons = ('editorial_headline_required','editorial_context_required','editorial_copy_required')
+    reasons = ('editorial_headline_required','editorial_context_required','editorial_copy_required',
+               'dedicated_pharmacy_story','dedicated_weather_story','date_mismatch')
     editorial = dict.fromkeys(reasons,0)
     for item in store.items():
         stamp = parse_date(item.get('published_at'))

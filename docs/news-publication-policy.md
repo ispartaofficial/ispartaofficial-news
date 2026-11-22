@@ -23,6 +23,41 @@ kendi story'siyle paylaşılır. Aşağıdaki üç/dört sınırı ve saat dilim
 - **Story sınırları:** Elektrik kesintisi ve etkinlik story'lerinin günlük
   sınırları da kalktı.
 
+## 22 Kasım 2026: rutin servis listeleri ve çelişen tarihler haber kartı olmaz
+
+22 Kasım'da Haber32'nin "Isparta ve İlçelerde Nöbetçi Eczaneler (22 Kasım 2026)"
+makalesi haber kartı ve story olarak paylaşıldı: eczane adı ve ilçesi olmayan
+yapışık bir adres yığını, kaynağın logolu tanıtım grafiği ve kaynağın kendi yazım
+hatasıyla "12 Kasım 2026 Pazar" tarihi. Günün listesi zaten ayrı ve doğrulanmış
+nöbetçi eczane story'siyle (`docs/daily-pharmacy-story.md`) paylaşılıyor.
+
+`news_editorial_reason` (`news_engine/quality.py`) artık şunları yayından tutar:
+
+- **`dedicated_pharmacy_story`:** Başlıkta veya makale adresinde nöbetçi eczane
+  *listesi* ("nöbetçi eczaneler", "nöbetçi eczane listesi", "hangi eczaneler
+  nöbetçi", "nöbetçi eczaneler nerede") ya da açıklamada "nöbetçi olan eczaneler" /
+  "nöbetçi eczane listesi". Büyük/küçük harf ve şapkasız yazımlar aynı sayılır.
+  Başlıkta soygun, saldırı, olay, açıklama, oda/eczacı, zam, ücret gibi bir haber
+  sözcüğü varsa haber yayına devam eder.
+- **`dedicated_weather_story`:** Başlığında "hava durumu" geçen rutin bülten (günlük
+  hava story'si ayrıdır). Uyarı, sarı/turuncu/kırmızı kod, fırtına, sağanak, kuvvetli,
+  kar/dolu yağışı, sel, zirai don gibi bir uyarı sözcüğü varsa haber yayına devam eder.
+- **`date_mismatch`:** Yalnız gün+ay(+yıl) biçimli açık tarihler karşılaştırılır.
+  Başlıkta tek bir tarih varsa ve açıklama tarih verip bu tarihi hiç anmıyorsa (yıl
+  ikisinde de yazılıysa yıl da eşleşmeli) ya da yıl ve gün adıyla yazılmış bir tarihin
+  gün adı takvime uymuyorsa ("12 Kasım 2026 Pazar") kart yayınlanmaz. Göreli ifadeler
+  (bugün, yarın), sayısal tarihler, başlıkta birden çok tarih ve "6 Mart Spor Salonu",
+  "29 Ekim Caddesi" gibi yer adları karşılaştırılmaz.
+
+Bu kapı her araştırma turunda ve her yayın denemesinden önce `prepare` içinde
+yeniden çalışır; bu yüzden kapıdan önce kuyruğa girmiş hazır kart da
+`blocked_source` olur ve Pages dışa aktarımı onu `editorial_review_required` ile
+tutar. Sebep `withheld` tablosuna ve paneldeki `operations.editorial_holds`
+sayaçlarına yazılır. Yayımlanmış gönderilere dokunulmaz. 22 Kasım durum
+veritabanındaki 422 haber kaydında kapı yalnız bu eczane listesini ve 25 Ekim'deki
+"Isparta Hava Durumu Raporu"nu yakaladı; eczacı odası haberi ve tarihli diğer
+başlıklar etkilenmedi.
+
 ## 16 Kasım 2026'dan itibaren: şehir köşesi
 
 Kullanıcı 14 Kasım'da kaynak haberlerinin yanında etkileşim alacak şehir içerikleri
