@@ -20,6 +20,93 @@ def news_quality_reason(item: dict) -> str | None:
     return None
 
 
+def folded(value: str) -> str:
+    """`normalized` without Turkish diacritics: NÖBETÇİ, nöbetçi, nobetci agree."""
+    return normalized(value).translate(str.maketrans('şğüöçâîû', 'sguocaiu'))
+
+
+# Isparta, 22 Nov 2026: Haber32's "Isparta ve İlçelerde Nöbetçi Eczaneler
+# (22 Kasım 2026)" went out as a news card: an address heap without pharmacy
+# names, a source logo graphic and the source's own wrong date. The day's list
+# already has its own checked story (pharmacy.py, docs/daily-pharmacy-story.md),
+# and the morning forecast has one too (weather.py). A routine list or bulletin
+# for those services is not a news card. Reports about a pharmacy (a robbery,
+# a chamber statement) or a weather warning remain news.
+PHARMACY_LIST = re.compile(
+    r'\bnobetci (?:olan )?eczaneler\b|\bnobetci (?:olan )?eczane\w* listesi\b'
+    r'|\bhangi eczaneler? nobetci\b|\bnobetci eczane\w* (?:hangi|nerede)\b')
+# A body names the list itself, not just pharmacies on duty during a holiday.
+PHARMACY_LIST_BODY = re.compile(r'\bnobetci (?:olan )?eczane\w* listesi\b|\bnobetci olan eczaneler\b')
+PHARMACY_STORY = re.compile(
+    r'\b(?:soy(?:gun|ul|du)|hirsiz|gasp|saldir|kavga|yangin|kaza\b|kazada|ceza|muhur|tepki|'
+    r'protesto|aciklama|eylem|kapat|grev|yakala|gozalti|tutuk|darp|bicak|silah|olay|sikayet|'
+    r'eczaci|zam\b|zamm|ucret)\w*|\bodasi\w*')
+WEATHER_BULLETIN = re.compile(r'\bhava durumu\b')
+WEATHER_STORY = re.compile(
+    r'\b(?:uyar|alarm|firtina|saganak|kuvvetli|siddetli|tehlike|dikkat|afet|zirai don|'
+    r'sari kod|turuncu kod|kirmizi kod|kar yagis|dolu yagis|sel\b|selin|taskin)\w*')
+
+
+def dedicated_service_reason(item: dict) -> str | None:
+    """A routine list or bulletin another daily story already publishes."""
+    from urllib.parse import urlsplit
+    title = folded(plain_display(item.get('title') or ''))
+    slug = folded(urlsplit(item.get('url') or '').path.replace('-', ' '))
+    if (not PHARMACY_STORY.search(title)
+            and (PHARMACY_LIST.search(title) or PHARMACY_LIST.search(slug)
+                 or PHARMACY_LIST_BODY.search(folded(item.get('description') or '')))):
+        return 'dedicated_pharmacy_story'
+    if WEATHER_BULLETIN.search(title) and not WEATHER_STORY.search(title):
+        return 'dedicated_weather_story'
+    return None
+
+
+MONTHS = ('ocak', 'subat', 'mart', 'nisan', 'mayis', 'haziran', 'temmuz',
+          'agustos', 'eylul', 'ekim', 'kasim', 'aralik')
+WEEKDAYS = ('pazartesi', 'sali', 'carsamba', 'persembe', 'cuma', 'cumartesi', 'pazar')
+CALENDAR_DATE = re.compile(r'\b([0-3]?\d) (' + '|'.join(MONTHS) + r')\w*(?: (20\d\d))?'
+                           r'(?: (' + '|'.join(WEEKDAYS) + r')\b(?! yer| esnaf| tezgah))?')
+# "6 Mart Spor Salonu", "29 Ekim Caddesi": a yearless name, not a date.
+PLACE_NAME = re.compile(r' (?:ataturk )?(?:spor|kapali|cad\b|cadde|bulvar|mah\b|mahalle|park|meydan|'
+                        r'stad|okul|ilkokul|ortaokul|lise|kopru|sok\b|sokak|universite)')
+
+
+def calendar_dates(value: str) -> list[tuple[int, int, int | None, str | None]]:
+    """Explicit day+month(+year)(+weekday) dates only; nothing relative or numeric."""
+    text, found = folded(value), []
+    for match in CALENDAR_DATE.finditer(text):
+        day, month, year, weekday = match.groups()
+        if not 1 <= int(day) <= 31 or (not year and PLACE_NAME.match(text, match.end())):
+            continue
+        found.append((int(day), MONTHS.index(month) + 1, int(year) if year else None, weekday))
+    return found
+
+
+def date_mismatch(item: dict) -> bool:
+    """The headline's one explicit date is absent from a body that gives dates,
+    or a dated weekday is not that date's weekday ("12 Kasım 2026 Pazar").
+
+    Relative words, numeric dates and several headline dates are left alone.
+    """
+    from datetime import date
+    title = calendar_dates(item.get('title') or '')
+    body = calendar_dates(item.get('description') or '')
+    for day, month, year, weekday in title + body:
+        if year and weekday:
+            try:
+                if WEEKDAYS[date(year, month, day).weekday()] != weekday:
+                    return True
+            except ValueError:
+                return True
+    named = {(day, month) for day, month, _, _ in title}
+    if len(named) != 1 or not body:
+        return False
+    day, month = next(iter(named))
+    years = {year for _, _, year, _ in title if year}
+    return not any((d, m) == (day, month) and not (y and years and y not in years)
+                   for d, m, y, _ in body)
+
+
 def news_editorial_reason(item: dict) -> str | None:
     """Publication hold, separate from immutable source intake/provenance."""
     if item.get('kind') != 'news':
@@ -28,6 +115,11 @@ def news_editorial_reason(item: dict) -> str | None:
     from .editorial_voice import neutral_terms, source_voice
     if not isinstance(item.get('title'),str) or not isinstance(item.get('description'),str):
         return 'editorial_copy_required'
+    if reason := dedicated_service_reason(item):
+        return reason
+    if date_mismatch(item):
+        # The card would carry one of the two dates, and nothing says which.
+        return 'date_mismatch'
     title = plain_display(item.get('title',''))
     value = normalized(title)
     vague = re.search(r'\bböyle\b.*\bhep olsun$|\biyi ki varsiniz\b|^(?:'
