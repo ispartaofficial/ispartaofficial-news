@@ -39,7 +39,8 @@
       "title_selector": "h1[itemprop=headline]",
       "body_selector": ".article-text",
       "date_selector": "meta[name=datePublished]",
-      "max_details": 12
+      "max_details": 12,
+      "quiet_acknowledged": "5 Kasım 2026'daki ilk bulut okumasından beri bulut sunucularına HTTP 403 (21 Kasım'a kadar her çalışmada); buluttan hiç kayıt alınamadı, yerel okuma 200. Engel aşılmaz."
     },
     {
       "id": "haber32",
@@ -259,9 +260,9 @@
       "research_enabled": true,
       "reader": "aedas_outages",
       "allow_missing_robots": true,
-      "connect_timeout_seconds": 15,
-      "read_timeout_seconds": 45,
-      "timeout_retries": 1,
+      "connect_timeout_seconds": 8,
+      "read_timeout_seconds": 20,
+      "timeout_retries": 0,
       "province": "ISPARTA",
       "counties": {
         "MERKEZ": "Isparta Merkez’de",
@@ -278,7 +279,7 @@
         "YALVAÇ": "Yalvaç’ta",
         "YENİŞARBADEMLİ": "Yenişarbademli’de"
       },
-      "quiet_acknowledged": "31 Ekim 2026'da eklendiğinden beri buluttan 15/45 saniyelik sınırla da zaman aşımı (3 Kasım kaydı); yerel okuma 200, 14 kesinti. Engel aşılmaz."
+      "quiet_acknowledged": "31 Ekim 2026'da eklendiğinden beri buluttan 15/45 saniyelik sınırla da zaman aşımı (3 Kasım kaydı; 14-21 Kasım'da 100 çalışmanın 99'unda); yerel okuma 200, 14 kesinti. 22 Kasım'dan beri tek ve kısa deneme (8/20 sn, tekrar yok). Engel aşılmaz."
     },
     {
       "id": "aksu-kaymakamlik",

@@ -22,7 +22,9 @@ jobs:
   research:
     if: github.repository == 'ispartaofficial/ispartaofficial-news' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    # Preparation alone takes 9-11 minutes; a slow apt mirror (3.5-4 minutes
+    # instead of one) cancelled #550, #553, #555 and #577 at 15 minutes.
+    timeout-minutes: 22
     permissions:
       contents: write # Only the isolated automation-state branch is written.
     env:
