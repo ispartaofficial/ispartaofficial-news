@@ -16,7 +16,10 @@ STATUSES = frozenset(('complete', 'published', 'already_published', 'outside_win
     'story_pending', 'blocked_source', 'account_mismatch', 'check_failed',
     'visual_review_missing', 'visual_review_stale', 'visual_review_unavailable',
     'editorial_review_required', 'editorial_copy_stale', 'event_metadata_stale',
-    'duplicate_story', 'stale_parent', 'owner_excluded', 'awaiting_content_visual'))
+    'duplicate_story', 'stale_parent', 'owner_excluded', 'awaiting_content_visual',
+    # 26 Nov 2026: a prepared card still showing a retired free AI scene waits
+    # for the next research render (text card); never a failure.
+    'article_scene_retired'))
 RESULT_FIELDS = frozenset(('status', 'feed', 'story', 'facebook', 'outage_story', 'immediate'))
 FAILURES = frozenset(('media_missing', 'media_not_deployed', 'awaiting_resolution',
     'uncertain', 'account_mismatch', 'check_failed',
@@ -139,7 +142,8 @@ def summary(store, at):
     from .quality import news_editorial_reason
     from .domain import digest
     reasons = ('editorial_headline_required','editorial_context_required','editorial_copy_required',
-               'dedicated_pharmacy_story','dedicated_weather_story','date_mismatch')
+               'dedicated_pharmacy_story','dedicated_weather_story','date_mismatch',
+               'personal_mobile_number','headline_caption_fragment','headline_too_short')
     editorial = dict.fromkeys(reasons,0)
     for item in store.items():
         stamp = parse_date(item.get('published_at'))

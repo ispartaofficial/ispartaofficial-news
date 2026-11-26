@@ -25,6 +25,12 @@ from .visual_topics import unclassified_news
 from .article_scenes import VERSION as ARTICLE_SCENE_VERSION, SceneRejected, describe
 
 MODEL = '@cf/black-forest-labs/flux-1-schnell'
+# Owner, 26 Nov 2026: free-form scenes for stories outside the reviewed topic
+# list drew unrelated objects (a wheelchair, badminton rackets and a kettle for
+# a shelter adoption appeal) and still passed the relevance score. Such stories
+# get no generated picture and no cached one; their card waits for the source's
+# own photo. Reviewed topic scenes and source photos are unchanged.
+ARTICLE_SCENES_ENABLED = False
 DAILY_ATTEMPTS = 20
 RUN_ATTEMPTS = 2
 MAX_RESPONSE_BYTES = 8 * 1024 * 1024
@@ -219,6 +225,7 @@ class Illustrator:
         self.match_ready = True
         self.stats.update({'subject_rejected': 0, 'subject_unavailable': 0, 'text_only': 0, 'stock_reused': 0, 'scene_reused': 0,
                            'article_scene': 0, 'scene_rejected': 0,
+                           'article_scenes_enabled': ARTICLE_SCENES_ENABLED, 'article_scene_disabled': 0,
                            # 30 Oct: two v12 scenes were rejected with no stored reason.
                            'scene_rejections': {}, 'scene_scores': []})
 
@@ -324,7 +331,9 @@ class Illustrator:
         expected = subject(item)
         if expected is None:
             if unclassified_news(item):
-                return self._article_scene(item, generate)
+                if ARTICLE_SCENES_ENABLED:
+                    return self._article_scene(item, generate)
+                self.stats['article_scene_disabled'] += 1
             self.stats['text_only'] += 1
             return None
         key = image_key(item)

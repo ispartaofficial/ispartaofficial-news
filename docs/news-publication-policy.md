@@ -48,6 +48,16 @@ nöbetçi eczane story'siyle (`docs/daily-pharmacy-story.md`) paylaşılıyor.
   gün adı takvime uymuyorsa ("12 Kasım 2026 Pazar") kart yayınlanmaz. Göreli ifadeler
   (bugün, yarın), sayısal tarihler, başlıkta birden çok tarih ve "6 Mart Spor Salonu",
   "29 Ekim Caddesi" gibi yer adları karşılaştırılmaz.
+- **`personal_mobile_number`** (26 Kasım 2026): Başlıkta veya metinde Türkiye cep
+  telefonu numarası (05xx, +90 5xx, 90 5xx, 5xx; boşluklu, noktalı, tireli, parantezli)
+  geçen haber. Kişisel iletişim bilgisiyle yapılan sahiplendirme/yardım çağrısı haber
+  değildir. Kurumsal sabit hatlar (0246..., 0232...), 444 hatları ve 153/112 gibi kısa
+  numaralar engellemez.
+- **`headline_caption_fragment`** (26 Kasım 2026): Üç noktayla biten başlık ya da
+  Instagram/Facebook kaynağında açıklamanın ilk satırından kesilmiş parça (açıklama
+  başlığın hemen ardından üç noktayla ya da aynı kelimenin devamıyla sürüyor).
+- **`headline_too_short`** (26 Kasım 2026): Görünen başlık 3 kelimeden kısa
+  ("Barınakta"). Mevcut başlık üretimi değişmedi; kapı yalnız sonucu denetler.
 
 Bu kapı her araştırma turunda ve her yayın denemesinden önce `prepare` içinde
 yeniden çalışır; bu yüzden kapıdan önce kuyruğa girmiş hazır kart da
