@@ -38,7 +38,18 @@ doygun renkli hem beyaz kenarlıklı satırlar. Yalnızca kırpmadır, hiçbir p
 çizilmez; fotoğrafın ortasındaki yazılar ve kırpınca karta küçük kalacak görsel olduğu
 gibi kullanılır. OCR yoksa görsel bekletilmez.
 
-30 Ekim 2026 kullanıcı kararı: gözden geçirilmiş konu listesi dışındaki güncel
+**26 Kasım 2026 kullanıcı kararı (geçerli):** "Bu tarz içerikler olmasın alakasız
+anlamsız görsel." Aşağıdaki serbest sahne yolu `ARTICLE_SCENES_ENABLED = False`
+(`news_engine/illustrations.py`) ile kapalıdır. Gözden geçirilmiş konu listesinde
+olmayan haber için yapay zekâ görseli üretilmez, önbellekteki hazır sahne de yeniden
+kullanılmaz (panelde `illustrations.article_scene_disabled`). Kart kaynağın kendi
+fotoğrafını bekler; görsel politikası bilgi kartını yayınlamadığı için böyle bir
+haber fotoğraf gelmezse yayınlanmaz. Hazır kuyruktaki ve eski sahneye bağlı kart
+`article_scene_retired` ile bekletilir; sonraki araştırma turu kartı sahnesiz yeniden
+çizer. Kaynağın kendi fotoğrafı ve gözden geçirilmiş konu sahneleri değişmedi. Kod
+yolu silinmedi; açmak ayrı bir kullanıcı kararı ve PR gerektirir.
+
+30 Ekim 2026 kullanıcı kararı (26 Kasım'da kapatıldı): gözden geçirilmiş konu listesi dışındaki güncel
 haberin kendi uygun fotoğrafı yoksa habere uygun genel bir sahne üretilir.
 Aynı Workers AI hesabındaki `@cf/meta/llama-3.1-8b-instruct` metin modeli, başlık
 ve en fazla 400 karakterlik özetten İngilizce bir sahne tarifi ve kısa açıklama
